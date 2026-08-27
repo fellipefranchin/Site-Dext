@@ -1,20 +1,33 @@
+# ── credenciais e configuração local (NUNCA versionar) ──
 config.php
 *-config.php
 *config*.php
+!*config*.example.php
 .env
 .env.*
 credentials*
 *.pem
 *.key
+
+# ── macOS / iCloud ──
 .DS_Store
 ._*
+.Spotlight-V100
+.Trashes
+Icon?
+
+# ── dependências ──
 node_modules/
 vendor/
+
+# ── runtime: sessões, cache, logs ──
 storage/sessions/
 storage/cache/
 storage/logs/
 cache/
 *.log
+
+# ── artefatos de build e backups locais ──
 *.zip
 _backups/
 backup/

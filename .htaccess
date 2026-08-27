@@ -1,0 +1,51 @@
+# ===== Dext · configuração de produção (Apache/LiteSpeed / Hostinger) =====
+
+AddDefaultCharset UTF-8
+
+# ---- Página inicial: prioriza o index.html (site estático) ----
+DirectoryIndex index.html index.htm
+
+# ---- Compressão (gzip/deflate) ----
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/css text/xml
+  AddOutputFilterByType DEFLATE application/javascript application/json
+  AddOutputFilterByType DEFLATE application/xml image/svg+xml font/woff2
+</IfModule>
+
+# ---- Cache do navegador ----
+# Imagens e fontes têm nome fixo: podem cachear por 1 ano.
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpeg    "access plus 1 year"
+  ExpiresByType image/png     "access plus 1 year"
+  ExpiresByType image/webp    "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType font/woff2    "access plus 1 year"
+</IfModule>
+# O HTML muda quando o site é atualizado: revalidar sempre (aparece na hora).
+<IfModule mod_headers.c>
+  <FilesMatch "\.(html|htm)$">
+    Header set Cache-Control "no-cache, must-revalidate"
+  </FilesMatch>
+</IfModule>
+
+# ---- Credenciais do formulário: nunca servir pela web ----
+<Files "contato-config.php">
+  Require all denied
+</Files>
+
+# ---- Cabeçalhos de segurança básicos ----
+<IfModule mod_headers.c>
+  Header set X-Content-Type-Options "nosniff"
+  Header set X-Frame-Options "SAMEORIGIN"
+  Header set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+ErrorDocument 404 /index.html
+
+# ---- Força HTTPS ----
+<IfModule mod_rewrite.c>
+  RewriteEngine On
+  RewriteCond %{HTTPS} off
+  RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+</IfModule>

@@ -1,7 +1,10 @@
 <?php
 /* ===== Dext · recebe o formulário do site =====
    Envia dois e-mails: o aviso interno para o comercial e a confirmação para
-   quem preencheu. Entrega local (destino no mesmo servidor), sem SMTP e sem senha.
+   quem preencheu. Envia por SMTP autenticado, porque o mail() deste servidor
+   devolve sucesso sem entregar — com SMTP o servidor confirma com 250 e dá para
+   saber se realmente foi. As credenciais ficam em contato-config.php, que está
+   no .gitignore e é bloqueado pelo .htaccess: nunca vai para o repositório.
    Responde JSON no formato que o front-end espera: {"success":"true"|"false"}. */
 
 declare(strict_types=1);
