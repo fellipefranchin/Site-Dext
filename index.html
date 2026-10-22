@@ -3,7 +3,7 @@
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-BF7BPXKE4Z"></script>
 <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BF7BPXKE4Z');</script>
 <title>Dext · Tecnologia e Gestão para restaurantes</title>
-<meta name="description" content="A excelência já existe. A gente organiza e faz render. Sistema de gestão, processos e consultoria para o seu restaurante rodar melhor. Diagnóstico de Mercado gratuito.">
+<meta name="description" content="O sistema de gestão que mostra o que o seu restaurante não está vendo: custo do prato, margem, estoque e equipe num lugar só. Use 30 dias grátis.">
 <meta name="robots" content="index,follow">
 <meta name="theme-color" content="#111111">
 <link rel="canonical" href="https://dextdigital.com.br/">
@@ -14,13 +14,13 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Dext">
 <meta property="og:title" content="Dext · Tecnologia e Gestão para restaurantes">
-<meta property="og:description" content="Aparecer não basta. O restaurante precisa rodar bem. Tecnologia, processo e gestão numa casa só.">
+<meta property="og:description" content="O sistema que mostra o que o seu restaurante não está vendo. Use 30 dias grátis, sem taxa de implantação.">
 <meta property="og:url" content="https://dextdigital.com.br/">
 <meta property="og:image" content="https://dextdigital.com.br/og-image.jpg">
 <meta property="og:locale" content="pt_BR">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Dext · Tecnologia e Gestão para restaurantes">
-<meta name="twitter:description" content="Aparecer não basta. O restaurante precisa rodar bem.">
+<meta name="twitter:description" content="O sistema que mostra o que o seu restaurante não está vendo. 30 dias grátis.">
 <meta name="twitter:image" content="https://dextdigital.com.br/og-image.jpg">
 
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -60,6 +60,11 @@ header.scrolled{background:rgba(17,17,17,.92);backdrop-filter:blur(14px);-webkit
 .nav-cta{padding:10px 22px;border:1.5px solid var(--vermelho);border-radius:3px;color:#fff!important;font-size:12.5px!important;letter-spacing:.08em;text-transform:uppercase;font-weight:600}
 .nav-cta::after{display:none!important}
 .nav-cta:hover{background:var(--vermelho)}
+.nav-right{display:flex;align-items:center;gap:18px}
+.lang{display:inline-flex;border:1px solid #2e2e2e;border-radius:3px;overflow:hidden;flex-shrink:0;position:relative;z-index:110}
+.lang-b{background:none;border:0;cursor:pointer;font-family:'Montserrat',sans-serif;font-size:11.5px;font-weight:600;letter-spacing:.08em;color:var(--cinza-mid);padding:8px 11px;line-height:1;transition:.25s}
+.lang-b:hover{color:#fff}
+.lang-b.on{background:var(--vermelho);color:#fff}
 .burger{display:none;flex-direction:column;gap:5.5px;background:none;border:0;cursor:pointer;z-index:110}
 .burger span{width:26px;height:2px;background:var(--cinza);transition:.3s}
 .burger.open span:nth-child(1){transform:translateY(7.5px) rotate(45deg)}
@@ -201,6 +206,20 @@ section{padding:110px 0}
 .mbadge.roteiro{background:rgba(255,255,255,.06);color:var(--cinza-mid)}
 .sys-highlight{font-family:'Satoshi',sans-serif;font-weight:800;font-size:clamp(20px,2.8vw,28px);color:#fff;text-align:center;margin-top:44px}
 .sys-highlight span{color:var(--vermelho)}
+.gratis{display:inline-block;background:var(--vermelho);color:#fff;font-family:'Satoshi',sans-serif;font-weight:700;font-size:12px;letter-spacing:.14em;text-transform:uppercase;padding:9px 18px;border-radius:30px;white-space:nowrap}
+.gratis-strip{display:flex;align-items:center;gap:20px;flex-wrap:wrap;background:linear-gradient(120deg,rgba(232,24,64,.12),transparent 65%),var(--card);border:1px solid #382730;border-radius:10px;padding:22px 26px;margin-top:28px}
+.gratis-strip p{flex:1;min-width:250px;margin:0;font-size:14.5px;line-height:1.6;color:var(--cinza);font-weight:300}
+.gratis-strip p strong{color:#fff;font-weight:600}
+.pnum{font-family:'Satoshi',sans-serif;font-size:13px;font-weight:800;letter-spacing:.12em;color:var(--vermelho);margin-bottom:14px}
+.oferta-box{display:flex;justify-content:space-between;align-items:center;gap:24px;flex-wrap:wrap;background:#fff;border:1px solid #e4e4e2;border-radius:10px;padding:28px 32px;margin-top:26px}
+.oferta-box .t{font-family:'Satoshi',sans-serif;font-weight:800;font-size:21px;color:var(--preto)}
+.oferta-box .t span{color:var(--vermelho)}
+.oferta-box .sub{font-size:13.5px;color:#777;font-weight:300;margin-top:5px}
+.oferta-preco{text-align:right}
+.oferta-preco .cp{font-family:'Satoshi',sans-serif;font-weight:800;font-size:34px;color:var(--preto);line-height:1;white-space:nowrap}
+.oferta-preco .cp small{font-size:13px;color:#999;font-weight:500}
+.oferta-preco .depois{font-size:12px;color:#999;margin-top:5px}
+@media(max-width:640px){.oferta-box{flex-direction:column;align-items:flex-start}.oferta-preco{text-align:left}}
 .sys-note{font-size:12px;color:var(--cinza-mid);margin-top:16px;text-align:center}
 .sys-note a{color:var(--vermelho);font-weight:600}
 .mod-chip .mprice{font-family:'Satoshi',sans-serif;font-weight:800;font-size:16px;color:#fff;margin-top:14px}
@@ -405,9 +424,15 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
    <a data-go="home">Início</a>
    <a data-go="sistema">Sistema</a>
    <a data-go="contato">Contato</a>
-   <a class="nav-cta" data-go="contato">Diagnóstico gratuito</a>
+   <a class="nav-cta" data-scroll="oferta">30 dias grátis</a>
   </nav>
-  <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  <div class="nav-right">
+   <div class="lang" role="group" aria-label="Idioma / Language">
+    <button type="button" class="lang-b on" data-lang="pt" lang="pt-BR">PT</button>
+    <button type="button" class="lang-b" data-lang="en" lang="en">EN</button>
+   </div>
+   <button class="burger" id="burger" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
  </div>
 </header>
 
@@ -418,62 +443,19 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
 <section class="hero" id="topo">
  <div class="wrap">
   <div class="eyebrow rv">Tecnologia e Gestão para restaurantes</div>
-  <h1 class="rv d1">A excelência já existe. A gente <em>organiza e faz render</em>.</h1>
-  <p class="lead rv d2">Aparecer é importante, mas não basta: o restaurante precisa rodar bem. A Dext entrega o sistema em que ele roda todos os dias: tecnologia, processo e gestão trabalhando juntos, com a inteligência de marketing como camada de recomendação.</p>
+  <h1 class="rv d1">O sistema que mostra <em>o que o seu restaurante não está vendo</em>.</h1>
+  <p class="lead rv d2">Reservas, equipe, dinheiro e estoque num lugar só, falando uns com os outros. Em um mês rodando, você enxerga o custo real do prato, para onde some a margem e o que a planilha nunca te contou. Comece hoje e use 30 dias por nossa conta.</p>
   <div class="hero-cta rv d3">
-   <a class="btn btn-red" href="#contato">Quero o Diagnóstico de Mercado</a>
-   <a class="btn btn-ghost" href="#planos">Conhecer os planos</a>
+   <a class="btn btn-red" data-scroll="oferta">Começar os 30 dias grátis</a>
+   <a class="btn btn-ghost" data-go="sistema">Ver como funciona</a>
   </div>
   <div class="hero-proof rv d4">
-   <span><strong>Chef e gestor</strong> no mesmo comando</span><span class="dot"></span>
-   <span><strong>Sistema próprio</strong> incluído</span><span class="dot"></span>
-   <span><strong>Método testado</strong> numa operação real</span>
+   <span><strong>30 dias grátis</strong> sem compromisso</span><span class="dot"></span>
+   <span><strong>Sem taxa</strong> de implantação</span><span class="dot"></span>
+   <span><strong>Testado</strong> numa operação real</span>
   </div>
  </div>
  <div class="scroll-cue">role</div>
-</section>
-
-<!-- ================= QUOTE ================= -->
-<div class="quote">
- <div class="wrap">
-  <blockquote class="rv">Excelência não se improvisa. <span>Se organiza.</span></blockquote>
-  <cite class="rv d1">Dext</cite>
- </div>
-</div>
-
-<!-- ================= MERCADO · O PARADOXO ================= -->
-<section id="mercado">
- <div class="wrap">
-  <div class="sec-head rv">
-   <div class="eyebrow">O paradoxo</div>
-   <h2 class="sec-title">O setor faturou mais. E sobrou menos.</h2>
-   <p class="sec-sub">O número do setor subiu porque a carta subiu. O insumo e a equipe subiram antes, e o cliente aceitou pagar só uma parte da conta. E o cliente mudou: vem menos vezes e espera mais de cada vez.</p>
-  </div>
-  <div class="stats">
-   <div class="stat rv"><div class="big"><span>R$ </span><span data-count="495">0</span><span> bi</span></div><p>faturou o setor em 2025</p></div>
-   <div class="stat rv d1"><div class="big"><span data-count="39">0</span><span>%</span></div><p>com pagamentos em atraso</p></div>
-   <div class="stat rv d2"><div class="big"><span data-count="-7.1">0</span><span>%</span></div><p>ocasiões de consumo fora do lar</p></div>
-   <div class="stat rv d3"><div class="big"><span>+</span><span data-count="28.3">0</span><span>%</span></div><p>valor gasto por visita</p></div>
-  </div>
-  <p class="stat-note rv">Crescer junto com o setor não é sinal de saúde. <span>Na maioria dos casos é só acompanhar a inflação.</span></p>
-  <p class="fontes rv">Fontes: Abrasel, com base na PMS/IBGE · 2025 e 2026 · Worldpanel by Numerator · 1º trimestre de 2026.</p>
- </div>
-</section>
-
-<!-- ================= CONTEXTO ================= -->
-<section id="contexto">
- <div class="wrap">
-  <div class="sec-head rv">
-   <div class="eyebrow">O contexto</div>
-   <h2 class="sec-title">O talento está na cozinha. O buraco está na gestão.</h2>
-   <p class="sec-sub">Não é a comida que derruba. É a falta de gestão, processo e estrutura.</p>
-  </div>
-  <div class="cards3">
-   <div class="pcard rv"><div class="num">COZINHA EXCELENTE</div><h3>O talento está lá.</h3><p>Comida de verdade, propósito real. A qualidade nunca foi o problema.</p></div>
-   <div class="pcard rv d1"><div class="num">+ GESTÃO FRACA</div><h3>Falta estrutura.</h3><p>Sem processo, sem controle de números, sem o sistema que sustenta o crescimento.</p></div>
-   <div class="pcard rv d2"><div class="num">= EXCELÊNCIA INVISÍVEL</div><h3>O negócio não se sustenta.</h3><p>O talento continua no restaurante. A estrutura para segurá-lo é o que falta.</p></div>
-  </div>
- </div>
 </section>
 
 <!-- ================= A FRATURA ================= -->
@@ -511,35 +493,6 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
  </div>
 </section>
 
-<!-- ================= PROPOSTA ================= -->
-<section class="strip">
- <div class="wrap">
-  <div class="kicker rv">A proposta</div>
-  <h2 class="rv d1">Aparecer não basta. <span>Precisa rodar bem.</span></h2>
-  <hr class="linha rv d2">
-  <p class="rv d3">A vitrine traz o cliente; a operação decide se ele volta. A Dext entrega o sistema em que o restaurante roda todos os dias: tecnologia, processo e gestão trabalhando juntos, com a inteligência de marketing como camada de recomendação. Se a resposta para “por que o cliente volta?” não estiver em algum número da operação, ela é um palpite. E palpite não se repete.</p>
- </div>
-</section>
-
-<!-- ================= O QUE ENTREGAMOS ================= -->
-<section class="light" id="entrega">
- <div class="wrap">
-  <div class="sec-head center rv">
-   <div class="eyebrow">O que entregamos</div>
-   <h2 class="sec-title">Uma casa só, do visível ao operacional.</h2>
-   <p class="sec-sub">Do símbolo à operação, tudo conversa e roda numa casa só.</p>
-  </div>
-  <div class="sgrid">
-   <div class="scard rv"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M12 22a10 10 0 1 1 10-10c0 2-1.5 3-3 3h-3a2.5 2.5 0 0 0-2 4"/><circle cx="8" cy="9" r="1"/><circle cx="17" cy="12" r="1"/></svg></div><h3>Identidade visual completa</h3><p>Marca do símbolo às aplicações: logotipos, paleta, tipografia, manual e peças institucionais.</p></div>
-   <div class="scard rv d1"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/><circle cx="5.5" cy="6.5" r=".5"/><circle cx="8" cy="6.5" r=".5"/></svg></div><h3>Website institucional</h3><p>Cardápio, reservas e localização num site feito para converter busca em mesa ocupada.</p></div>
-   <div class="scard rv d2"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 6L22 7"/></svg></div><h3>E-mail profissional</h3><p>Domínio próprio e credibilidade em cada mensagem que sai do seu restaurante.</p></div>
-   <div class="scard rv"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><h3>Dext Sistema de Gestão</h3><p>O núcleo tecnológico da operação. Um lugar só para o restaurante rodar todo dia.</p><span class="tag">O coração da Dext</span></div>
-   <div class="scard rv d1"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5c0 2 1 3 2 4v2h6v-2c1-1 2-2 2-4a5 5 0 0 0-5-5z"/><path d="M9 16h6M10 19h4M11 22h2"/></svg></div><h3>Consultoria &amp; processos de gestão</h3><p>Fichas técnicas, CMV, engenharia de cardápio, compras e SOPs. A operação organizada por dentro.</p></div>
-   <div class="scard rv d2"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><h3>Inteligência de marketing</h3><p>Recomendação estratégica com base em dados: relatórios, briefing e calendário. Você executa.</p></div>
-  </div>
- </div>
-</section>
-
 <!-- ================= SISTEMA DEXT ================= -->
 <section class="sistema" id="sistema-teaser">
  <div class="wrap">
@@ -566,7 +519,134 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
    <div class="mod-chip rv"><div class="mtop"><h4>Operacional</h4></div><p>Estoque, compras e fichas técnicas.</p></div>
   </div>
   <div class="rv" style="text-align:center;margin-top:24px">
+   <div style="margin-bottom:16px"><span class="gratis">Primeiro mês grátis</span></div>
    <a class="btn btn-red" data-go="sistema">Só quer a ferramenta? Conheça o Sistema Dext de Gestão</a>
+  </div>
+ </div>
+</section>
+
+<!-- ================= FUNDADOR + PROVA VIVA ================= -->
+<section id="fundador">
+ <div class="wrap duo">
+  <div class="duo-visual foto rv">
+   <div class="foto-frame">
+    <img class="foto-fellipe" src="assets/img/hist-fellipe.jpg" alt="Fellipe Franchin, fundador da Dext, na cozinha" loading="lazy">
+   </div>
+   <div class="foto-cap">
+    <div class="foto-quote">“Falo a língua de quem vive a operação.”</div>
+    <div class="foto-nome">Fellipe Franchin · Fundador · Chef e Gestor</div>
+   </div>
+  </div>
+  <div class="duo-text">
+   <div class="eyebrow rv">Quem constrói</div>
+   <h2 class="sec-title rv" style="margin-bottom:26px">O chef que aprendeu a ler os números.</h2>
+   <p class="rv">A Dext foi fundada por <strong>Fellipe Franchin</strong>: gastrônomo, chef no Brasil e no exterior, e hoje dono de restaurante. Fala a língua de quem vive a operação: margem apertada, equipe enxuta, rotina no limite. Não é teoria de fora; é quem ainda está dentro.</p>
+   <div class="destaque rv">Prova viva: por trás da Dext existe uma operação real rodando todos os dias, a Vívono, o restaurante do fundador. O método é testado na nossa casa antes de chegar na sua.</div>
+   <div class="assin rv"><div class="traco"></div><p>Fellipe Franchin · Fundador da Dext</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= OFERTA · 30 DIAS ================= -->
+<section class="light" id="oferta">
+ <div class="wrap">
+  <div class="sec-head center rv">
+   <div class="eyebrow">Comece pelo sistema</div>
+   <h2 class="sec-title">Use 30 dias. Depois você decide.</h2>
+   <p class="sec-sub">O sistema é contratado direto, sem reunião e sem proposta. Você entra, configura o seu restaurante e roda um mês inteiro antes de pagar a primeira mensalidade.</p>
+  </div>
+  <div class="cards3">
+   <div class="scard rv"><div class="pnum">01</div><h3>Você cria a conta</h3><p>Cadastro com o cartão na entrada, para a cobrança seguir sozinha depois. Nada é cobrado agora.</p></div>
+   <div class="scard rv d1"><div class="pnum">02</div><h3>Roda 30 dias</h3><p>O sistema inteiro liberado, com a sua marca. Tempo suficiente para fechar um mês e ver os números de verdade.</p></div>
+   <div class="scard rv d2"><div class="pnum">03</div><h3>Avisamos antes de cobrar</h3><p>Um e-mail <strong>3 dias antes</strong> da primeira cobrança. Se não fizer sentido, você cancela sem falar com ninguém.</p></div>
+  </div>
+  <div class="oferta-box rv">
+   <div>
+    <div class="t">Sistema completo, <span>com tudo ligado</span></div>
+    <div class="sub">Clientes, Pessoas, Financeiro e Operacional. Sem taxa de implantação, sem fidelização.</div>
+   </div>
+   <div class="oferta-preco">
+    <div class="cp">R$ 690<small>/mês</small></div>
+    <div class="depois">depois dos 30 dias</div>
+   </div>
+  </div>
+  <div class="rv" style="text-align:center;margin-top:32px">
+   <a class="btn btn-red" href="#contato">Começar os 30 dias grátis</a>
+   <p class="plan-note" style="margin-top:18px">Prefere ver antes? <a data-go="sistema" style="color:var(--vermelho);text-decoration:underline;cursor:pointer">Conheça o sistema por dentro</a>.</p>
+  </div>
+ </div>
+</section>
+
+<!-- ================= PONTE · DO SISTEMA PARA OS PLANOS ================= -->
+<section class="strip" id="ponte">
+ <div class="wrap">
+  <div class="kicker rv">Depois do primeiro mês</div>
+  <h2 class="rv d1">O sistema mostra o problema. <span>A gente ajuda a resolver.</span></h2>
+  <hr class="linha rv d2">
+  <p class="rv d3">Quem roda o sistema por um mês costuma sair com a mesma frase: “não sabia que era assim”. O custo do prato, a margem que some, a escala que não fecha. A partir daí não é mais ferramenta que falta, é método — e aí entram marca, site, processos e gestão. Isso não se vende por botão: a gente conversa, entende o seu caso e monta o escopo.</p>
+ </div>
+</section>
+
+<!-- ================= MERCADO · O PARADOXO ================= -->
+<section id="mercado">
+ <div class="wrap">
+  <div class="sec-head rv">
+   <div class="eyebrow">O paradoxo</div>
+   <h2 class="sec-title">O setor faturou mais. E sobrou menos.</h2>
+   <p class="sec-sub">O número do setor subiu porque a carta subiu. O insumo e a equipe subiram antes, e o cliente aceitou pagar só uma parte da conta. E o cliente mudou: vem menos vezes e espera mais de cada vez.</p>
+  </div>
+  <div class="stats">
+   <div class="stat rv"><div class="big"><span>R$ </span><span data-count="495">0</span><span> bi</span></div><p>faturou o setor em 2025</p></div>
+   <div class="stat rv d1"><div class="big"><span data-count="39">0</span><span>%</span></div><p>com pagamentos em atraso</p></div>
+   <div class="stat rv d2"><div class="big"><span data-count="-7.1">0</span><span>%</span></div><p>ocasiões de consumo fora do lar</p></div>
+   <div class="stat rv d3"><div class="big"><span>+</span><span data-count="28.3">0</span><span>%</span></div><p>valor gasto por visita</p></div>
+  </div>
+  <p class="stat-note rv">Crescer junto com o setor não é sinal de saúde. <span>Na maioria dos casos é só acompanhar a inflação.</span></p>
+  <p class="fontes rv">Fontes: Abrasel, com base na PMS/IBGE · 2025 e 2026 · Worldpanel by Numerator · 1º trimestre de 2026.</p>
+ </div>
+</section>
+
+<!-- ================= CONTEXTO ================= -->
+<section id="contexto">
+ <div class="wrap">
+  <div class="sec-head rv">
+   <div class="eyebrow">O contexto</div>
+   <h2 class="sec-title">O talento está na cozinha. O buraco está na gestão.</h2>
+   <p class="sec-sub">Não é a comida que derruba. É a falta de gestão, processo e estrutura.</p>
+  </div>
+  <div class="cards3">
+   <div class="pcard rv"><div class="num">COZINHA EXCELENTE</div><h3>O talento está lá.</h3><p>Comida de verdade, propósito real. A qualidade nunca foi o problema.</p></div>
+   <div class="pcard rv d1"><div class="num">+ GESTÃO FRACA</div><h3>Falta estrutura.</h3><p>Sem processo, sem controle de números, sem o sistema que sustenta o crescimento.</p></div>
+   <div class="pcard rv d2"><div class="num">= EXCELÊNCIA INVISÍVEL</div><h3>O negócio não se sustenta.</h3><p>O talento continua no restaurante. A estrutura para segurá-lo é o que falta.</p></div>
+  </div>
+ </div>
+</section>
+
+<!-- ================= PROPOSTA ================= -->
+<section class="strip">
+ <div class="wrap">
+  <div class="kicker rv">A proposta</div>
+  <h2 class="rv d1">Aparecer não basta. <span>Precisa rodar bem.</span></h2>
+  <hr class="linha rv d2">
+  <p class="rv d3">A vitrine traz o cliente; a operação decide se ele volta. A Dext entrega o sistema em que o restaurante roda todos os dias: tecnologia, processo e gestão trabalhando juntos, com a inteligência de marketing como camada de recomendação. Se a resposta para “por que o cliente volta?” não estiver em algum número da operação, ela é um palpite. E palpite não se repete.</p>
+ </div>
+</section>
+
+<!-- ================= O QUE ENTREGAMOS ================= -->
+<section class="light" id="entrega">
+ <div class="wrap">
+  <div class="sec-head center rv">
+   <div class="eyebrow">O que entregamos</div>
+   <h2 class="sec-title">Uma casa só, do visível ao operacional.</h2>
+   <p class="sec-sub">Do símbolo à operação, tudo conversa e roda numa casa só.</p>
+  </div>
+  <div class="sgrid">
+   <div class="scard rv"><div class="ico"><svg viewBox="0 0 24 24"><circle cx="13.5" cy="6.5" r="2.5"/><path d="M12 22a10 10 0 1 1 10-10c0 2-1.5 3-3 3h-3a2.5 2.5 0 0 0-2 4"/><circle cx="8" cy="9" r="1"/><circle cx="17" cy="12" r="1"/></svg></div><h3>Identidade visual completa</h3><p>Marca do símbolo às aplicações: logotipos, paleta, tipografia, manual e peças institucionais.</p></div>
+   <div class="scard rv d1"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="14" rx="2"/><path d="M2 9h20"/><circle cx="5.5" cy="6.5" r=".5"/><circle cx="8" cy="6.5" r=".5"/></svg></div><h3>Website institucional</h3><p>Cardápio, reservas e localização num site feito para converter busca em mesa ocupada.</p></div>
+   <div class="scard rv d2"><div class="ico"><svg viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="2"/><path d="m2 7 10 6L22 7"/></svg></div><h3>E-mail profissional</h3><p>Domínio próprio e credibilidade em cada mensagem que sai do seu restaurante.</p></div>
+   <div class="scard rv"><div class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg></div><h3>Dext Sistema de Gestão</h3><p>O núcleo tecnológico da operação. Um lugar só para o restaurante rodar todo dia.</p><span class="tag">O coração da Dext</span></div>
+   <div class="scard rv d1"><div class="ico"><svg viewBox="0 0 24 24"><path d="M12 2a5 5 0 0 0-5 5c0 2 1 3 2 4v2h6v-2c1-1 2-2 2-4a5 5 0 0 0-5-5z"/><path d="M9 16h6M10 19h4M11 22h2"/></svg></div><h3>Consultoria &amp; processos de gestão</h3><p>Fichas técnicas, CMV, engenharia de cardápio, compras e SOPs. A operação organizada por dentro.</p></div>
+   <div class="scard rv d2"><div class="ico"><svg viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg></div><h3>Inteligência de marketing</h3><p>Recomendação estratégica com base em dados: relatórios, briefing e calendário. Você executa.</p></div>
   </div>
  </div>
 </section>
@@ -626,48 +706,26 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
  </div>
 </section>
 
-<!-- ================= FUNDADOR + PROVA VIVA ================= -->
-<section id="fundador">
- <div class="wrap duo">
-  <div class="duo-visual foto rv">
-   <div class="foto-frame">
-    <img class="foto-fellipe" src="assets/img/hist-fellipe.jpg" alt="Fellipe Franchin, fundador da Dext, na cozinha" loading="lazy">
-   </div>
-   <div class="foto-cap">
-    <div class="foto-quote">“Falo a língua de quem vive a operação.”</div>
-    <div class="foto-nome">Fellipe Franchin · Fundador · Chef e Gestor</div>
-   </div>
-  </div>
-  <div class="duo-text">
-   <div class="eyebrow rv">Quem constrói</div>
-   <h2 class="sec-title rv" style="margin-bottom:26px">O chef que aprendeu a ler os números.</h2>
-   <p class="rv">A Dext foi fundada por <strong>Fellipe Franchin</strong>: gastrônomo, chef no Brasil e no exterior, e hoje dono de restaurante. Fala a língua de quem vive a operação: margem apertada, equipe enxuta, rotina no limite. Não é teoria de fora; é quem ainda está dentro.</p>
-   <div class="destaque rv">Prova viva: por trás da Dext existe uma operação real rodando todos os dias, a Vívono, o restaurante do fundador. O método é testado na nossa casa antes de chegar na sua.</div>
-   <div class="assin rv"><div class="traco"></div><p>Fellipe Franchin · Fundador da Dext</p></div>
-  </div>
- </div>
-</section>
-
 <!-- ================= PLANOS ================= -->
 <section class="light" id="planos">
  <div class="wrap">
   <div class="sec-head center rv">
    <div class="eyebrow">Planos</div>
    <h2 class="sec-title">Uma escada de crescimento.</h2>
-   <p class="sec-sub">Como funciona: uma entrega inicial que se monta uma vez, mais uma manutenção mensal enxuta. Cada plano prepara o próximo.</p>
+   <p class="sec-sub">Sem entrada: você paga só a mensalidade. A montagem inicial está inclusa, e cada plano prepara o próximo.</p>
   </div>
   <div class="como-grid">
    <div class="como-card rv">
-    <div class="kicker">Entrega inicial</div>
-    <p>O que dá trabalho montar uma vez: marca, site, estruturação e configuração do sistema. Valor único, parcelável.</p>
+    <div class="kicker">Montagem inclusa</div>
+    <p>Marca, site, estruturação e configuração do sistema: o trabalho que se faz uma vez, sem custo de entrada.</p>
    </div>
    <div class="como-card rv d1">
-    <div class="kicker">Manutenção mensal</div>
-    <p>Só o que é realmente periódico: mensalidade do sistema, assessoria (relatórios) e manutenção do site.</p>
+    <div class="kicker">Mensalidade única</div>
+    <p>Um valor por mês cobrindo o sistema, a assessoria (relatórios) e a manutenção do site. Você começa a pagar quando começa a usar.</p>
    </div>
   </div>
   <div class="vant-strip rv">
-   <span class="vant-pill">Sem taxa de implantação</span>
+   <span class="vant-pill">Sem entrada</span>
    <span class="vant-pill">Sem fidelização forçada</span>
    <span class="vant-pill">Sistema que evolui sem custo</span>
   </div>
@@ -676,8 +734,8 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
     <div class="pn">Identidade de marca</div>
     <h3>Essência</h3>
     <p class="tagline">A marca de dentro pra fora.</p>
-    <div class="price">R$ 2.900 <small>entrada</small></div>
-    <div class="mensal">depois R$ 490<small>/mês</small></div>
+    <div class="price">R$ 490<small>/mês</small></div>
+    <div class="mensal">Sem entrada<small> · montagem inclusa</small></div>
     <ul>
      <li>Identidade + Brand Pack</li>
      <li>Assessoria e Google</li>
@@ -690,8 +748,8 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
     <div class="pn">Tecnologia na operação</div>
     <h3>Progresso</h3>
     <p class="tagline">O sistema rodando o dia a dia.</p>
-    <div class="price">R$ 4.900 <small>entrada</small></div>
-    <div class="mensal">depois R$ 690<small>/mês</small></div>
+    <div class="price">R$ 690<small>/mês</small></div>
+    <div class="mensal">Sem entrada<small> · montagem inclusa</small></div>
     <ul>
      <li><strong>Tudo da Essência</strong></li>
      <li>Site e e-mail próprios</li>
@@ -703,8 +761,8 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
     <div class="pn">Controle na gestão</div>
     <h3>Dext</h3>
     <p class="tagline">A operação inteira sob controle.</p>
-    <div class="price">R$ 7.900 <small>entrada</small></div>
-    <div class="mensal">depois R$ 990<small>/mês</small></div>
+    <div class="price">R$ 990<small>/mês</small></div>
+    <div class="mensal">Sem entrada<small> · montagem inclusa</small></div>
     <ul>
      <li><strong>Tudo do Progresso</strong></li>
      <li>Assessoria de gestão completa</li>
@@ -713,7 +771,7 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
     <a class="btn btn-dark" href="#contato">Dominar a gestão</a>
    </div>
   </div>
-  <p class="plan-note rv">Entrega inicial única e parcelável. A manutenção mensal não inclui verba de anúncios, investida direto por você. O Dext Sistema de Gestão está incluído no nível de cada plano, e também disponível separado, por módulo.</p>
+  <p class="plan-note rv">Sem entrada: a montagem inicial está inclusa na mensalidade. A mensalidade não inclui verba de anúncios, investida direto por você. O Dext Sistema de Gestão está incluído no nível de cada plano, e também disponível separado, por módulo.</p>
  </div>
 </section>
 
@@ -778,7 +836,10 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
     <h1 class="page-h1 rv d1">Um sistema, não quatro programas.</h1>
     <p class="sec-sub rv d2">A maior parte dos restaurantes se vira com um sistema para o salão, uma planilha para o dinheiro, um caderno para o estoque e um grupo de mensagens para as tarefas. Cada um sabe um pedaço, nenhum sabe o todo, e a pessoa no meio junta tudo à mão, todo dia.</p>
     <p class="sec-sub rv d2" style="margin-top:14px">O Dext Sistema de Gestão é um só. As reservas, a equipe, o dinheiro e a operação vivem no mesmo lugar e falam uns com os outros. É assim que ele responde perguntas que dependem de várias áreas ao mesmo tempo.</p>
-    <div class="rv d3" style="margin-top:26px"><a class="btn btn-red" href="https://wa.me/5511940852805?text=Ol%C3%A1!%20Tenho%20interesse%20no%20Dext%20Sistema%20de%20Gest%C3%A3o." target="_blank" rel="noopener">Quero testar o sistema</a></div>
+    <div class="rv d3" style="margin-top:26px">
+     <div style="margin-bottom:16px"><span class="gratis">Primeiro mês grátis</span></div>
+     <a class="btn btn-red" href="https://wa.me/5511940852805?text=Ol%C3%A1!%20Tenho%20interesse%20no%20Dext%20Sistema%20de%20Gest%C3%A3o." target="_blank" rel="noopener">Quero testar o sistema</a>
+    </div>
    </div>
 
    <!-- Bloco 2 · a prova (cadeias) -->
@@ -840,12 +901,16 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
     <div class="vantg rv d2"><h4>Evolui sempre</h4><p>Módulos novos entram sem custo adicional. A ferramenta melhora, o preço não muda.</p></div>
     <div class="vantg rv d3"><h4>Sem amarras</h4><p>Nada de fidelização forçada. Você fica porque faz diferença, não porque assinou.</p></div>
    </div>
-   <p class="sys-highlight rv" style="margin-top:44px">Sem taxa de implantação. <span>É online: comece a usar hoje.</span></p>
+   <p class="sys-highlight rv" style="margin-top:44px">Primeiro mês grátis, sem taxa de implantação. <span>É online: comece a usar hoje.</span></p>
 
    <!-- Preço reenquadrado -->
    <div class="sec-head rv" style="max-width:820px;margin-top:56px">
     <div class="kicker">Quanto custa</div>
     <h2 class="sec-title rv">O sistema completo é o produto. As áreas avulsas são a porta de entrada.</h2>
+   </div>
+   <div class="gratis-strip rv">
+    <span class="gratis">Primeiro mês grátis</span>
+    <p>Contratando <strong>só o sistema</strong>, o primeiro mês é por nossa conta. Você testa na operação real antes de pagar a primeira mensalidade — sem taxa de implantação e sem fidelização.</p>
    </div>
    <div class="sys-completo rv">
     <div>
@@ -894,7 +959,7 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
         <select name="interesse">
          <option>Diagnóstico de Mercado</option>
          <option>Um dos planos</option>
-         <option>Só o sistema</option>
+         <option>Só o sistema (1º mês grátis)</option>
          <option>Outro</option>
         </select>
        </label>
@@ -991,6 +1056,17 @@ function routeFromHash(){return (location.hash||'').replace(/^#/,'')||'home';}
 function go(p){const h=(p==='home'?'':'#'+p);if(location.hash===h||(p==='home'&&!location.hash)){render(p);}else{location.hash=h;}}
 window.addEventListener('hashchange',()=>render(routeFromHash()));
 document.querySelectorAll('[data-go]').forEach(el=>el.addEventListener('click',e=>{e.preventDefault();go(el.dataset.go);}));
+// rolagem até uma seção da própria página (o hash é reservado para as abas).
+// Se o alvo estiver numa aba inativa, troca de aba antes de rolar.
+document.querySelectorAll('[data-scroll]').forEach(el=>el.addEventListener('click',e=>{
+ e.preventDefault();
+ const alvo=document.getElementById(el.dataset.scroll);
+ if(!alvo)return;
+ const pag=alvo.closest('.page');
+ const rolar=()=>alvo.scrollIntoView({behavior:'smooth',block:'start'});
+ if(pag&&!pag.classList.contains('active')){ go(pag.id.replace('page-','')); setTimeout(rolar,80); }
+ else rolar();
+}));
 render(routeFromHash());
 // formulário de contato (envia por e-mail via FormSubmit)
 const cf=document.getElementById('contatoForm');
@@ -999,7 +1075,7 @@ if(cf)cf.addEventListener('submit',async e=>{
  const st=document.getElementById('fstatus');
  if(!cf.checkValidity()){cf.reportValidity();return;}
  if(cf._honey.value){return;} // honeypot anti-spam
- const btn=cf.querySelector('button[type=submit]');btn.disabled=true;const lbl=btn.textContent;btn.textContent='Enviando...';
+ const btn=cf.querySelector('button[type=submit]');btn.disabled=true;const lbl=btn.textContent;btn.textContent=t('Enviando...');
  st.className='fstatus';st.textContent='';
  const data=Object.fromEntries(new FormData(cf).entries());delete data._honey;
  try{
@@ -1007,10 +1083,10 @@ if(cf)cf.addEventListener('submit',async e=>{
   // só confirmamos ao visitante — e só contamos o lead — se o servidor disser que enviou.
   let j=null;try{j=await r.json();}catch(_){}
   if(!r.ok||!j||String(j.success).toLowerCase()!=='true'){console.warn('Contato não enviado:',(j&&j.message)||r.status);throw 0;}
-  cf.reset();st.className='fstatus ok';st.textContent='Recebido! A gente retorna em breve pelo e-mail ou WhatsApp.';
+  cf.reset();st.className='fstatus ok';st.textContent=t('Recebido! A gente retorna em breve pelo e-mail ou WhatsApp.');
   if(window.gtag)gtag('event','generate_lead',{method:'formulario'});
  }catch(_){
-  st.className='fstatus err';st.innerHTML='Não consegui enviar agora. Fale direto pelo <a href="https://wa.me/5511940852805" target="_blank" rel="noopener">WhatsApp</a> ou <a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a>.';
+  st.className='fstatus err';st.innerHTML=t('Não consegui enviar agora. Fale direto pelo <a href="https://wa.me/5511940852805" target="_blank" rel="noopener">WhatsApp</a> ou <a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a>.');
  }finally{btn.disabled=false;btn.textContent=lbl;}
 });
 // reveal
@@ -1029,5 +1105,112 @@ document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
 document.getElementById('ano').textContent=new Date().getFullYear();
 // evento de lead ao clicar no WhatsApp
 document.addEventListener('click',e=>{const a=e.target.closest('a[href*="wa.me"]');if(a&&window.gtag)gtag('event','generate_lead',{method:'whatsapp'});});
+</script>
+
+<script>
+/* ================= IDIOMA (PT/EN) =================
+   O português vive no HTML e é a fonte da verdade. O inglês vem deste
+   dicionário, chaveado pelo próprio texto em português: assim o HTML não
+   precisa de marcação nenhuma e, se uma frase mudar sem tradução, o site
+   simplesmente mostra o português em vez de quebrar.
+   Para abrir direto em inglês: dextdigital.com.br/?lang=en */
+const DIC_EN={"Início":"Home","Sistema":"System","Contato":"Contact","Tecnologia e Gestão para restaurantes":"Technology and management for restaurants","numa operação real":"in a real operation","role":"scroll","Excelência não se improvisa.":"Excellence is not improvised.","Se organiza.":"It is organized.","Dext":"Dext","O paradoxo":"The paradox","O setor faturou mais. E sobrou menos.":"The industry billed more. And kept less.","O número do setor subiu porque a carta subiu. O insumo e a equipe subiram antes, e o cliente aceitou pagar só uma parte da conta. E o cliente mudou: vem menos vezes e espera mais de cada vez.":"The industry's number went up because menu prices went up. Ingredients and payroll went up first, and the guest only absorbed part of the difference. The guest changed too: fewer visits, higher expectations on each one.","bi":"bn","faturou o setor em 2025":"billed by the industry in 2025","com pagamentos em atraso":"with payments overdue","ocasiões de consumo fora do lar":"dining-out occasions","valor gasto por visita":"spend per visit","Crescer junto com o setor não é sinal de saúde.":"Growing with the industry is not a sign of health.","Na maioria dos casos é só acompanhar a inflação.":"Most of the time it is just keeping up with inflation.","Fontes: Abrasel, com base na PMS/IBGE · 2025 e 2026 · Worldpanel by Numerator · 1º trimestre de 2026.":"Sources: Abrasel, based on PMS/IBGE · 2025 and 2026 · Worldpanel by Numerator · Q1 2026.","O contexto":"The context","O talento está na cozinha. O buraco está na gestão.":"The talent is in the kitchen. The hole is in the management.","Não é a comida que derruba. É a falta de gestão, processo e estrutura.":"It is not the food that sinks a restaurant. It is the lack of management, process and structure.","COZINHA EXCELENTE":"GREAT KITCHEN","O talento está lá.":"The talent is there.","Comida de verdade, propósito real. A qualidade nunca foi o problema.":"Real food, real purpose. Quality was never the problem.","+ GESTÃO FRACA":"+ WEAK MANAGEMENT","Falta estrutura.":"Structure is missing.","Sem processo, sem controle de números, sem o sistema que sustenta o crescimento.":"No process, no control of the numbers, none of the system that holds growth up.","= EXCELÊNCIA INVISÍVEL":"= INVISIBLE EXCELLENCE","O negócio não se sustenta.":"The business does not hold.","O talento continua no restaurante. A estrutura para segurá-lo é o que falta.":"The talent is still in the restaurant. What is missing is the structure to hold it.","A fratura":"The fracture","A tecnologia parou na porta.":"Technology stopped at the door.","A divisão não é entre restaurantes. É dentro do mesmo restaurante, e passa exatamente pela porta da cozinha.":"The divide is not between restaurants. It is inside the same restaurant, and it runs right through the kitchen door.","Da porta para fora":"Front of house","Digital":"Digital","Delivery e marketplace":"Delivery and marketplaces","WhatsApp e Instagram":"WhatsApp and Instagram","Maquininha e Google":"Card readers and Google","Aqui o restaurante já investiu.":"This is where the restaurant already invested.","Da porta para dentro":"Back of house","Analógico":"Analog","Estoque na planilha":"Inventory in a spreadsheet","Escala montada de memória":"Schedules built from memory","Custo do prato calculado só no fim do mês":"Plate cost worked out only at month end","Aqui é onde o dinheiro sai sem aparecer.":"This is where the money leaves without being seen.","1 em cada 5 pequenos negócios controla o dinheiro num sistema.":"1 in 5 small businesses tracks its money in a system.","O resto usa planilha, caderno, o contador ou nada.":"The rest use a spreadsheet, a notebook, the accountant, or nothing.","Fonte: Sebrae · Hábitos Financeiros dos Pequenos Negócios · 2025.":"Source: Sebrae · Financial Habits of Small Businesses · 2025.","A proposta":"The proposal","Aparecer não basta.":"Looking good is not enough.","Precisa rodar bem.":"It has to run well.","A vitrine traz o cliente; a operação decide se ele volta. A Dext entrega o sistema em que o restaurante roda todos os dias: tecnologia, processo e gestão trabalhando juntos, com a inteligência de marketing como camada de recomendação. Se a resposta para “por que o cliente volta?” não estiver em algum número da operação, ela é um palpite. E palpite não se repete.":"The storefront brings the guest in; the operation decides whether they come back. Dext delivers the system the restaurant runs on every day — technology, process and management working together, with marketing intelligence as a layer of recommendation. If the answer to “why does the guest come back?” is not in some number in the operation, it is a guess. And a guess does not repeat.","O que entregamos":"What we deliver","Uma casa só, do visível ao operacional.":"One house, from the visible to the operational.","Do símbolo à operação, tudo conversa e roda numa casa só.":"From the logo to the operation, everything talks to each other and runs under one roof.","Identidade visual completa":"Complete visual identity","Marca do símbolo às aplicações: logotipos, paleta, tipografia, manual e peças institucionais.":"Brand from the symbol to its applications: logos, palette, typography, guidelines and core collateral.","Website institucional":"Company website","Cardápio, reservas e localização num site feito para converter busca em mesa ocupada.":"Menu, reservations and location on a site built to turn a search into a filled table.","E-mail profissional":"Professional email","Domínio próprio e credibilidade em cada mensagem que sai do seu restaurante.":"Your own domain and credibility in every message your restaurant sends.","Dext Sistema de Gestão":"Dext Management System","O núcleo tecnológico da operação. Um lugar só para o restaurante rodar todo dia.":"The technological core of the operation. One place for the restaurant to run on every day.","O coração da Dext":"The heart of Dext","Consultoria & processos de gestão":"Consulting & management processes","Fichas técnicas, CMV, engenharia de cardápio, compras e SOPs. A operação organizada por dentro.":"Recipe cards, COGS, menu engineering, purchasing and SOPs. The operation organized from the inside.","Inteligência de marketing":"Marketing intelligence","Recomendação estratégica com base em dados: relatórios, briefing e calendário. Você executa.":"Strategic recommendation grounded in data: reports, briefs and calendar. You execute.","Tecnologia · o núcleo":"Technology · the core","Um sistema, não quatro programas.":"One system, not four programs.","Reservas, equipe, dinheiro e operação no mesmo lugar, falando uns com os outros: o ponto vira custo no financeiro, a venda baixa o estoque pela ficha técnica, o fecho de caixa vira lançamento sozinho.":"Reservations, staff, money and operations in the same place, talking to each other: the time clock becomes a payroll cost, a sale draws down inventory through the recipe card, the till close posts itself.","Com controle de acesso: cada um vê só o que pode. Incluído no nível de cada plano, comece por uma área e cresça.":"With access control: each person sees only what they should. Included at each plan's level — start with one area and grow.","Clientes":"Guests","Cadastro, reservas e fidelidade.":"Records, reservations and loyalty.","Pessoas":"People","Equipe, ponto e escalas.":"Staff, time clock and schedules.","Financeiro":"Finance","CMV, DRE, contas e análises.":"COGS, P&L, bills and analysis.","Operacional":"Operations","Estoque, compras e fichas técnicas.":"Inventory, purchasing and recipe cards.","Só quer a ferramenta? Conheça o Sistema Dext de Gestão":"Only want the tool? See the Dext Management System","Como":"How","Tecnologia, processo e gestão. Trabalhando juntos.":"Technology, process and management. Working together.","Colocamos sistema, dados e método onde hoje existe improviso. Com melhoria contínua: um passo melhor a cada dia.":"We put system, data and method where there is improvisation today. With continuous improvement: one step better every day.","Tecnologia":"Technology","O sistema no lugar do caderno e da memória.":"The system in place of the notebook and memory.","Processo":"Process","A qualidade que se repete com qualquer time.":"Quality that repeats with any team.","Gestão":"Management","Decisão baseada em número, não em achismo.":"Decisions based on numbers, not hunches.","Melhoria contínua":"Continuous improvement","Um pouco melhor que ontem. Todo dia.":"A little better than yesterday. Every day.","Consultoria & processos":"Consulting & processes","Organizar por dentro.":"Organized from the inside.","A parte que ninguém vê, mas que sustenta tudo. A Dext estrutura a operação com método, e o restaurante passa a entender os próprios números, com a equipe capacitada para sustentar a gestão.":"The part nobody sees, and the part that holds everything up. Dext structures the operation with method, and the restaurant starts to understand its own numbers, with a team trained to sustain the management.","Fichas técnicas":"Recipe cards","e receituários padronizados":"and standardized recipes","Engenharia de cardápio:":"Menu engineering:","margem x popularidade":"margin vs. popularity","CMV real x teórico,":"Actual vs. theoretical COGS,","compras e inventário":"purchasing and inventory","Par level,":"Par levels,","recebimento e controle de quebra":"receiving and waste control","Processos e SOPs:":"Processes and SOPs:","abertura, produção e fecho":"opening, production and close","O marketing entra como recomendação.":"Marketing comes in as recommendation.","A Dext orienta com base em dados. Você executa, com o time que já tem ou com quem preferir.":"Dext advises based on data. You execute, with the team you already have or whoever you prefer.","Relatório de desempenho":"Performance report","Google, Instagram e avaliações: novos clientes, recorrência e faturamento.":"Google, Instagram and reviews: new guests, repeat visits and revenue.","Briefing de marketing":"Marketing brief","Estratégias compatíveis com o momento, com base até no clima.":"Strategies that fit the moment, right down to the weather.","Calendário de datas":"Calendar of dates","Datas comemorativas e sazonalidades do mês, para não perder oportunidade.":"Holidays and seasonal peaks for the month, so nothing is missed.","Cronograma de conteúdo":"Content schedule","Pautas recomendadas para as redes, alinhadas à operação real.":"Recommended topics for social, aligned with the real operation.","A Dext orienta; você executa.":"Dext advises; you execute.","Não produzimos peças, não postamos e não gerimos contas.":"We do not produce assets, we do not post, and we do not manage accounts.","“Falo a língua de quem vive a operação.”":"“I speak the language of people who live the operation.”","Fellipe Franchin · Fundador · Chef e Gestor":"Fellipe Franchin · Founder · Chef and Manager","Quem constrói":"Who builds it","O chef que aprendeu a ler os números.":"The chef who learned to read the numbers.","A Dext foi fundada por":"Dext was founded by","Fellipe Franchin":"Fellipe Franchin",": gastrônomo, chef no Brasil e no exterior, e hoje dono de restaurante. Fala a língua de quem vive a operação: margem apertada, equipe enxuta, rotina no limite. Não é teoria de fora; é quem ainda está dentro.":": gastronome, chef in Brazil and abroad, and today a restaurant owner. He speaks the language of people who live the operation: tight margins, lean teams, routines at the limit. This is not theory from the outside; it is someone still on the inside.","Prova viva: por trás da Dext existe uma operação real rodando todos os dias, a Vívono, o restaurante do fundador. O método é testado na nossa casa antes de chegar na sua.":"Living proof: behind Dext there is a real operation running every day — Vívono, the founder's restaurant. The method is tested in our house before it reaches yours.","Fellipe Franchin · Fundador da Dext":"Fellipe Franchin · Founder of Dext","Planos":"Plans","Uma escada de crescimento.":"A staircase of growth.","Sem entrada: você paga só a mensalidade. A montagem inicial está inclusa, e cada plano prepara o próximo.":"No upfront fee: you pay the monthly only. The initial build is included, and each plan sets up the next.","Montagem inclusa":"Build included","Marca, site, estruturação e configuração do sistema: o trabalho que se faz uma vez, sem custo de entrada.":"Brand, website, structuring and system setup: the work that is done once, at no upfront cost.","Mensalidade única":"One monthly fee","Um valor por mês cobrindo o sistema, a assessoria (relatórios) e a manutenção do site. Você começa a pagar quando começa a usar.":"One monthly amount covering the system, the advisory (reports) and website upkeep. You start paying when you start using it.","Sem entrada":"No upfront fee","Sem fidelização forçada":"No forced lock-in","Sistema que evolui sem custo":"System that evolves at no extra cost","Identidade de marca":"Brand identity","Essência":"Essence","A marca de dentro pra fora.":"The brand from the inside out.","/mês":"/month","· montagem inclusa":"· build included","Identidade + Brand Pack":"Identity + Brand Pack","Assessoria e Google":"Advisory and Google","Sistema:":"System:","módulo Clientes":"Guests module","Começar por aqui":"Start here","Mais escolhido":"Most chosen","Tecnologia na operação":"Technology in the operation","Progresso":"Progress","O sistema rodando o dia a dia.":"The system running the day to day.","Tudo da Essência":"Everything in Essence","Site e e-mail próprios":"Your own website and email","Clientes + Pessoas":"Guests + People","Estruturar a operação":"Structure the operation","Controle na gestão":"Control in management","A operação inteira sob controle.":"The whole operation under control.","Tudo do Progresso":"Everything in Progress","Assessoria de gestão completa":"Full management advisory","Sistema completo":"Complete system","Dominar a gestão":"Master the management","Sem entrada: a montagem inicial está inclusa na mensalidade. A mensalidade não inclui verba de anúncios, investida direto por você. O Dext Sistema de Gestão está incluído no nível de cada plano, e também disponível separado, por módulo.":"No upfront fee: the initial build is included in the monthly. The monthly does not include ad spend, which you invest directly. The Dext Management System is included at each plan's level, and is also available separately, by module.","O valor na mesa":"The value on the table","Separado, isso seria cinco contratos.":"Bought separately, this would be five contracts.","Site institucional":"Company website","Sistema de gestão":"Management system","R$ 2.500 a 8.000":"R$ 2,500 to 8,000","R$ 3.000 a 6.000":"R$ 3,000 to 6,000","R$ 150 a 1.500/mês":"R$ 150 to 1,500/month","Assessor de marketing":"Marketing consultant","R$ 1.500 a 2.000/mês":"R$ 1,500 to 2,000/month","Direção de gestão":"Management direction","R$ 2.500 a 10.000":"R$ 2,500 to 10,000","A Dext junta tudo":"Dext brings it all","numa casa só.":"under one roof.","O valor já está na entrega. Por isso a Dext não precisa dar desconto.":"The value is already in the delivery. That is why Dext does not need to discount.","Por onde começa":"Where it starts","O Diagnóstico de Mercado.":"The Market Diagnostic.","Antes de qualquer proposta, um raio-x gratuito de como o seu restaurante se posiciona no mercado hoje, e do que está ficando na mesa.":"Before any proposal, a free x-ray of how your restaurant is positioned in the market today, and what is being left on the table.","Diagnóstico":"Diagnostic","Público-alvo, concorrência, presença local e divulgação. Sem custo.":"Target audience, competition, local presence and visibility. At no cost.","Estratégia":"Strategy","O que priorizar, em que ordem e por quê.":"What to prioritize, in what order and why.","Execução assistida":"Assisted execution","O sistema e a estrutura rodando, ao seu lado.":"The system and the structure running, alongside you.","Comece agora":"Start now","Vamos começar pelo seu Diagnóstico de Mercado. Sem custo, sem compromisso.":"Let's start with your Market Diagnostic. No cost, no commitment.","Pedir pelo WhatsApp":"Ask on WhatsApp","Preencher o formulário":"Fill in the form","Dext Sistema de Gestão · a ferramenta":"Dext Management System · the tool","A maior parte dos restaurantes se vira com um sistema para o salão, uma planilha para o dinheiro, um caderno para o estoque e um grupo de mensagens para as tarefas. Cada um sabe um pedaço, nenhum sabe o todo, e a pessoa no meio junta tudo à mão, todo dia.":"Most restaurants get by with a system for the floor, a spreadsheet for the money, a notebook for inventory and a group chat for tasks. Each one knows a piece, none knows the whole, and the person in the middle stitches it together by hand, every day.","O Dext Sistema de Gestão é um só. As reservas, a equipe, o dinheiro e a operação vivem no mesmo lugar e falam uns com os outros. É assim que ele responde perguntas que dependem de várias áreas ao mesmo tempo.":"The Dext Management System is one system. Reservations, staff, money and operations live in the same place and talk to each other. That is how it answers questions that depend on several areas at once.","Quero testar o sistema":"I want to try the system","A informação atravessa as paredes":"Information crosses the walls","O que acontece quando está tudo ligado.":"What happens when everything is connected.","Ponto":"Time clock","O ponto calcula o custo de pessoal.":"The time clock calculates labor cost.","As horas que a equipe bateu viram custo, e esse custo entra no indicador que diz se o restaurante fecha o mês no positivo. Ninguém digita nada duas vezes.":"The hours the team clocked become cost, and that cost feeds the indicator that says whether the restaurant closes the month in the black. Nobody types anything twice.","Venda":"Sale","Estoque":"Inventory","A venda baixa o estoque pela ficha técnica.":"The sale draws down inventory through the recipe card.","Vendeu uma pizza, saíram 252 g de massa, 90 g de molho e 100 g de queijo. No fim do mês o sistema compara o que devia ter saído com o que a contagem encontrou, e a diferença é o dinheiro que se perdeu sem ninguém ver.":"Sell a pizza and 252 g of dough, 90 g of sauce and 100 g of cheese go out. At month end the system compares what should have left with what the count found, and the difference is the money lost without anyone seeing it.","Fecho de caixa":"Till close","O fecho de caixa vira lançamento sozinho.":"The till close posts itself.","O que se contou no fim do turno chega ao financeiro sem ser redigitado. E se o dinheiro não bate, o sistema diz de quanto é a diferença antes de fechar o dia.":"What was counted at the end of the shift reaches finance without being retyped. And if the cash does not match, the system tells you the size of the gap before the day is closed.","Compras":"Purchasing","Resultado":"Results","A fatura do fornecedor vira custo e vira resultado.":"The supplier invoice becomes cost and lands in the result.","Uma compra dividida entre comida e limpeza cai nas categorias certas sozinha, e no fim do mês a DRE fecha sem ninguém montar.":"A purchase split between food and cleaning lands in the right categories on its own, and at month end the P&L closes without anyone assembling it.","Tudo":"Everything","Relatório":"Report","E o relatório do mês sai pronto.":"And the monthly report comes out finished.","Faturamento, ticket médio, CMV, despesas comparadas com o mês anterior e a posição de cada conta. Em PDF, com a marca do restaurante.":"Revenue, average check, COGS, expenses compared with the previous month and the position of every account. In PDF, with the restaurant's brand.","Controle de acesso":"Access control","Tudo ligado. Cada um vê só o que pode.":"Everything connected. Each person sees only what they should.","Estar no mesmo sistema não quer dizer que todos veem tudo. Você define o acesso de cada pessoa, por perfil ou individual: quem entra em cada área, quem só consulta e quem pode editar.":"Being in the same system does not mean everyone sees everything. You define each person's access, by role or individually: who enters each area, who can only view and who can edit.","Garçom":"Server","Abre reservas e mesas. Não vê o financeiro.":"Opens reservations and tables. Does not see finance.","Gerente":"Manager","Enxerga a operação e a equipe do turno.":"Sees the operation and the shift's team.","Dono":"Owner","Acompanha o dinheiro e os números do mês.":"Follows the money and the month's numbers.","Os dados circulam entre as áreas.":"The data moves between areas.","O acesso, não.":"The access does not.","As áreas da operação":"The areas of the operation","Quatro áreas, um sistema. Pode começar por uma e crescer, mas é com tudo ligado que o ponto fala com o financeiro e a venda fala com o estoque.":"Four areas, one system. You can start with one and grow, but it is with everything connected that the time clock talks to finance and the sale talks to inventory.","Cadastro, reservas e fidelidade. O cliente vira base: histórico, recorrência e relacionamento.":"Records, reservations and loyalty. The guest becomes a database: history, repeat visits and relationship.","Equipe, ponto e escalas. Quem trabalha, quando e quanto, sem planilha paralela.":"Staff, time clock and schedules. Who works, when and how much, with no side spreadsheet.","CMV, DRE, contas, perdas e análises. O número que separa lucro de movimento.":"COGS, P&L, bills, losses and analysis. The number that separates profit from footfall.","Produtos, fornecedores, compras, inventário e fichas técnicas. A operação rastreável.":"Products, suppliers, purchasing, inventory and recipe cards. The operation made traceable.","Gestor de tarefas":"Task manager","As tarefas que nascem do que está acontecendo.":"Tasks born from what is actually happening.","O Dext acompanha o que está acontecendo dentro do restaurante e transforma em tarefa, com dono e prazo, antes de virar problema. Ele sabe que um produto cruzou o ponto de pedido, que o caixa fechou ontem sem lançar as perdas, que aquele desvio de estoque já se repete há três semanas ou que um equipamento passou da data da manutenção. Sabe também quem trabalha em cada dia: se você atribuir catorze tarefas a alguém que hoje faz quatro horas, ele avisa antes de gravar.":"Dext follows what is happening inside the restaurant and turns it into a task, with an owner and a deadline, before it becomes a problem. It knows a product crossed its reorder point, that yesterday's till closed without logging losses, that an inventory variance has been repeating for three weeks, or that a piece of equipment is past its service date. It also knows who works on each day: assign fourteen tasks to someone on a four-hour shift and it warns you before saving.","Como se contrata":"How you sign up","Tudo ligado":"Everything connected","Um sistema só, onde cada área sabe o que se passa na outra.":"One system, where each area knows what is going on in the others.","Com a sua marca":"With your brand","White-label: o sistema tem a cara do seu restaurante, não a nossa.":"White-label: the system wears your restaurant's face, not ours.","Começa pequeno":"Starts small","Ative uma área e cresça. O sistema acompanha o restaurante.":"Switch on one area and grow. The system keeps pace with the restaurant.","Evolui sempre":"Always evolving","Módulos novos entram sem custo adicional. A ferramenta melhora, o preço não muda.":"New modules arrive at no extra cost. The tool improves, the price does not change.","Sem amarras":"No strings","Nada de fidelização forçada. Você fica porque faz diferença, não porque assinou.":"No forced lock-in. You stay because it makes a difference, not because you signed.","Primeiro mês grátis":"First month free","Primeiro mês grátis, sem taxa de implantação.":"First month free, no setup fee.","Contratando":"Take","só o sistema":"the system on its own",", o primeiro mês é por nossa conta. Você testa na operação real antes de pagar a primeira mensalidade — sem taxa de implantação e sem fidelização.":", and the first month is on us. You try it in the real operation before paying a single monthly fee — no setup fee, no lock-in.","É online: comece a usar hoje.":"It is online: start using it today.","Quanto custa":"What it costs","O sistema completo é o produto. As áreas avulsas são a porta de entrada.":"The complete system is the product. The individual areas are the way in.","A operação inteira,":"The whole operation,","ligada":"connected","As quatro áreas avulsas somam R$ 1.066/mês. Juntas, num sistema só, R$ 690.":"The four areas bought separately add up to R$ 1,066/month. Together, in one system, R$ 690.","R$ 159/mês":"R$ 159/month","R$ 189/mês":"R$ 189/month","R$ 369/mês":"R$ 369/month","R$ 349/mês":"R$ 349/month","Falar com a gente":"Talk to us","Vamos conversar sobre o seu restaurante.":"Let's talk about your restaurant.","Preencha e a gente retorna, ou fale direto pelo WhatsApp. O primeiro passo é o Diagnóstico de Mercado, sem custo e sem compromisso.":"Fill this in and we will get back to you, or talk to us directly on WhatsApp. The first step is the Market Diagnostic, at no cost and with no commitment.","Seu nome *":"Your name *","Restaurante / empresa *":"Restaurant / company *","E-mail *":"Email *","WhatsApp / telefone *":"WhatsApp / phone *","Cidade / estado":"City / state","Interesse":"Interest","Diagnóstico de Mercado":"Market Diagnostic","Um dos planos":"One of the plans","Só o sistema (1º mês grátis)":"The system only (1st month free)","Outro":"Other","Mensagem":"Message","Enviar":"Send","E-mail":"Email","comercial@dextdigital.com.br":"comercial@dextdigital.com.br","WhatsApp":"WhatsApp","Site":"Website","dextdigital.com.br":"dextdigital.com.br","app.dextdigital.com.br":"app.dextdigital.com.br","Instagram":"Instagram","@dextdigital":"@dextdigital","Atendimento":"Hours","Segunda a sexta, 9h às 18h":"Monday to Friday, 9am to 6pm","Endereço":"Address","Rua Bom Pastor, 529, sala 03 · Ipiranga · São Paulo/SP · CEP 04203-050":"Rua Bom Pastor, 529, suite 03 · Ipiranga · São Paulo/SP · Brazil · 04203-050","CNPJ":"Company ID","Dext Estratégias Digitais LTDA · 60.477.038/0001-81":"Dext Estratégias Digitais LTDA · 60.477.038/0001-81","Tecnologia e gestão para restaurantes. Uma casa só, do visível ao operacional.":"Technology and management for restaurants. One house, from the visible to the operational.","Navegação":"Navigation","Dext Estratégias Digitais LTDA · CNPJ 60.477.038/0001-81":"Dext Estratégias Digitais LTDA · Company ID 60.477.038/0001-81","Feito pela Dext, como tudo o que entregamos.":"Built by Dext, like everything we deliver.","Fale com a gente":"Talk to us","(11) 94085-2805":"+55 11 94085-2805","30 dias grátis":"30 days free","O sistema que mostra":"The system that shows you","o que o seu restaurante não está vendo":"what your restaurant isn't seeing","Reservas, equipe, dinheiro e estoque num lugar só, falando uns com os outros. Em um mês rodando, você enxerga o custo real do prato, para onde some a margem e o que a planilha nunca te contou. Comece hoje e use 30 dias por nossa conta.":"Reservations, staff, money and inventory in one place, talking to each other. After a month of running it you see the real plate cost, where the margin goes, and what the spreadsheet never told you. Start today and use 30 days on us.","Começar os 30 dias grátis":"Start your 30 free days","Ver como funciona":"See how it works","sem compromisso":"no commitment","Sem taxa":"No setup","de implantação":"fee","Testado":"Proven","Comece pelo sistema":"Start with the system","Use 30 dias. Depois você decide.":"Use it for 30 days. Then you decide.","O sistema é contratado direto, sem reunião e sem proposta. Você entra, configura o seu restaurante e roda um mês inteiro antes de pagar a primeira mensalidade.":"The system is signed up for directly — no meeting, no proposal. You come in, set up your restaurant and run a full month before paying the first monthly fee.","Você cria a conta":"You create the account","Cadastro com o cartão na entrada, para a cobrança seguir sozinha depois. Nada é cobrado agora.":"Sign up with your card up front, so billing runs on its own later. Nothing is charged now.","Roda 30 dias":"Run it for 30 days","O sistema inteiro liberado, com a sua marca. Tempo suficiente para fechar um mês e ver os números de verdade.":"The whole system unlocked, with your brand on it. Enough time to close a month and see the real numbers.","Avisamos antes de cobrar":"We warn you before charging","Um e-mail":"An email","3 dias antes":"3 days before","da primeira cobrança. Se não fizer sentido, você cancela sem falar com ninguém.":"the first charge. If it doesn't make sense, you cancel without talking to anyone.","Sistema completo,":"Complete system,","com tudo ligado":"everything connected","Clientes, Pessoas, Financeiro e Operacional. Sem taxa de implantação, sem fidelização.":"Guests, People, Finance and Operations. No setup fee, no lock-in.","depois dos 30 dias":"after the 30 days","Prefere ver antes?":"Rather look first?","Conheça o sistema por dentro":"See the system from the inside","Depois do primeiro mês":"After the first month","O sistema mostra o problema.":"The system shows the problem.","A gente ajuda a resolver.":"We help you solve it.","Quem roda o sistema por um mês costuma sair com a mesma frase: “não sabia que era assim”. O custo do prato, a margem que some, a escala que não fecha. A partir daí não é mais ferramenta que falta, é método — e aí entram marca, site, processos e gestão. Isso não se vende por botão: a gente conversa, entende o seu caso e monta o escopo.":"People who run the system for a month tend to come out with the same sentence: “I had no idea it was like this.” The plate cost, the margin that disappears, the schedule that never balances. From there it is no longer a tool that is missing, it is method — and that is where brand, website, processes and management come in. That does not sell by a button: we talk, we understand your case and we build the scope.","Dext · Tecnologia e Gestão para restaurantes":"Dext · Technology and management for restaurants","Dext Sistema de Gestão · Tecnologia e Gestão para restaurantes":"Dext Management System · Technology and management for restaurants","Contato · Dext Tecnologia e Gestão para restaurantes":"Contact · Dext Technology and management for restaurants","Conte um pouco sobre o seu restaurante e o que procura.":"Tell us a little about your restaurant and what you are looking for.","Menu":"Menu","Dext Sistema de Gestão aberto no navegador":"Dext Management System open in the browser","Dext Sistema de Gestão no celular":"Dext Management System on a phone","Fellipe Franchin, fundador da Dext, na cozinha":"Fellipe Franchin, founder of Dext, in the kitchen","Falar no WhatsApp":"Talk on WhatsApp","Enviando...":"Sending...","Recebido! A gente retorna em breve pelo e-mail ou WhatsApp.":"Got it! We will get back to you shortly by email or WhatsApp.","Não consegui enviar agora. Fale direto pelo <a href=\"https://wa.me/5511940852805\" target=\"_blank\" rel=\"noopener\">WhatsApp</a> ou <a href=\"mailto:comercial@dextdigital.com.br\">comercial@dextdigital.com.br</a>.":"Could not send just now. Reach us directly on <a href=\"https://wa.me/5511940852805\" target=\"_blank\" rel=\"noopener\">WhatsApp</a> or at <a href=\"mailto:comercial@dextdigital.com.br\">comercial@dextdigital.com.br</a>.","Idioma / Language":"Idioma / Language","O sistema de gestão que mostra o que o seu restaurante não está vendo: custo do prato, margem, estoque e equipe num lugar só. Use 30 dias grátis.":"The management system that shows what your restaurant isn't seeing: plate cost, margin, inventory and staff in one place. Use it free for 30 days.","O sistema que mostra o que o seu restaurante não está vendo. Use 30 dias grátis, sem taxa de implantação.":"The system that shows what your restaurant isn't seeing. Use it free for 30 days, no setup fee.","O sistema que mostra o que o seu restaurante não está vendo. 30 dias grátis.":"The system that shows what your restaurant isn't seeing. 30 days free.","pt_BR":"en_US"};
+const WA_EN={"Olá! Quero o Diagnóstico de Mercado gratuito do meu restaurante.":"Hello! I'd like the free Market Diagnostic for my restaurant.","Olá! Tenho interesse no Dext Sistema de Gestão.":"Hello! I'm interested in the Dext Management System."};
+let IDIOMA='pt';
+const ORIGINAIS=new Map();          // nó/elemento -> conteúdo original
+const ATRIBUTOS=['placeholder','aria-label','alt','title'];
+
+function t(s){ return IDIOMA==='en' ? (DIC_EN[s]||s) : s; }
+
+function nosDeTexto(){
+ const w=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT,{acceptNode(n){
+   const p=n.parentNode; if(!p) return NodeFilter.FILTER_REJECT;
+   if(p.nodeName==='SCRIPT'||p.nodeName==='STYLE') return NodeFilter.FILTER_REJECT;
+   /* os rótulos PT/EN do próprio seletor não se traduzem */
+   if(p.closest && p.closest('.lang')) return NodeFilter.FILTER_REJECT;
+   return n.nodeValue.trim() ? NodeFilter.FILTER_ACCEPT : NodeFilter.FILTER_REJECT;
+ }});
+ const r=[]; let n; while((n=w.nextNode())) r.push(n); return r;
+}
+
+function aplicarIdioma(lang){
+ IDIOMA = (lang==='en') ? 'en' : 'pt';
+ const en = IDIOMA==='en';
+ const faltando=[];
+
+ /* texto */
+ nosDeTexto().forEach(n=>{
+   if(!ORIGINAIS.has(n)) ORIGINAIS.set(n,n.nodeValue);
+   const orig=ORIGINAIS.get(n), chave=orig.trim();
+   if(!en){ n.nodeValue=orig; return; }
+   const tr=DIC_EN[chave];
+   if(tr===undefined){ if(/[A-Za-zÀ-ÿ]{2}/.test(chave)) faltando.push(chave); return; }
+   n.nodeValue=orig.replace(chave,()=>tr);   /* função evita que $ na tradução vire padrão */
+ });
+
+ /* original guardado no próprio elemento: chave única por elemento */
+ const guardar=(el,nome,valor)=>{
+   if(!el._i18n) el._i18n={};
+   if(!(nome in el._i18n)) el._i18n[nome]=valor;
+   return el._i18n[nome];
+ };
+
+ /* atributos */
+ document.querySelectorAll('['+ATRIBUTOS.join('],[')+']').forEach(el=>{
+   ATRIBUTOS.forEach(a=>{
+     const v=el.getAttribute(a); if(v===null) return;
+     const orig=guardar(el,a,v);
+     el.setAttribute(a, en ? (DIC_EN[orig]||orig) : orig);
+   });
+ });
+
+ /* metas sociais e descrição */
+ document.querySelectorAll('meta[name="description"],meta[property^="og:"],meta[name^="twitter:"]').forEach(m=>{
+   const v=m.getAttribute('content'); if(!v) return;
+   const orig=guardar(m,'content',v);
+   m.setAttribute('content', en ? (DIC_EN[orig]||orig) : orig);
+ });
+
+ /* links de WhatsApp: traduz a mensagem já preenchida */
+ document.querySelectorAll('a[href*="wa.me"]').forEach(a=>{
+   const orig=guardar(a,'href',a.getAttribute('href'));
+   if(!en){ a.setAttribute('href',orig); return; }
+   a.setAttribute('href', orig.replace(/text=([^&]*)/, (m,p)=>{
+     const pt=decodeURIComponent(p); const tr=WA_EN[pt];
+     return tr ? 'text='+encodeURIComponent(tr) : m;
+   }));
+ });
+
+ /* título de cada aba (TITULOS vem do script principal) */
+ if(typeof TITULOS==='object'){
+   if(!ORIGINAIS.has('TITULOS')) ORIGINAIS.set('TITULOS',Object.assign({},TITULOS));
+   const base=ORIGINAIS.get('TITULOS');
+   Object.keys(base).forEach(k=>{ TITULOS[k]= en ? (DIC_EN[base[k]]||base[k]) : base[k]; });
+   const atual=(location.hash||'').replace(/^#/,'')||'home';
+   document.title=TITULOS[atual]||TITULOS.home;
+ }
+
+ document.documentElement.lang = en ? 'en' : 'pt-BR';
+ document.querySelectorAll('.lang-b').forEach(b=>b.classList.toggle('on', b.dataset.lang===IDIOMA));
+ try{ localStorage.setItem('dext_lang', IDIOMA); }catch(_){}
+ if(en && faltando.length) console.warn('[dext] sem tradução ('+faltando.length+'):', faltando);
+}
+
+(function(){
+ let inicial='pt';
+ try{
+   const url=new URLSearchParams(location.search).get('lang');
+   inicial = url || localStorage.getItem('dext_lang') ||
+             ((navigator.language||'').toLowerCase().startsWith('pt') ? 'pt' : 'pt');
+ }catch(_){}
+ const liga=()=>{
+   document.querySelectorAll('.lang-b').forEach(b=>{
+     b.addEventListener('click',()=>aplicarIdioma(b.dataset.lang));
+   });
+   aplicarIdioma(inicial);
+ };
+ if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',liga);
+ else liga();
+})();
 </script>
 </body></html>
