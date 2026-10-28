@@ -1,0 +1,363 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Raio-X · Dext</title>
+<meta name="robots" content="noindex">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Satoshi';src:url('../assets/fonts/Satoshi-Variable.woff2') format('woff2');font-weight:300 900;font-display:swap}
+:root{--preto:#111111;--preto-2:#161616;--card:#1b1b1b;--borda:#262626;--cinza:#dddddd;--cinza-mid:#9a9a9a;--cinza-dark:#555;--vermelho:#e81840;--claro:#f5f5f4;--branco:#ffffff}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Montserrat',sans-serif;background:var(--preto);color:var(--cinza);line-height:1.7;font-size:16px}
+h1,h2,h3,h4{font-family:'Satoshi',sans-serif;line-height:1.14;font-weight:700;letter-spacing:-.015em}
+a{color:inherit}
+.topo{border-bottom:1px solid var(--borda);padding:18px 0}
+.wrap{max-width:1240px;margin:0 auto;padding:0 28px}
+.topo .wrap{display:flex;align-items:center;justify-content:space-between;gap:20px}
+.marca{display:flex;align-items:center;gap:14px}
+.marca img{height:26px;display:block}
+.selo{font-family:'Satoshi',sans-serif;font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--vermelho)}
+
+.palco{display:grid;grid-template-columns:1fr 1fr;gap:34px;align-items:start;padding:34px 0 80px}
+@media(max-width:980px){.palco{grid-template-columns:1fr;gap:0}}
+
+/* ---------- conversa ---------- */
+.conversa{display:flex;flex-direction:column;gap:16px;min-height:60vh}
+.linha{max-width:92%}
+.linha.dele{align-self:flex-end}
+.balao{background:var(--card);border:1px solid var(--borda);border-radius:10px;padding:16px 20px;font-size:15.5px;line-height:1.65}
+.linha.dele .balao{background:rgba(232,24,64,.12);border-color:#3a2029;color:#fff}
+.quem{font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--cinza-dark);margin-bottom:7px}
+
+.campo{margin-top:6px}
+.campo-linha{display:flex;gap:10px;flex-wrap:wrap}
+.campo input{flex:1;min-width:190px;background:var(--preto-2);border:1px solid var(--borda);border-radius:8px;padding:15px 17px;color:#fff;font-family:inherit;font-size:16px}
+.campo input:focus{outline:none;border-color:var(--vermelho)}
+.opcoes{display:flex;gap:9px;flex-wrap:wrap}
+.op{background:var(--preto-2);border:1px solid var(--borda);border-radius:30px;padding:11px 19px;color:var(--cinza);font-family:inherit;font-size:14px;cursor:pointer;transition:.2s}
+.op:hover{border-color:var(--vermelho);color:#fff}
+.btn{display:inline-block;padding:15px 30px;font-size:12.5px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;border-radius:3px;cursor:pointer;border:1.5px solid transparent;font-family:inherit;transition:.25s}
+.btn-red{background:var(--vermelho);color:#fff}
+.btn-red:hover{filter:brightness(1.1)}
+.btn-fan{background:none;border-color:var(--borda);color:var(--cinza)}
+.btn-fan:hover{border-color:var(--cinza-mid);color:#fff}
+.naosei{background:none;border:0;color:var(--cinza-dark);font-family:inherit;font-size:13.5px;cursor:pointer;text-decoration:underline;padding:6px 0}
+.naosei:hover{color:var(--vermelho)}
+
+/* ---------- painel ---------- */
+.painel{position:sticky;top:24px;background:var(--preto-2);border:1px solid var(--borda);border-radius:14px;padding:30px 30px 34px}
+@media(max-width:980px){.painel{position:static;margin-top:30px}}
+.painel h2{font-size:20px;color:#fff;margin-bottom:4px}
+.painel .sub{font-size:13px;color:var(--cinza-dark);margin-bottom:22px}
+.bloco{border-top:1px solid var(--borda);padding-top:20px;margin-top:22px}
+.bloco:first-of-type{border-top:0;padding-top:0;margin-top:0}
+.bloco h3{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--vermelho);margin-bottom:16px}
+.num{display:flex;justify-content:space-between;align-items:baseline;gap:16px;padding:12px 0;border-bottom:1px solid #202020}
+.num:last-child{border-bottom:0}
+.num .rot{font-size:14px;color:var(--cinza-mid)}
+.num .val{font-family:'Satoshi',sans-serif;font-weight:800;font-size:21px;color:#fff;white-space:nowrap}
+.num .val.alerta{color:var(--vermelho)}
+.premissa{font-size:11.5px;line-height:1.5;color:var(--cinza-dark);margin-top:-6px;padding-bottom:10px;border-bottom:1px solid #202020}
+.tag{display:inline-block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;padding:3px 8px;border-radius:20px;margin-left:8px;vertical-align:middle}
+.tag.aprox{background:#2a2410;color:#d9b65a}
+.tag.incompleto{background:#2a1a10;color:#d98f5a}
+.tag.cenario{background:#1a2430;color:#7fb0d9}
+.vazio{font-size:13.5px;color:var(--cinza-dark);font-style:italic}
+
+.lacuna{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #202020;font-size:14px}
+.lacuna:last-child{border-bottom:0}
+.lacuna .x{color:var(--vermelho);flex-shrink:0;font-weight:700}
+.lacuna .area{display:block;font-size:11.5px;color:var(--cinza-dark);margin-top:2px}
+
+.slider{margin-top:6px}
+.slider label{display:flex;justify-content:space-between;font-size:13px;color:var(--cinza-mid);margin-bottom:9px}
+.slider label b{color:#fff;font-family:'Satoshi',sans-serif}
+input[type=range]{width:100%;accent-color:var(--vermelho);cursor:pointer}
+.aviso{font-size:12px;line-height:1.6;color:var(--cinza-dark);background:var(--card);border-left:2px solid var(--vermelho);padding:11px 14px;border-radius:0 6px 6px 0;margin-top:16px}
+
+.fecho{margin-top:26px;display:flex;gap:11px;flex-wrap:wrap}
+.rodape{border-top:1px solid var(--borda);padding:22px 0;font-size:12px;color:var(--cinza-dark)}
+</style>
+</head>
+<body>
+
+<header class="topo">
+ <div class="wrap">
+  <a class="marca" href="../index.html">
+   <img src="../assets/img/logo-escuro.svg" alt="Dext">
+   <span class="selo">Raio-X</span>
+  </a>
+  <button class="btn btn-fan" id="exemplo" type="button">Ver com números de exemplo</button>
+ </div>
+</header>
+
+<main class="wrap palco">
+ <section class="conversa" id="conversa" aria-live="polite"></section>
+
+ <aside class="painel" id="painel">
+  <h2>Os seus números</h2>
+  <p class="sub">Cada conta aparece com a premissa que a gerou.</p>
+  <div id="resultado"></div>
+ </aside>
+</main>
+
+<footer class="rodape">
+ <div class="wrap">Os cálculos usam apenas o que você informa. Nada é enviado ou guardado nesta versão.</div>
+</footer>
+
+<script src="motor.js"></script>
+<script>
+/* ===== Raio-X · fluxo de perguntas =====
+   Esta versão conduz a conversa por um roteiro fixo. O agente de IA entra
+   no lugar deste roteiro depois, fazendo as mesmas perguntas em ordem
+   adaptada à dor escolhida. O painel não muda: ele já lê do motor. */
+
+const dinheiro = n => n.toLocaleString('pt-BR', {style:'currency', currency:'BRL', maximumFractionDigits:0});
+const porcento = n => (n*100).toLocaleString('pt-BR', {maximumFractionDigits:1}) + '%';
+
+/** Aceita 1200, 1.200, 1.200,50 e "12 mil". */
+function lerNumero(txt){
+  if(!txt) return null;
+  let s = String(txt).toLowerCase().trim().replace(/r\$/g,'').trim();
+  const mil = /\bmil\b/.test(s);
+  s = s.replace(/\bmil\b/g,'').replace(/\s/g,'');
+  s = s.replace(/\.(?=\d{3}\b)/g,'').replace(',','.');
+  const n = parseFloat(s);
+  if(!isFinite(n)) return null;
+  return mil ? n*1000 : n;
+}
+
+const PERGUNTAS = [
+ {id:'dor', texto:'Antes de ver os números: o que mais te incomoda hoje na casa?',
+  tipo:'opcoes', opcoes:['CMV','Estoque','Desperdício','Margem','Compras','Equipe'], semNaoSei:true},
+ {id:'faturamento', texto:'Quanto a casa fatura por mês? Pode ser aproximado.', tipo:'numero', dica:'ex.: 120 mil'},
+ {id:'compras', texto:'E quanto você comprou de insumo no último mês?', tipo:'numero', dica:'ex.: 40 mil'},
+ {id:'temContagem', texto:'Você faz contagem de estoque no fim do mês?',
+  tipo:'opcoes', opcoes:['Faço','Não faço'], semNaoSei:true},
+ {id:'estoqueInicial', texto:'Quanto tinha de estoque no começo do mês?', tipo:'numero',
+  so:(r)=>r.temContagem==='Faço'},
+ {id:'estoqueFinal', texto:'E no fim do mês?', tipo:'numero', so:(r)=>r.temContagem==='Faço'},
+ {id:'cmvDeclarado', texto:'Sem olhar conta nenhuma: quanto você acha que é o seu CMV, em porcentagem?',
+  tipo:'percentual', dica:'ex.: 30'},
+ {id:'precoPrato', texto:'Pensa no prato que mais sai. Por quanto você vende?', tipo:'numero', dica:'ex.: 48'},
+ {id:'custoPrato', texto:'E quanto ele custa de insumo, pela ficha técnica?', tipo:'numero', dica:'ex.: 15'},
+ {id:'contagemBate', texto:'Quando você confere o estoque, bate com o que deveria ter saído pelas vendas?',
+  tipo:'opcoes', opcoes:['Bate','Às vezes','Nunca bate','Não confiro'], semNaoSei:true},
+ {id:'pessoal', texto:'Quanto custa a equipe por mês, já com encargos?', tipo:'numero', dica:'ex.: 36 mil'},
+ {id:'fixas', texto:'E as despesas fixas: aluguel, energia, internet, contador. Quanto dá por mês?',
+  tipo:'numero', dica:'ex.: 24 mil'},
+ {id:'variaveisPct', texto:'Última: de cada R$ 100 que entram, quanto vai embora em imposto, taxa de cartão e comissão de delivery?',
+  tipo:'percentual', dica:'ex.: 12'},
+];
+
+const estado = {respostas:{}, i:0, perda:0.04, concluiu:false};
+const elConversa = document.getElementById('conversa');
+const elResultado = document.getElementById('resultado');
+
+function proximaPergunta(){
+  while(estado.i < PERGUNTAS.length){
+    const p = PERGUNTAS[estado.i];
+    if(p.so && !p.so(estado.respostas)){ estado.i++; continue; }
+    return p;
+  }
+  return null;
+}
+
+function falar(texto, deQuem){
+  const l = document.createElement('div');
+  l.className = 'linha' + (deQuem==='dono' ? ' dele' : '');
+  l.innerHTML = '<div class="quem">'+(deQuem==='dono'?'Você':'Raio-X')+'</div><div class="balao">'+texto+'</div>';
+  elConversa.appendChild(l);
+  return l;
+}
+
+function responder(valor, rotulo){
+  const p = PERGUNTAS[estado.i];
+  estado.respostas[p.id] = valor;
+  if(caixa) caixa.remove();
+  falar(rotulo, 'dono');
+  estado.i++;
+  pintarPainel();
+  setTimeout(perguntar, 180);
+}
+
+let caixa = null;
+function perguntar(){
+  const p = proximaPergunta();
+  if(!p){ concluir(); return; }
+  falar(p.texto);
+
+  caixa = document.createElement('div');
+  caixa.className = 'linha';
+  const campo = document.createElement('div');
+  campo.className = 'campo';
+
+  if(p.tipo === 'opcoes'){
+    const ops = document.createElement('div');
+    ops.className = 'opcoes';
+    p.opcoes.forEach(o=>{
+      const b = document.createElement('button');
+      b.className='op'; b.type='button'; b.textContent=o;
+      b.onclick = ()=>responder(o, o);
+      ops.appendChild(b);
+    });
+    campo.appendChild(ops);
+  } else {
+    const linha = document.createElement('div');
+    linha.className='campo-linha';
+    const inp = document.createElement('input');
+    inp.type='text'; inp.inputMode='decimal';
+    inp.placeholder = p.dica || (p.tipo==='percentual' ? 'ex.: 12' : '');
+    const ok = document.createElement('button');
+    ok.className='btn btn-red'; ok.type='button'; ok.textContent='Responder';
+    const enviar = ()=>{
+      const n = lerNumero(inp.value);
+      if(n===null){ inp.focus(); return; }
+      const v = p.tipo==='percentual' ? n/100 : n;
+      responder(v, p.tipo==='percentual' ? porcento(v) : dinheiro(n));
+    };
+    ok.onclick = enviar;
+    inp.onkeydown = e => { if(e.key==='Enter') enviar(); };
+    linha.appendChild(inp); linha.appendChild(ok);
+    campo.appendChild(linha);
+    setTimeout(()=>inp.focus(), 50);
+  }
+
+  if(!p.semNaoSei){
+    const ns = document.createElement('button');
+    ns.className='naosei'; ns.type='button'; ns.textContent='Não sei esse número';
+    ns.onclick = ()=>responder(null, 'Não sei');
+    campo.appendChild(ns);
+  }
+
+  caixa.appendChild(campo);
+  elConversa.appendChild(caixa);
+  caixa.scrollIntoView({behavior:'smooth', block:'nearest'});
+}
+
+function concluir(){
+  estado.concluiu = true;
+  falar('É isso. O painel ao lado tem os seus números, o que cada um pressupõe e o que a casa ainda não consegue enxergar.');
+  const l = document.createElement('div');
+  l.className='linha';
+  l.innerHTML = '<div class="fecho">'
+    + '<a class="btn btn-red" href="../index.html#contato">Começar os 30 dias grátis</a>'
+    + '<a class="btn btn-fan" href="https://wa.me/5511940852805" target="_blank" rel="noopener">Falar com a gente</a></div>';
+  elConversa.appendChild(l);
+  pintarPainel();
+}
+
+/* ---------- painel ---------- */
+
+function medida(rot, m, alerta){
+  if(!m || m.valor===null || m.valor===undefined) return '';
+  const tag = m.exatidao==='aproximado' ? '<span class="tag aprox">aproximado</span>'
+            : m.exatidao==='incompleto' ? '<span class="tag incompleto">sem impostos</span>'
+            : m.exatidao==='cenário'    ? '<span class="tag cenario">cenário</span>' : '';
+  return '<div class="num"><span class="rot">'+rot+tag+'</span>'
+       + '<span class="val'+(alerta?' alerta':'')+'">'+m.texto+'</span></div>'
+       + '<div class="premissa">'+m.premissa+'</div>';
+}
+const comTexto = (m, fmt) => m && m.valor!==null && m.valor!==undefined ? Object.assign({}, m, {texto:fmt(m.valor)}) : null;
+
+function pintarPainel(){
+  const r = estado.respostas;
+  const d = MotorRaioX.diagnostico({
+    faturamento:r.faturamento, compras:r.compras,
+    estoqueInicial:r.estoqueInicial, estoqueFinal:r.estoqueFinal,
+    cmvDeclarado:r.cmvDeclarado, precoPrato:r.precoPrato, custoPrato:r.custoPrato,
+    variaveisPct:r.variaveisPct, pessoal:r.pessoal, fixas:r.fixas,
+    contagemBate: r.contagemBate==='Nunca bate' ? 'nunca' : r.contagemBate==='Não confiro' ? 'nao_faco' : 'ok',
+  });
+
+  let h = '';
+
+  /* 1 · o que os números dizem */
+  let bloco1 = '';
+  if(d.cmv && d.cmv.percentual) bloco1 += medida('CMV do mês', comTexto(d.cmv.percentual, porcento));
+  if(d.diferencaCMV && Math.abs(d.diferencaCMV.valor) >= 0.01){
+    const dif = d.diferencaCMV.valor;
+    bloco1 += '<div class="num"><span class="rot">Contra o que você achava</span><span class="val alerta">'
+            + (dif>0?'+':'') + porcento(dif) + '</span></div>'
+            + '<div class="premissa">'+d.diferencaCMV.premissa+'</div>';
+  }
+  if(d.valorDoPonto && d.valorDoPonto.mes) bloco1 += medida('Vale 1 ponto de CMV', comTexto(d.valorDoPonto.mes, dinheiro));
+  if(d.pessoal && d.pessoal.percentual) bloco1 += medida('Custo de pessoal', comTexto(d.pessoal.percentual, porcento));
+  if(d.prato && d.prato.reais) bloco1 += medida('Sobra no prato que mais sai', comTexto(d.prato.reais, dinheiro));
+  if(d.resultado && d.resultado.reais) bloco1 += medida('Resultado do mês', comTexto(d.resultado.reais, dinheiro), d.resultado.reais.valor < 0);
+  if(d.equilibrio && d.equilibrio.impossivel){
+    bloco1 += '<div class="num"><span class="rot">Ponto de equilíbrio</span><span class="val alerta">não fecha</span></div>'
+            + '<div class="premissa">'+d.equilibrio.premissa+'</div>';
+  } else if(d.equilibrio && d.equilibrio.reais){
+    bloco1 += medida('Precisa vender para empatar', comTexto(d.equilibrio.reais, dinheiro));
+  }
+  h += '<div class="bloco"><h3>O que os seus números dizem</h3>'
+     + (bloco1 || '<p class="vazio">Responda ao lado e os números aparecem aqui.</p>') + '</div>';
+
+  /* 2 · onde o dinheiro pode estar saindo */
+  if(typeof r.compras === 'number'){
+    const c = MotorRaioX.cenarioPerda({compras:r.compras, percentual:estado.perda});
+    h += '<div class="bloco"><h3>Onde o dinheiro pode estar saindo</h3>'
+      + '<div class="slider"><label><span>Diferença entre o que devia sair e o que saiu</span><b>'
+      + porcento(estado.perda) + '</b></label>'
+      + '<input type="range" id="perda" min="0" max="0.10" step="0.005" value="'+estado.perda+'"></div>'
+      + medida('Por mês', comTexto(c.mes, dinheiro), true)
+      + medida('Em doze meses', comTexto(c.ano, dinheiro), true)
+      + '<div class="aviso">Isto é um cenário sobre as suas compras, não um diagnóstico. '
+      + 'Só a contagem contra a ficha técnica diz o número real.</div></div>';
+  }
+
+  /* 3 · o que ainda não dá para ver */
+  if(d.lacunas && d.lacunas.length){
+    h += '<div class="bloco"><h3>O que você ainda não consegue ver</h3>'
+      + d.lacunas.map(l=>'<div class="lacuna"><span class="x">✕</span><span>'+l.falta
+        + '<span class="area">Responde isso: '+l.area+'</span></span></div>').join('')
+      + '</div>';
+  }
+
+  /* o deslizante dos variáveis, quando ele não soube */
+  if(estado.respostas.variaveisPct === null && typeof r.faturamento === 'number'){
+    h += '<div class="bloco"><h3>Impostos e taxas</h3>'
+      + '<div class="aviso">Você não soube esse número, então os valores acima estão <b>antes</b> de imposto, '
+      + 'cartão e comissão. Arraste para ver o efeito.</div>'
+      + '<div class="slider" style="margin-top:14px"><label><span>De cada R$ 100 que entram</span><b>'
+      + porcento(estado.variaveis || 0) + '</b></label>'
+      + '<input type="range" id="varpct" min="0" max="0.30" step="0.005" value="'+(estado.variaveis||0)+'"></div></div>';
+  }
+
+  elResultado.innerHTML = h;
+
+  const sp = document.getElementById('perda');
+  if(sp) sp.oninput = e => { estado.perda = parseFloat(e.target.value); pintarPainel(); };
+  const sv = document.getElementById('varpct');
+  if(sv) sv.oninput = e => {
+    estado.variaveis = parseFloat(e.target.value);
+    estado.respostas.variaveisPct = estado.variaveis > 0 ? estado.variaveis : null;
+    const guardar = estado.respostas.variaveisPct;
+    pintarPainel();
+    estado.respostas.variaveisPct = guardar === null ? null : guardar;
+  };
+}
+
+/* ---------- casa de exemplo, para demonstrar e testar ---------- */
+document.getElementById('exemplo').onclick = () => {
+  estado.respostas = {dor:'CMV', faturamento:120000, compras:40000, temContagem:'Faço',
+    estoqueInicial:15000, estoqueFinal:16600, cmvDeclarado:0.25, precoPrato:48, custoPrato:15,
+    contagemBate:'Às vezes', pessoal:36000, fixas:24000, variaveisPct:0.125};
+  estado.i = PERGUNTAS.length;
+  elConversa.innerHTML = '';
+  falar('Estes são números de uma casa de exemplo, não de um restaurante real. Servem para você ver como o painel se comporta.');
+  concluir();
+};
+
+falar('Oi. Vou te fazer algumas perguntas sobre a sua casa e, a cada resposta, o painel ao lado se preenche. '
+    + 'Pode responder por alto, e <b>“não sei” também é resposta</b>: é justamente o que a gente quer achar.');
+perguntar();
+pintarPainel();
+</script>
+</body>
+</html>
