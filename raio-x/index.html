@@ -241,12 +241,13 @@ function perguntar(){
 
 function concluir(){
   estado.concluiu = true;
-  falar('É isso. O painel ao lado tem os seus números, o que cada um pressupõe e o que a casa ainda não consegue enxergar.');
+  falar('É isso. O painel ao lado tem os seus números, o que cada um pressupõe e o que a casa ainda não consegue enxergar. '
+      + 'Se fizer sentido, a gente senta 30 minutos para olhar isso junto. Sem apresentação, só os seus números.');
   const l = document.createElement('div');
   l.className='linha';
   l.innerHTML = '<div class="fecho">'
-    + '<a class="btn btn-red" href="../index.html#contato">Começar os 30 dias grátis</a>'
-    + '<a class="btn btn-fan" href="https://wa.me/5511940852805" target="_blank" rel="noopener">Falar com a gente</a></div>';
+    + '<a class="btn btn-red" href="../index.html#contato">Marcar 30 minutos</a>'
+    + '<a class="btn btn-fan" href="https://wa.me/5511940852805" target="_blank" rel="noopener">Falar no WhatsApp</a></div>';
   elConversa.appendChild(l);
   pintarPainel();
 }
