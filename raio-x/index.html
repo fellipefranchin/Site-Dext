@@ -66,6 +66,10 @@ a{color:inherit}
 .tag.aprox{background:#2a2410;color:#d9b65a}
 .tag.incompleto{background:#2a1a10;color:#d98f5a}
 .tag.cenario{background:#1a2430;color:#7fb0d9}
+.tag.folgado{background:#12241a;color:#6ec08d}
+.tag.normal{background:#1e1e1e;color:#9a9a9a}
+.tag.apertado{background:#2c1416;color:#e2707a}
+.leitura{font-size:11.5px;line-height:1.5;color:var(--cinza-mid);margin-top:-4px;padding-bottom:4px}
 .vazio{font-size:13.5px;color:var(--cinza-dark);font-style:italic}
 
 .lacuna{display:flex;gap:12px;padding:11px 0;border-bottom:1px solid #202020;font-size:14px}
@@ -139,6 +143,10 @@ const PERGUNTAS = [
  {id:'dor', texto:'Antes dos números: o que mais te incomoda hoje na casa?',
   tipo:'opcoes', opcoes:['Vende bem e não sobra','Some coisa do estoque','Joga muita comida fora',
                          'Não sei o custo dos pratos','As compras','A equipe'], semNaoSei:true},
+ {id:'tipoCasa', texto:'E que tipo de casa é a sua? Pergunto porque o número saudável de uma pizzaria não é o mesmo de um bistrô.',
+  tipo:'opcoes', semNaoSei:true,
+  opcoes:['Bistrô ou à la carte','Pizzaria','Hamburgueria','Bar e petiscos',
+          'Self-service ou por quilo','Cafeteria ou padaria','Japonês','Só delivery','Outro']},
  {id:'faturamento', texto:'Quanto a casa vende por mês, somando tudo? Pode ser por alto.',
   tipo:'numero', dica:'ex.: 120 mil'},
  {id:'compras', texto:'No último mês, quanto você gastou comprando mercadoria? Comida, bebida e descartáveis.',
@@ -278,9 +286,23 @@ function medida(rot, m, alerta){
 }
 const comTexto = (m, fmt) => m && m.valor!==null && m.valor!==undefined ? Object.assign({}, m, {texto:fmt(m.valor)}) : null;
 
+/* Diz se o número está folgado, normal ou apertado para o tipo de casa.
+   Sem faixa cadastrada para aquele tipo, não diz nada: é melhor do que chutar. */
+const PALAVRA = {folgado:'Folgado', normal:'Normal', apertado:'Apertado'};
+function leituraHTML(l){
+  if(!l) return '';
+  const faixa = 'o normal para ' + l.tipoCasa.toLowerCase() + ' fica entre '
+              + porcento(l.min) + ' e ' + porcento(l.max);
+  const frase = l.nivel==='normal' ? 'Está dentro do normal para a sua casa: ' + faixa
+              : l.nivel==='folgado' ? 'Está melhor do que o normal: ' + faixa
+              : 'Está fora do normal: ' + faixa;
+  return '<div class="leitura"><span class="tag '+l.nivel+'">'+PALAVRA[l.nivel]+'</span> '+frase+'</div>';
+}
+
 function pintarPainel(){
   const r = estado.respostas;
   const d = MotorRaioX.diagnostico({
+    tipoCasa:r.tipoCasa,
     faturamento:r.faturamento, compras:r.compras,
     estoqueInicial:r.estoqueInicial, estoqueFinal:r.estoqueFinal,
     cmvDeclarado:r.cmvDeclarado, precoPrato:r.precoPrato, custoPrato:r.custoPrato,
@@ -292,7 +314,8 @@ function pintarPainel(){
 
   /* 1 · o que os números dizem */
   let bloco1 = '';
-  if(d.cmv && d.cmv.percentual) bloco1 += medida('Quanto a comida come do que você vende (CMV)', comTexto(d.cmv.percentual, porcento));
+  const L = d.leituras || {};
+  if(d.cmv && d.cmv.percentual) bloco1 += medida('Quanto a comida come do que você vende (CMV)', comTexto(d.cmv.percentual, porcento)) + leituraHTML(L.cmv);
   if(d.diferencaCMV && Math.abs(d.diferencaCMV.valor) >= 0.01){
     const dif = d.diferencaCMV.valor;
     bloco1 += '<div class="num"><span class="rot">Contra o que você achava</span><span class="val alerta">'
@@ -300,9 +323,9 @@ function pintarPainel(){
             + '<div class="premissa">'+d.diferencaCMV.premissa+'</div>';
   }
   if(d.valorDoPonto && d.valorDoPonto.mes) bloco1 += medida('Cada 1% de CMV que você cortar vale', comTexto(d.valorDoPonto.mes, dinheiro));
-  if(d.pessoal && d.pessoal.percentual) bloco1 += medida('Quanto a equipe come do que você vende', comTexto(d.pessoal.percentual, porcento));
+  if(d.pessoal && d.pessoal.percentual) bloco1 += medida('Quanto a equipe come do que você vende', comTexto(d.pessoal.percentual, porcento)) + leituraHTML(L.pessoal);
   if(d.prato && d.prato.reais) bloco1 += medida('Sobra no prato que mais sai', comTexto(d.prato.reais, dinheiro));
-  if(d.resultado && d.resultado.reais) bloco1 += medida('Sobrou no fim do mês', comTexto(d.resultado.reais, dinheiro), d.resultado.reais.valor < 0);
+  if(d.resultado && d.resultado.reais) bloco1 += medida('Sobrou no fim do mês', comTexto(d.resultado.reais, dinheiro), d.resultado.reais.valor < 0) + leituraHTML(L.resultado);
   if(d.equilibrio && d.equilibrio.impossivel){
     bloco1 += '<div class="num"><span class="rot">Para empatar</span><span class="val alerta">não fecha em nenhum volume</span></div>'
             + '<div class="premissa">'+d.equilibrio.premissa+'</div>';
@@ -362,7 +385,8 @@ document.getElementById('exemplo').onclick = () => {
   /* apaga o percurso de quem já começou, então pergunta antes */
   if(estado.i > 0 && !estado.concluiu
      && !confirm('Isso troca as suas respostas pelas de uma casa de exemplo. O que você já respondeu se perde. Continuar?')) return;
-  estado.respostas = {dor:'Vende bem e não sobra', faturamento:120000, compras:40000, temContagem:'Conto',
+  estado.respostas = {dor:'Vende bem e não sobra', tipoCasa:'Bistrô ou à la carte',
+    faturamento:120000, compras:40000, temContagem:'Conto',
     estoqueInicial:15000, estoqueFinal:16600, cmvDeclarado:0.25, precoPrato:48, custoPrato:15,
     contagemBate:'Às vezes', pessoal:36000, fixas:24000, variaveisPct:0.125};
   estado.i = PERGUNTAS.length;

@@ -33,6 +33,41 @@
     return { valor: null, falta: oQueFalta, area: areaDoSistema };
   }
 
+  /* ---------- faixas de referência por tipo de casa ----------
+   *
+   * Servem só para dizer se o número está folgado, normal ou apertado.
+   * O número em si nunca sai daqui: quem calcula são as funções abaixo.
+   *
+   * Cada faixa é [mínimo, máximo] do que se considera normal para aquele
+   * tipo de casa. Tipo sem faixa preenchida não recebe leitura nenhuma, e
+   * o painel mostra o número sozinho. Isso é de propósito: número sem
+   * leitura é incompleto, mas leitura chutada é pior, porque o dono
+   * acredita nela. Preencher só com referência da Dext.
+   */
+  const FAIXAS = {
+    // 'Pizzaria': { cmv: [0.26, 0.32], pessoal: [0.22, 0.30], resultado: [0.08, 0.15] },
+  };
+
+  /* Em CMV e pessoal, menor é melhor. No resultado, maior. */
+  const MENOR_EH_MELHOR = { cmv: true, pessoal: true, resultado: false };
+
+  /**
+   * Compara um indicador com a faixa do tipo de casa.
+   * Devolve null quando não há faixa, e o painel então omite a leitura.
+   */
+  function leitura(tipoCasa, indicador, valor) {
+    const doTipo = FAIXAS[tipoCasa];
+    const faixa = doTipo && doTipo[indicador];
+    if (!faixa || !ehNumero(valor)) return null;
+
+    const [min, max] = faixa;
+    if (valor >= min && valor <= max) return { nivel: 'normal', min, max, tipoCasa };
+
+    const acimaDaFaixa = valor > max;
+    const ehBom = MENOR_EH_MELHOR[indicador] ? !acimaDaFaixa : acimaDaFaixa;
+    return { nivel: ehBom ? 'folgado' : 'apertado', min, max, tipoCasa };
+  }
+
   /* ---------- CMV ---------- */
 
   /**
@@ -209,6 +244,15 @@
       lacunas: [],
     };
 
+    /* leitura de cada indicador contra a faixa do tipo de casa */
+    out.leituras = {
+      cmv: temCMV ? leitura(d.tipoCasa, 'cmv', oCMV.percentual.valor) : null,
+      pessoal: out.pessoal && out.pessoal.percentual
+        ? leitura(d.tipoCasa, 'pessoal', out.pessoal.percentual.valor) : null,
+      resultado: out.resultado && out.resultado.percentual
+        ? leitura(d.tipoCasa, 'resultado', out.resultado.percentual.valor) : null,
+    };
+
     /* o que ficou sem resposta, já ligado à área do sistema que responde */
     const lacuna = (cond, falta, area) => { if (cond) out.lacunas.push({ falta, area }); };
     lacuna(!oCMV.temContagem, 'o quanto a comida come de verdade, que só a contagem de estoque mostra', 'Operacional e Financeiro');
@@ -230,6 +274,7 @@
   const Motor = {
     cmv, valorDoPonto, custoPessoal, margemDoPrato,
     resultadoDoMes, pontoDeEquilibrio, cenarioPerda, diagnostico,
+    leitura, FAIXAS,
   };
 
   if (typeof module === 'object' && module.exports) module.exports = Motor;

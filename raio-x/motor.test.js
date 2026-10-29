@@ -116,5 +116,32 @@ console.log('diagnóstico completo');
   t('sem pessoal não inventa resultado', vago.resultado.valor, null);
 }
 
+console.log('leitura por tipo de casa');
+{
+  /* a tabela real fica vazia até a Dext preencher, então o teste monta a sua */
+  M.FAIXAS['Casa de teste'] = { cmv:[0.28, 0.34], pessoal:[0.25, 0.32], resultado:[0.08, 0.15] };
+
+  t('dentro da faixa é normal', M.leitura('Casa de teste','cmv',0.30).nivel, 'normal');
+  t('nos limites ainda é normal', M.leitura('Casa de teste','cmv',0.34).nivel, 'normal');
+  t('CMV abaixo da faixa é folgado', M.leitura('Casa de teste','cmv',0.22).nivel, 'folgado');
+  t('CMV acima da faixa é apertado', M.leitura('Casa de teste','cmv',0.41).nivel, 'apertado');
+  t('no resultado a direção inverte', M.leitura('Casa de teste','resultado',0.20).nivel, 'folgado');
+  t('resultado abaixo da faixa aperta', M.leitura('Casa de teste','resultado',0.03).nivel, 'apertado');
+  t('a leitura devolve a faixa junto', M.leitura('Casa de teste','cmv',0.30).max, 0.34);
+
+  /* o que mais importa: sem faixa, nenhuma leitura, nunca um chute */
+  t('tipo sem faixa não recebe leitura', M.leitura('Pizzaria','cmv',0.30), null);
+  t('tipo não informado não recebe leitura', M.leitura(undefined,'cmv',0.30), null);
+  t('valor ausente não recebe leitura', M.leitura('Casa de teste','cmv',null), null);
+
+  const d = M.diagnostico(Object.assign({}, casa, {tipoCasa:'Casa de teste'}));
+  t('o diagnóstico traz a leitura do CMV', d.leituras.cmv.nivel, 'normal');
+  t('e a do pessoal (30%, dentro de 25 a 32)', d.leituras.pessoal.nivel, 'normal');
+  t('e a do resultado (5,5%, abaixo de 8)', d.leituras.resultado.nivel, 'apertado');
+  t('casa sem tipo sai sem leitura', M.diagnostico(casa).leituras.cmv, null);
+
+  delete M.FAIXAS['Casa de teste'];
+}
+
 console.log(`\n${ok} passaram, ${falhou} falharam`);
 process.exit(falhou ? 1 : 0);
