@@ -131,23 +131,36 @@ function lerNumero(txt){
   return mil ? n*1000 : n;
 }
 
+/* Regra de escrita destas perguntas, e depois do prompt do agente:
+   nenhum termo de gestão entra sem ser explicado na própria frase.
+   Define pelo exemplo, nunca pelo nome. Quem fala com o dono é o salão,
+   não a contabilidade. */
 const PERGUNTAS = [
- {id:'dor', texto:'Antes de ver os números: o que mais te incomoda hoje na casa?',
-  tipo:'opcoes', opcoes:['CMV','Estoque','Desperdício','Margem','Compras','Equipe'], semNaoSei:true},
- {id:'faturamento', texto:'Quanto a casa fatura por mês? Pode ser aproximado.', tipo:'numero', dica:'ex.: 120 mil'},
- {id:'compras', texto:'E quanto você comprou de insumo no último mês?', tipo:'numero', dica:'ex.: 40 mil'},
- {id:'temContagem', texto:'Você faz contagem de estoque no fim do mês?',
-  tipo:'opcoes', opcoes:['Faço','Não faço'], semNaoSei:true},
- {id:'estoqueInicial', texto:'Quanto tinha de estoque no começo do mês?', tipo:'numero',
-  so:(r)=>r.temContagem==='Faço'},
- {id:'estoqueFinal', texto:'E no fim do mês?', tipo:'numero', so:(r)=>r.temContagem==='Faço'},
- {id:'cmvDeclarado', texto:'Sem olhar conta nenhuma: quanto você acha que é o seu CMV, em porcentagem?',
+ {id:'dor', texto:'Antes dos números: o que mais te incomoda hoje na casa?',
+  tipo:'opcoes', opcoes:['Vende bem e não sobra','Some coisa do estoque','Joga muita comida fora',
+                         'Não sei o custo dos pratos','As compras','A equipe'], semNaoSei:true},
+ {id:'faturamento', texto:'Quanto a casa vende por mês, somando tudo? Pode ser por alto.',
+  tipo:'numero', dica:'ex.: 120 mil'},
+ {id:'compras', texto:'No último mês, quanto você gastou comprando mercadoria? Comida, bebida e descartáveis.',
+  tipo:'numero', dica:'ex.: 40 mil'},
+ {id:'temContagem', texto:'No fim do mês, você conta o que sobrou na despensa e na geladeira?',
+  tipo:'opcoes', opcoes:['Conto','Não conto'], semNaoSei:true},
+ {id:'estoqueInicial', texto:'Quanto você tinha de mercadoria parada, em reais, no começo do mês?',
+  tipo:'numero', dica:'ex.: 15 mil', so:(r)=>r.temContagem==='Conto'},
+ {id:'estoqueFinal', texto:'E no fim do mês, quanto sobrou parado?', tipo:'numero', dica:'ex.: 16 mil',
+  so:(r)=>r.temContagem==='Conto'},
+ {id:'cmvDeclarado', texto:'Agora um chute, sem olhar conta nenhuma. De cada R$ 100 que o cliente paga, '
+   + 'quanto você diria que vai embora só em comida e bebida? Esse número tem nome, CMV, e daqui a pouco a gente confere o seu.',
   tipo:'percentual', dica:'ex.: 30'},
- {id:'precoPrato', texto:'Pensa no prato que mais sai. Por quanto você vende?', tipo:'numero', dica:'ex.: 48'},
- {id:'custoPrato', texto:'E quanto ele custa de insumo, pela ficha técnica?', tipo:'numero', dica:'ex.: 15'},
- {id:'contagemBate', texto:'Quando você confere o estoque, bate com o que deveria ter saído pelas vendas?',
+ {id:'precoPrato', texto:'Pensa no prato que mais sai da sua cozinha. Por quanto você vende?',
+  tipo:'numero', dica:'ex.: 48'},
+ {id:'custoPrato', texto:'E somando tudo que vai nesse prato, proteína, acompanhamento, molho e tempero: '
+   + 'quanto custa para montar um?', tipo:'numero', dica:'ex.: 15'},
+ {id:'contagemBate', texto:'Pelas vendas dá para saber mais ou menos quanto tinha que ter saído da geladeira no mês. '
+   + 'Quando você confere o estoque, o que você encontra bate com isso?',
   tipo:'opcoes', opcoes:['Bate','Às vezes','Nunca bate','Não confiro'], semNaoSei:true},
- {id:'pessoal', texto:'Quanto custa a equipe por mês, já com encargos?', tipo:'numero', dica:'ex.: 36 mil'},
+ {id:'pessoal', texto:'Quanto custa a equipe por mês, somando salário, encargos, vale e extras?',
+  tipo:'numero', dica:'ex.: 36 mil'},
  {id:'fixas', texto:'E as despesas fixas: aluguel, energia, internet, contador. Quanto dá por mês?',
   tipo:'numero', dica:'ex.: 24 mil'},
  {id:'variaveisPct', texto:'Última: de cada R$ 100 que entram, quanto vai embora em imposto, taxa de cartão e comissão de delivery?',
@@ -279,19 +292,19 @@ function pintarPainel(){
 
   /* 1 · o que os números dizem */
   let bloco1 = '';
-  if(d.cmv && d.cmv.percentual) bloco1 += medida('CMV do mês', comTexto(d.cmv.percentual, porcento));
+  if(d.cmv && d.cmv.percentual) bloco1 += medida('Quanto a comida come do que você vende (CMV)', comTexto(d.cmv.percentual, porcento));
   if(d.diferencaCMV && Math.abs(d.diferencaCMV.valor) >= 0.01){
     const dif = d.diferencaCMV.valor;
     bloco1 += '<div class="num"><span class="rot">Contra o que você achava</span><span class="val alerta">'
             + (dif>0?'+':'') + porcento(dif) + '</span></div>'
             + '<div class="premissa">'+d.diferencaCMV.premissa+'</div>';
   }
-  if(d.valorDoPonto && d.valorDoPonto.mes) bloco1 += medida('Vale 1 ponto de CMV', comTexto(d.valorDoPonto.mes, dinheiro));
-  if(d.pessoal && d.pessoal.percentual) bloco1 += medida('Custo de pessoal', comTexto(d.pessoal.percentual, porcento));
+  if(d.valorDoPonto && d.valorDoPonto.mes) bloco1 += medida('Cada 1% de CMV que você cortar vale', comTexto(d.valorDoPonto.mes, dinheiro));
+  if(d.pessoal && d.pessoal.percentual) bloco1 += medida('Quanto a equipe come do que você vende', comTexto(d.pessoal.percentual, porcento));
   if(d.prato && d.prato.reais) bloco1 += medida('Sobra no prato que mais sai', comTexto(d.prato.reais, dinheiro));
-  if(d.resultado && d.resultado.reais) bloco1 += medida('Resultado do mês', comTexto(d.resultado.reais, dinheiro), d.resultado.reais.valor < 0);
+  if(d.resultado && d.resultado.reais) bloco1 += medida('Sobrou no fim do mês', comTexto(d.resultado.reais, dinheiro), d.resultado.reais.valor < 0);
   if(d.equilibrio && d.equilibrio.impossivel){
-    bloco1 += '<div class="num"><span class="rot">Ponto de equilíbrio</span><span class="val alerta">não fecha</span></div>'
+    bloco1 += '<div class="num"><span class="rot">Para empatar</span><span class="val alerta">não fecha em nenhum volume</span></div>'
             + '<div class="premissa">'+d.equilibrio.premissa+'</div>';
   } else if(d.equilibrio && d.equilibrio.reais){
     bloco1 += medida('Precisa vender para empatar', comTexto(d.equilibrio.reais, dinheiro));
@@ -303,13 +316,13 @@ function pintarPainel(){
   if(typeof r.compras === 'number'){
     const c = MotorRaioX.cenarioPerda({compras:r.compras, percentual:estado.perda});
     h += '<div class="bloco"><h3>Onde o dinheiro pode estar saindo</h3>'
-      + '<div class="slider"><label><span>Diferença entre o que devia sair e o que saiu</span><b>'
+      + '<div class="slider"><label><span>De cada R$ 100 em compras, quanto some sem virar venda</span><b>'
       + porcento(estado.perda) + '</b></label>'
       + '<input type="range" id="perda" min="0" max="0.10" step="0.005" value="'+estado.perda+'"></div>'
       + medida('Por mês', comTexto(c.mes, dinheiro), true)
       + medida('Em doze meses', comTexto(c.ano, dinheiro), true)
       + '<div class="aviso">Isto é um cenário sobre as suas compras, não um diagnóstico. '
-      + 'Só a contagem contra a ficha técnica diz o número real.</div></div>';
+      + 'Só contando o estoque e comparando com o que foi vendido dá para saber o número real.</div></div>';
   }
 
   /* 3 · o que ainda não dá para ver */
@@ -346,7 +359,10 @@ function pintarPainel(){
 
 /* ---------- casa de exemplo, para demonstrar e testar ---------- */
 document.getElementById('exemplo').onclick = () => {
-  estado.respostas = {dor:'CMV', faturamento:120000, compras:40000, temContagem:'Faço',
+  /* apaga o percurso de quem já começou, então pergunta antes */
+  if(estado.i > 0 && !estado.concluiu
+     && !confirm('Isso troca as suas respostas pelas de uma casa de exemplo. O que você já respondeu se perde. Continuar?')) return;
+  estado.respostas = {dor:'Vende bem e não sobra', faturamento:120000, compras:40000, temContagem:'Conto',
     estoqueInicial:15000, estoqueFinal:16600, cmvDeclarado:0.25, precoPrato:48, custoPrato:15,
     contagemBate:'Às vezes', pessoal:36000, fixas:24000, variaveisPct:0.125};
   estado.i = PERGUNTAS.length;

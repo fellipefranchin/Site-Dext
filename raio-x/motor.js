@@ -41,8 +41,8 @@
    * aproximação, porque confundem o que foi comprado com o que foi consumido.
    */
   function cmv({ faturamento, compras, estoqueInicial, estoqueFinal }) {
-    if (!positivo(faturamento)) return naoSei('faturamento do mês', 'Financeiro');
-    if (!ehNumero(compras)) return naoSei('compras de insumo do mês', 'Operacional');
+    if (!positivo(faturamento)) return naoSei('quanto a casa vende por mês', 'Financeiro');
+    if (!ehNumero(compras)) return naoSei('quanto você gastou comprando mercadoria no mês', 'Operacional');
 
     const temContagem = ehNumero(estoqueInicial) && ehNumero(estoqueFinal);
     const valor = temContagem ? estoqueInicial + compras - estoqueFinal : compras;
@@ -51,31 +51,31 @@
     return {
       reais: medida(valor,
         temContagem
-          ? 'estoque inicial + compras − estoque final'
-          : 'só as compras do mês, sem contagem de estoque',
+          ? 'o que você já tinha guardado, mais o que comprou, menos o que sobrou'
+          : 'contado só pelas compras do mês, porque não houve contagem de estoque',
         temContagem ? 'exato' : 'aproximado'),
-      percentual: medida(pct, 'sobre o faturamento do mês', temContagem ? 'exato' : 'aproximado'),
+      percentual: medida(pct, 'em cima de tudo que a casa vendeu no mês', temContagem ? 'exato' : 'aproximado'),
       temContagem,
     };
   }
 
   /** Quanto vale um ponto percentual de CMV na casa dele. */
   function valorDoPonto(faturamento) {
-    if (!positivo(faturamento)) return naoSei('faturamento do mês', 'Financeiro');
+    if (!positivo(faturamento)) return naoSei('quanto a casa vende por mês', 'Financeiro');
     return {
-      mes: medida(faturamento * 0.01, '1% do faturamento do mês'),
-      ano: medida(faturamento * 0.12, '1% do faturamento, em doze meses'),
+      mes: medida(faturamento * 0.01, 'é quanto vale 1% do que a casa vende por mês'),
+      ano: medida(faturamento * 0.12, 'o mesmo 1%, somado ao longo de doze meses'),
     };
   }
 
   /* ---------- pessoal ---------- */
 
   function custoPessoal({ faturamento, pessoal }) {
-    if (!positivo(faturamento)) return naoSei('faturamento do mês', 'Financeiro');
-    if (!ehNumero(pessoal)) return naoSei('custo da equipe com encargos', 'Pessoas');
+    if (!positivo(faturamento)) return naoSei('quanto a casa vende por mês', 'Financeiro');
+    if (!ehNumero(pessoal)) return naoSei('quanto a equipe custa, com encargos', 'Pessoas');
     return {
-      reais: medida(pessoal, 'folha do mês, com encargos'),
-      percentual: medida(pessoal / faturamento, 'sobre o faturamento do mês'),
+      reais: medida(pessoal, 'o que a equipe custou no mês, com encargos'),
+      percentual: medida(pessoal / faturamento, 'em cima de tudo que a casa vendeu no mês'),
     };
   }
 
@@ -87,8 +87,8 @@
    * imposto, cartão e comissão, que incidem sobre o preço.
    */
   function margemDoPrato({ preco, custo, variaveisPct }) {
-    if (!positivo(preco)) return naoSei('preço do prato que mais vende', 'Operacional');
-    if (!ehNumero(custo)) return naoSei('custo do prato pela ficha técnica', 'Operacional');
+    if (!positivo(preco)) return naoSei('por quanto você vende o prato que mais sai', 'Operacional');
+    if (!ehNumero(custo)) return naoSei('quanto custa para montar esse prato', 'Operacional');
 
     const temVariaveis = ehNumero(variaveisPct);
     const custoVenda = temVariaveis ? preco * variaveisPct : 0;
@@ -97,12 +97,12 @@
     return {
       reais: medida(contribuicao,
         temVariaveis
-          ? 'preço − custo do insumo − impostos e taxas sobre a venda'
-          : 'preço − custo do insumo, antes de impostos e taxas',
+          ? 'o preço, menos o que vai dentro do prato, menos imposto e taxas da venda'
+          : 'o preço menos o que vai dentro do prato, ainda sem imposto e taxas',
         temVariaveis ? 'exato' : 'incompleto'),
-      percentual: medida(contribuicao / preco, 'sobre o preço de venda',
+      percentual: medida(contribuicao / preco, 'em cima do preço que o cliente paga',
         temVariaveis ? 'exato' : 'incompleto'),
-      cmvDoPrato: medida(custo / preco, 'custo do insumo sobre o preço'),
+      cmvDoPrato: medida(custo / preco, 'o que vai dentro do prato, em cima do preço'),
       incluiVariaveis: temVariaveis,
     };
   }
@@ -110,10 +110,10 @@
   /* ---------- resultado e equilíbrio ---------- */
 
   function resultadoDoMes({ faturamento, cmvReais, variaveisPct, pessoal, fixas }) {
-    if (!positivo(faturamento)) return naoSei('faturamento do mês', 'Financeiro');
-    if (!ehNumero(cmvReais)) return naoSei('CMV do mês', 'Operacional');
-    if (!ehNumero(pessoal)) return naoSei('custo da equipe', 'Pessoas');
-    if (!ehNumero(fixas)) return naoSei('despesas fixas do mês', 'Financeiro');
+    if (!positivo(faturamento)) return naoSei('quanto a casa vende por mês', 'Financeiro');
+    if (!ehNumero(cmvReais)) return naoSei('quanto a comida come do que você vende', 'Operacional');
+    if (!ehNumero(pessoal)) return naoSei('quanto a equipe custa por mês', 'Pessoas');
+    if (!ehNumero(fixas)) return naoSei('quanto pesam as contas fixas do mês', 'Financeiro');
 
     const temVariaveis = ehNumero(variaveisPct);
     const custoVenda = temVariaveis ? faturamento * variaveisPct : 0;
@@ -122,10 +122,10 @@
     return {
       reais: medida(valor,
         temVariaveis
-          ? 'faturamento − CMV − impostos e taxas − pessoal − fixas'
-          : 'faturamento − CMV − pessoal − fixas, antes de impostos e taxas',
+          ? 'o que entrou, menos a comida, o imposto e as taxas, a equipe e as contas fixas'
+          : 'o que entrou, menos a comida, a equipe e as contas fixas, ainda sem imposto e taxas',
         temVariaveis ? 'exato' : 'incompleto'),
-      percentual: medida(valor / faturamento, 'sobre o faturamento do mês',
+      percentual: medida(valor / faturamento, 'em cima de tudo que a casa vendeu no mês',
         temVariaveis ? 'exato' : 'incompleto'),
       incluiVariaveis: temVariaveis,
     };
@@ -138,9 +138,9 @@
    * está no preço ou no custo, não no movimento.
    */
   function pontoDeEquilibrio({ cmvPct, variaveisPct, pessoal, fixas }) {
-    if (!ehNumero(cmvPct)) return naoSei('CMV do mês', 'Operacional');
-    if (!ehNumero(pessoal)) return naoSei('custo da equipe', 'Pessoas');
-    if (!ehNumero(fixas)) return naoSei('despesas fixas do mês', 'Financeiro');
+    if (!ehNumero(cmvPct)) return naoSei('quanto a comida come do que você vende', 'Operacional');
+    if (!ehNumero(pessoal)) return naoSei('quanto a equipe custa por mês', 'Pessoas');
+    if (!ehNumero(fixas)) return naoSei('quanto pesam as contas fixas do mês', 'Financeiro');
 
     const temVariaveis = ehNumero(variaveisPct);
     const margem = 1 - cmvPct - (temVariaveis ? variaveisPct : 0);
@@ -148,8 +148,8 @@
     if (margem <= 0) {
       return {
         impossivel: true,
-        margemUnitaria: medida(margem, 'o que sobra de cada real vendido'),
-        premissa: 'com esse custo por real vendido, nenhum volume de vendas fecha a conta',
+        margemUnitaria: medida(margem, 'o que sobra de cada real que o cliente paga'),
+        premissa: 'com esse custo em cada real vendido, nenhum movimento fecha a conta: o problema está no preço ou no custo, não na quantidade de clientes',
       };
     }
 
@@ -157,10 +157,10 @@
       impossivel: false,
       reais: medida((fixas + pessoal) / margem,
         temVariaveis
-          ? '(fixas + pessoal) ÷ (1 − CMV% − impostos e taxas%)'
-          : '(fixas + pessoal) ÷ (1 − CMV%), antes de impostos e taxas',
+          ? 'as contas fixas e a equipe, divididas pelo que sobra de cada real vendido'
+          : 'as contas fixas e a equipe, divididas pelo que sobra de cada real vendido, ainda sem imposto e taxas',
         temVariaveis ? 'exato' : 'incompleto'),
-      margemUnitaria: medida(margem, 'o que sobra de cada real vendido'),
+      margemUnitaria: medida(margem, 'o que sobra de cada real que o cliente paga'),
       incluiVariaveis: temVariaveis,
     };
   }
@@ -173,11 +173,11 @@
    * vale em dinheiro sobre as compras dele.
    */
   function cenarioPerda({ compras, percentual }) {
-    if (!ehNumero(compras)) return naoSei('compras de insumo do mês', 'Operacional');
-    if (!ehNumero(percentual)) return naoSei('percentual do cenário', 'Operacional');
+    if (!ehNumero(compras)) return naoSei('quanto você gastou comprando mercadoria no mês', 'Operacional');
+    if (!ehNumero(percentual)) return naoSei('a porcentagem do cenário', 'Operacional');
     return {
-      mes: medida(compras * percentual, 'sobre as compras do mês', 'cenário'),
-      ano: medida(compras * percentual * 12, 'sobre as compras, em doze meses', 'cenário'),
+      mes: medida(compras * percentual, 'em cima do que você comprou no mês', 'cenário'),
+      ano: medida(compras * percentual * 12, 'o mesmo, somado ao longo de doze meses', 'cenário'),
     };
   }
 
@@ -211,18 +211,18 @@
 
     /* o que ficou sem resposta, já ligado à área do sistema que responde */
     const lacuna = (cond, falta, area) => { if (cond) out.lacunas.push({ falta, area }); };
-    lacuna(!oCMV.temContagem, 'CMV real, com contagem de estoque', 'Operacional e Financeiro');
-    lacuna(!ehNumero(d.variaveisPct), 'quanto sai em imposto, cartão e comissão', 'Financeiro');
-    lacuna(!ehNumero(d.custoPrato), 'custo do prato pela ficha técnica', 'Operacional');
-    lacuna(!ehNumero(d.pessoal), 'custo da equipe por turno', 'Pessoas');
-    lacuna(!ehNumero(d.fixas), 'despesas fixas do mês', 'Financeiro');
+    lacuna(!oCMV.temContagem, 'o quanto a comida come de verdade, que só a contagem de estoque mostra', 'Operacional e Financeiro');
+    lacuna(!ehNumero(d.variaveisPct), 'quanto sai de imposto, taxa de cartão e comissão de delivery', 'Financeiro');
+    lacuna(!ehNumero(d.custoPrato), 'quanto custa para montar cada prato', 'Operacional');
+    lacuna(!ehNumero(d.pessoal), 'quanto a equipe custa em cada turno', 'Pessoas');
+    lacuna(!ehNumero(d.fixas), 'quanto pesam as contas fixas do mês', 'Financeiro');
     lacuna(d.contagemBate === 'nunca' || d.contagemBate === 'nao_faco',
-      'se a contagem bate com o que deveria ter saído', 'Operacional');
+      'se o que sobra na geladeira bate com o que foi vendido', 'Operacional');
 
     /* o CMV que ele acha contra o que a conta mostra */
     if (ehNumero(d.cmvDeclarado) && temCMV) {
       out.diferencaCMV = medida(oCMV.percentual.valor - d.cmvDeclarado,
-        'CMV calculado menos o CMV que o dono estimou');
+        'a diferença entre o que a conta mostra e o que você chutou');
     }
     return out;
   }
