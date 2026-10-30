@@ -29,10 +29,13 @@ DirectoryIndex index.html index.htm
   </FilesMatch>
 </IfModule>
 
-# ---- Credenciais do formulário: nunca servir pela web ----
-<Files "contato-config.php">
+# ---- Credenciais: nunca servir pela web ----
+# Por padrão, não por nome de arquivo: a regra antiga citava só o
+# contato-config.php, então qualquer credencial nova nasceria exposta.
+# Mesmo padrão do .gitignore (*config*.php), para os dois andarem juntos.
+<FilesMatch "config.*\.php$">
   Require all denied
-</Files>
+</FilesMatch>
 
 # ---- Cabeçalhos de segurança básicos ----
 <IfModule mod_headers.c>
