@@ -17,6 +17,8 @@
 
 declare(strict_types=1);
 
+require __DIR__ . '/stripe.php';
+
 const SITE    = 'https://dextdigital.com.br';
 const CANCELA = SITE . '/#sistema';
 const TESTE   = 30;     // dias de teste antes da primeira cobrança
@@ -58,17 +60,7 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
   responde(false, ['erro' => 'Método não permitido.'], 405);
 }
 
-/* ---- credenciais e Price IDs, num arquivo à parte ---- */
-function config(): array {
-  static $c = null;
-  if ($c === null) {
-    $arq = __DIR__ . '/stripe-config.php';
-    $c = is_file($arq) ? (array) require $arq : [];
-  }
-  return $c;
-}
-
-$cfg    = config();
+$cfg    = stripeConfig();
 $chave  = (string) ($cfg['secret'] ?? '');
 $precos = (array)  ($cfg['precos'] ?? []);
 
@@ -149,7 +141,7 @@ if (ACEITE_OBRIGATORIO) {
    perder no caminho, a Stripe devolve a mesma sessão em vez de abrir outra. */
 $idem = 'dext-' . hash('sha256', $ip . '|' . $plano . '|' . floor($hoje / 300));
 
-[$status, $corpo, $falha] = postStripe('https://api.stripe.com/v1/checkout/sessions', $campos, $chave, $idem);
+[$status, $corpo, $falha] = stripeChama('POST', '/v1/checkout/sessions', $campos, $chave, $idem);
 
 if ($falha !== '') {
   error_log('[dext] checkout não saiu (' . $plano . '): ' . $falha);
@@ -168,58 +160,3 @@ if ($status !== 200 || empty($resposta['url'])) {
 }
 
 responde(true, ['url' => (string) $resposta['url']]);
-
-/* =========================================================================
-   envio
-   ========================================================================= */
-/* Devolve [status, corpo, falha]. Usa cURL quando existe e cai para stream
-   quando não existe, porque hospedagem compartilhada varia. */
-function postStripe(string $url, array $campos, string $chave, string $idem): array {
-  $corpo = http_build_query($campos, '', '&', PHP_QUERY_RFC3986);
-  /* Sem Stripe-Version de propósito: assim a chamada usa a versão padrão da
-     conta, que é a mesma em que o webhook foi criado. Fixar um número aqui
-     faria o checkout falar uma versão e o aviso de venda chegar em outra, e
-     o dia em que os campos mudassem de forma ninguém ia entender por quê. */
-  $cab   = [
-    'Authorization: Bearer ' . $chave,
-    'Content-Type: application/x-www-form-urlencoded',
-    'Idempotency-Key: ' . $idem,
-  ];
-
-  if (function_exists('curl_init')) {
-    $ch = curl_init($url);
-    curl_setopt_array($ch, [
-      CURLOPT_POST           => true,
-      CURLOPT_POSTFIELDS     => $corpo,
-      CURLOPT_HTTPHEADER     => $cab,
-      CURLOPT_RETURNTRANSFER => true,
-      CURLOPT_TIMEOUT        => 20,
-      CURLOPT_SSL_VERIFYPEER => true,
-      CURLOPT_SSL_VERIFYHOST => 2,
-    ]);
-    $resp = curl_exec($ch);
-    $erro = curl_error($ch);
-    $st   = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    /* sem curl_close() de propósito: no PHP 8.0 ele virou inútil e no 8.5
-       virou um aviso de "depreciado" impresso ANTES do JSON. Com a resposta
-       suja o site não consegue ler o endereço do checkout e acusa falha numa
-       compra que deu certo. O recurso se fecha sozinho. */
-    return $resp === false ? [0, '', $erro ?: 'cURL falhou'] : [$st, (string) $resp, ''];
-  }
-
-  $ctx = stream_context_create(['http' => [
-    'method'        => 'POST',
-    'header'        => implode("\r\n", $cab),
-    'content'       => $corpo,
-    'timeout'       => 20,
-    'ignore_errors' => true,   // sem isto o PHP engole o corpo do 4xx, que é onde a Stripe explica
-  ]]);
-  $resp = @file_get_contents($url, false, $ctx);
-  if ($resp === false) { return [0, '', 'stream falhou']; }
-
-  $st = 0;
-  foreach ($http_response_header ?? [] as $linha) {
-    if (preg_match('#^HTTP/\S+\s+(\d{3})#', $linha, $m)) { $st = (int) $m[1]; }
-  }
-  return [$st, $resp, ''];
-}
