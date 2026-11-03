@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Assinatura confirmada · Dext</title>
+<!-- página de retorno do pagamento: não deve aparecer em busca -->
+<meta name="robots" content="noindex,nofollow">
+<link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BF7BPXKE4Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BF7BPXKE4Z');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--preto:#111111;--card:#1b1b1b;--borda:#262626;--cinza:#dddddd;--cinza-mid:#9a9a9a;--vermelho:#e81840}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--preto);color:var(--cinza);font-family:'Inter',system-ui,sans-serif;font-weight:300;line-height:1.6;
+     min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 20px}
+.cartao{width:100%;max-width:580px;text-align:center}
+.marca{height:34px;margin-bottom:40px}
+.selo{display:inline-block;background:var(--vermelho);color:#fff;font-weight:700;font-size:11px;letter-spacing:.14em;
+      text-transform:uppercase;padding:8px 16px;border-radius:30px;margin-bottom:24px}
+h1{font-size:clamp(28px,5vw,38px);font-weight:700;color:#fff;letter-spacing:-.02em;line-height:1.15}
+.sub{margin-top:18px;font-size:16.5px;color:var(--cinza-mid)}
+.passos{margin-top:36px;text-align:left;background:var(--card);border:1px solid var(--borda);border-radius:10px;padding:26px 28px}
+.passos h2{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--cinza-mid);margin-bottom:18px}
+.passo{display:flex;gap:14px;padding:12px 0;border-bottom:1px solid var(--borda);font-size:15px}
+.passo:last-child{border-bottom:0;padding-bottom:0}
+.passo b{color:var(--vermelho);font-weight:700;flex:none}
+.passo span strong{color:#fff;font-weight:600}
+.botoes{margin-top:34px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.btn{display:inline-block;padding:15px 30px;font-size:13px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;
+     border-radius:3px;text-decoration:none;transition:.3s;border:1.5px solid transparent}
+.btn-red{background:var(--vermelho);color:#fff}
+.btn-red:hover{background:#c91234;transform:translateY(-2px)}
+.btn-ghost{border-color:#555;color:var(--cinza)}
+.btn-ghost:hover{border-color:var(--cinza);transform:translateY(-2px)}
+.rodape{margin-top:34px;font-size:13px;color:#777}
+.rodape a{color:#777}
+</style>
+</head>
+<body>
+<div class="cartao">
+ <img class="marca" src="../assets/img/logo-claro.svg" alt="Dext">
+ <div class="selo">Assinatura confirmada</div>
+ <h1>Pronto. O seu teste de 30 dias começou.</h1>
+ <p class="sub">Você não paga nada hoje. A primeira mensalidade só é cobrada depois dos 30 dias, e dá para cancelar antes disso, sozinho, pelo link que vai no e-mail.</p>
+
+ <div class="passos">
+  <h2>O que acontece agora</h2>
+  <div class="passo"><b>1</b><span>A Stripe já mandou o <strong>comprovante</strong> para o seu e-mail, com o link para cancelar ou trocar o cartão quando quiser.</span></div>
+  <div class="passo"><b>2</b><span>A gente <strong>monta a sua conta no sistema</strong> e manda o acesso em até <strong>1 dia útil</strong>.</span></div>
+  <div class="passo"><b>3</b><span>Com o acesso na mão, a gente <strong>liga para ajudar na configuração</strong> dos primeiros dias, se você quiser.</span></div>
+ </div>
+
+ <div class="botoes">
+  <a class="btn btn-red" href="https://wa.me/5511940852805?text=Ol%C3%A1!%20Acabei%20de%20assinar%20o%20Dext%20Sistema%20de%20Gest%C3%A3o." target="_blank" rel="noopener">Falar no WhatsApp</a>
+  <a class="btn btn-ghost" href="../">Voltar ao site</a>
+ </div>
+
+ <p class="rodape">Qualquer dúvida: <a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a> · (11) 94085-2805</p>
+</div>
+
+<script>
+/* Venda para o Analytics. O plano e o valor vêm na URL porque esta página é
+   estática e não fala com a Stripe: quem monta esse endereço é o
+   stripe-checkout.php, logo depois de criar a sessão.
+   A marca no sessionStorage existe porque recarregar a página contaria a
+   mesma venda de novo e inflaria o relatório. */
+(function(){
+ var q=new URLSearchParams(location.search);
+ var id=q.get('s')||'', plano=q.get('p')||'', valor=Number(q.get('v')||0);
+ if(!id) return;
+ var marca='dext-venda-'+id;
+ try{ if(sessionStorage.getItem(marca)) return; sessionStorage.setItem(marca,'1'); }catch(e){}
+ gtag('event','purchase',{
+  transaction_id:id, currency:'BRL', value:valor,
+  items:[{item_id:plano,item_name:plano,price:valor,quantity:1}]
+ });
+})();
+</script>
+</body>
+</html>

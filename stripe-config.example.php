@@ -21,12 +21,16 @@ return [
   'webhook_secret' => 'whsec_...',
 
   /* A chave da esquerda é o que o site manda; a Price ID da direita é o que
-     vale. O site nunca escolhe preço, só escolhe um nome desta lista. */
+     vale. O site nunca escolhe preço, só escolhe um nome desta lista.
+
+     Estes são os IDs do MODO DE TESTE da conta Dext (acct_1UTggtGpAmzkTzhz).
+     Price ID não é segredo: ele não compra nada sozinho, só funciona com a
+     chave secreta. Na virada para produção, os cinco mudam. */
   'precos' => [
-    'completo'    => 'price_...',   // Completo     R$ 690
-    'clientes'    => 'price_...',   // Clientes     R$ 159
-    'pessoas'     => 'price_...',   // Pessoas      R$ 189
-    'financeiro'  => 'price_...',   // Financeiro   R$ 369
-    'operacional' => 'price_...',   // Operacional  R$ 349
+    'completo'    => 'price_1UXLpEGpAmzkTzhzknVyFwIH',   // Completo     R$ 690
+    'clientes'    => 'price_1UXLpqGpAmzkTzhzSRgfd7rf',   // Clientes     R$ 159
+    'pessoas'     => 'price_1UXLqfGpAmzkTzhzvPZQ4Wpo',   // Pessoas      R$ 189
+    'financeiro'  => 'price_1UXLr8GpAmzkTzhzdDvMVs7X',   // Financeiro   R$ 369
+    'operacional' => 'price_1UXLrZGpAmzkTzhzWdV5NlYK',   // Operacional  R$ 349
   ],
 ];

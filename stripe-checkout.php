@@ -18,11 +18,18 @@
 declare(strict_types=1);
 
 const SITE    = 'https://dextdigital.com.br';
-const SUCESSO = SITE . '/obrigado/?s={CHECKOUT_SESSION_ID}';
 const CANCELA = SITE . '/#sistema';
 const TESTE   = 30;     // dias de teste antes da primeira cobrança
 const LIMITE  = 10;     // aberturas de checkout por IP
 const JANELA  = 3600;   // ...por hora
+
+/* Mensalidade de cada plano, só para o relatório de vendas do Analytics. Não
+   é isto que cobra: quem cobra é o Price ID lá na Stripe. Os dois precisam
+   andar juntos, e é por isso que os valores também estão no site. */
+const VALORES = [
+  'completo' => 690, 'clientes' => 159, 'pessoas' => 189,
+  'financeiro' => 369, 'operacional' => 349,
+];
 
 /* O aceite é obrigatório e este é o texto que aparece ao lado da caixa.
    Os dois links precisam estar no ar antes de ligar isto, senão a Stripe
@@ -113,7 +120,11 @@ $campos = [
   'custom_fields[0][label][custom]'       => 'Nome do restaurante',
   'custom_fields[0][type]'                => 'text',
   'custom_fields[0][text][maximum_length]'=> '100',
-  'success_url'                           => SUCESSO,
+  /* o plano e o valor voltam na URL porque a página de obrigado precisa deles
+     para o evento de venda do Analytics, e ela é estática */
+  'success_url'                           => SITE . '/obrigado/?s={CHECKOUT_SESSION_ID}'
+                                             . '&p=' . rawurlencode($plano)
+                                             . '&v=' . (VALORES[$plano] ?? 0),
   'cancel_url'                            => CANCELA,
   'locale'                                => 'pt-BR',
   /* volta no webhook: diz qual plano foi vendido sem depender de adivinhar
@@ -153,11 +164,14 @@ responde(true, ['url' => (string) $resposta['url']]);
    quando não existe, porque hospedagem compartilhada varia. */
 function postStripe(string $url, array $campos, string $chave, string $idem): array {
   $corpo = http_build_query($campos, '', '&', PHP_QUERY_RFC3986);
+  /* Sem Stripe-Version de propósito: assim a chamada usa a versão padrão da
+     conta, que é a mesma em que o webhook foi criado. Fixar um número aqui
+     faria o checkout falar uma versão e o aviso de venda chegar em outra, e
+     o dia em que os campos mudassem de forma ninguém ia entender por quê. */
   $cab   = [
     'Authorization: Bearer ' . $chave,
     'Content-Type: application/x-www-form-urlencoded',
     'Idempotency-Key: ' . $idem,
-    'Stripe-Version: 2024-06-20',
   ];
 
   if (function_exists('curl_init')) {
@@ -174,7 +188,10 @@ function postStripe(string $url, array $campos, string $chave, string $idem): ar
     $resp = curl_exec($ch);
     $erro = curl_error($ch);
     $st   = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
+    /* sem curl_close() de propósito: no PHP 8.0 ele virou inútil e no 8.5
+       virou um aviso de "depreciado" impresso ANTES do JSON. Com a resposta
+       suja o site não consegue ler o endereço do checkout e acusa falha numa
+       compra que deu certo. O recurso se fecha sozinho. */
     return $resp === false ? [0, '', $erro ?: 'cURL falhou'] : [$st, (string) $resp, ''];
   }
 
