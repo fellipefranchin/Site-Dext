@@ -174,8 +174,13 @@ $assunto = 'Nova assinatura · ' . ($restaurante !== '' ? $limpa($restaurante) :
 if (!smtpEnvia(smtpConfig(__DIR__ . '/contato-config.php'), REMETENTE, DESTINO, $assunto,
                $html, $texto, $email !== '' ? $limpa($email) : '', $erro)) {
   /* O aviso falhou, mas a venda aconteceu. Responder erro faria a Stripe
-     repetir, e o registro abaixo é o que permite recuperar o cliente à mão. */
+     repetir o evento, e o comercial receberia a mesma venda várias vezes.
+     Então a resposta segue 200 e o motivo vai junto: no painel da Stripe,
+     em Entregas de eventos, dá para ler o que houve sem precisar do log do
+     servidor. É esse texto que diz se o problema é conexão, autenticação ou
+     caixa de destino. A senha nunca entra aqui: o smtpFala mascara o AUTH. */
   error_log('[dext] aviso de assinatura não saiu (' . $email . ' / ' . $assinatura . '): ' . $erro);
+  encerra(200, 'venda ok, aviso NAO saiu: ' . mb_substr($erro, 0, 300));
 }
 
-encerra(200, 'ok');
+encerra(200, 'ok, aviso enviado para ' . DESTINO);
