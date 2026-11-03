@@ -31,9 +31,16 @@ const VALORES = [
   'financeiro' => 369, 'operacional' => 349,
 ];
 
-/* O aceite é obrigatório e este é o texto que aparece ao lado da caixa.
-   Os dois links precisam estar no ar antes de ligar isto, senão a Stripe
-   recusa a sessão. */
+/* O aceite obrigatório depende de a Stripe ter o endereço dos termos nos
+   dados públicos da conta, e esse endereço só pode ser cadastrado quando a
+   página /termos estiver no ar. Enquanto não estiver, a Stripe recusa a
+   sessão e nada pode ser testado.
+
+   Por isso esta chave: deixe false para testar o fluxo antes dos textos
+   saírem da revisão jurídica, e volte para true no mesmo dia em que as
+   páginas forem publicadas. Vender de verdade com ela em false é vender sem
+   contrato aceito. */
+const ACEITE_OBRIGATORIO = true;
 const ACEITE = 'Li e aceito os [Termos de Uso](' . SITE . '/termos) e a '
   . '[Política de Privacidade](' . SITE . '/privacidade) da Dext. '
   . 'Sem fidelidade: o cancelamento é feito pelo próprio cliente, a qualquer '
@@ -112,8 +119,6 @@ $campos = [
   'line_items[0][price]'                  => $priceId,
   'line_items[0][quantity]'               => '1',
   'subscription_data[trial_period_days]'  => (string) TESTE,
-  'consent_collection[terms_of_service]'  => 'required',
-  'custom_text[terms_of_service_acceptance][message]' => ACEITE,
   'phone_number_collection[enabled]'      => 'true',
   'custom_fields[0][key]'                 => 'restaurante',
   'custom_fields[0][label][type]'         => 'custom',
@@ -132,6 +137,13 @@ $campos = [
   'metadata[plano]'                       => $plano,
   'subscription_data[metadata][plano]'    => $plano,
 ];
+
+if (ACEITE_OBRIGATORIO) {
+  $campos['consent_collection[terms_of_service]'] = 'required';
+  $campos['custom_text[terms_of_service_acceptance][message]'] = ACEITE;
+} else {
+  error_log('[dext] checkout aberto SEM aceite de termos (ACEITE_OBRIGATORIO está false)');
+}
 
 /* Chave de idempotência: se o visitante clicar duas vezes ou a resposta se
    perder no caminho, a Stripe devolve a mesma sessão em vez de abrir outra. */
