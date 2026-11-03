@@ -1,0 +1,342 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Termos de Uso · Dext Sistema de Gestão</title>
+<meta name="description" content="Termos de Uso e Anexo de Tratamento de Dados do Dext Sistema de Gestão.">
+<link rel="canonical" href="https://dextdigital.com.br/termos">
+<link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-BF7BPXKE4Z"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','G-BF7BPXKE4Z');</script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+@font-face{font-family:'Satoshi';src:url('../assets/fonts/Satoshi-Variable.woff2') format('woff2');font-weight:300 900;font-display:swap}
+:root{--preto:#111111;--card:#1b1b1b;--borda:#262626;--cinza:#dddddd;--cinza-mid:#9a9a9a;--cinza-dark:#555;--vermelho:#e81840}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:var(--preto);color:var(--cinza);line-height:1.7;font-size:16px;font-weight:300}
+img{max-width:100%;display:block}
+a{color:var(--vermelho)}
+
+/* a barra do topo acompanha a rolagem: num documento longo, voltar ao site
+   não pode depender de rolar tudo de volta */
+.topo{position:sticky;top:0;z-index:10;background:rgba(17,17,17,.92);backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--borda)}
+.topo .dentro{max-width:860px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;
+              justify-content:space-between;gap:16px}
+.topo img{height:26px}
+.voltar{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--cinza-mid);
+        text-decoration:none;transition:.25s;white-space:nowrap}
+.voltar:hover{color:#fff}
+
+.folha{max-width:860px;margin:0 auto;padding:56px 24px 100px}
+
+h1{font-family:'Satoshi',sans-serif;font-weight:700;letter-spacing:-.02em;line-height:1.12;
+   font-size:clamp(30px,5.4vw,42px);color:#fff}
+.data{margin-top:14px;font-size:14px;color:var(--cinza-mid)}
+.abertura{margin-top:28px;font-size:16.5px;color:var(--cinza-mid);padding-bottom:34px;border-bottom:1px solid var(--borda)}
+
+/* sumário: um contrato de 15 cláusulas sem índice obriga a ler tudo para
+   achar uma coisa só */
+.sumario{margin-top:34px;background:var(--card);border:1px solid var(--borda);border-radius:10px;padding:24px 26px}
+.sumario h2{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;
+            text-transform:uppercase;color:var(--cinza-mid);margin-bottom:16px}
+.sumario ol{list-style:none;columns:2;column-gap:34px;font-size:14.5px}
+.sumario li{break-inside:avoid;padding:3px 0}
+.sumario a{color:var(--cinza);text-decoration:none;transition:.2s}
+.sumario a:hover{color:var(--vermelho)}
+@media(max-width:620px){.sumario ol{columns:1}}
+
+h2.cl{font-family:'Satoshi',sans-serif;font-weight:700;letter-spacing:-.015em;line-height:1.2;
+      font-size:21px;color:#fff;margin:48px 0 16px;scroll-margin-top:84px}
+h2.cl .n{color:var(--vermelho);margin-right:9px}
+p{margin:14px 0}
+ul{margin:14px 0 14px 4px;list-style:none}
+ul li{position:relative;padding:5px 0 5px 20px}
+ul li::before{content:"";position:absolute;left:0;top:16px;width:6px;height:1px;background:var(--vermelho)}
+/* compromissos numerados: o texto os cita pelo número (item 3.7), então o
+   número precisa estar na tela, não só na ordem */
+ol.num{margin:14px 0 14px 4px;list-style:none;counter-reset:n}
+ol.num li{position:relative;padding:5px 0 5px 30px;counter-increment:n}
+ol.num li::before{content:counter(n) ".";position:absolute;left:0;top:5px;color:var(--vermelho);font-weight:600;font-size:15px}
+strong{font-weight:600;color:#fff}
+
+.tabela{margin:20px 0;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-weight:600;color:var(--cinza-mid);font-size:11px;letter-spacing:.1em;
+   text-transform:uppercase;padding:0 16px 12px 0;border-bottom:1px solid var(--borda)}
+td{padding:14px 16px 14px 0;border-bottom:1px solid var(--borda);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td:first-child{color:#fff;font-weight:400}
+@media(max-width:640px){
+ table,tbody,tr,td{display:block;width:100%}
+ thead{display:none}
+ tr{border-bottom:1px solid var(--borda);padding:14px 0}
+ tr:last-child{border-bottom:0}
+ td{border-bottom:0;padding:3px 0}
+ td::before{content:attr(data-rot);display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+            color:var(--cinza-dark);margin-bottom:3px}
+ td:first-child{font-weight:600;margin-bottom:6px}
+}
+
+/* o Anexo é outro documento: a virada precisa ser visível na rolagem */
+.virada{margin:80px 0 0;padding-top:56px;border-top:2px solid var(--borda)}
+.selo{display:inline-block;background:rgba(232,24,64,.12);border:1px solid rgba(232,24,64,.35);color:var(--vermelho);
+      font-size:10.5px;font-weight:600;letter-spacing:.14em;text-transform:uppercase;padding:7px 14px;border-radius:30px}
+.virada h1{margin-top:20px;font-size:clamp(26px,4.6vw,34px)}
+
+.rodape{margin-top:80px;padding-top:34px;border-top:1px solid var(--borda);font-size:14px;color:var(--cinza-mid)}
+.rodape p{margin:8px 0}
+.rodape .links{margin-top:22px;display:flex;gap:22px;flex-wrap:wrap;font-size:13px}
+
+/* quem assina um contrato tem o direito de guardá-lo: no papel, o fundo preto
+   gasta tinta à toa e a barra do topo não serve para nada */
+@media print{
+ .topo,.sumario{display:none}
+ body{background:#fff;color:#111;font-size:11pt}
+ h1,h2.cl,td:first-child,strong{color:#000}
+ h2.cl .n{color:#000}
+ a{color:#000;text-decoration:underline}
+ .folha{max-width:none;padding:0}
+ .abertura,.data,.rodape{color:#333}
+ h2.cl{margin-top:22pt;page-break-after:avoid}
+ .virada{page-break-before:always;border-top:0}
+ .selo{border-color:#999;color:#000;background:none}
+ table,ul,.tabela{page-break-inside:avoid}
+ th,td{border-color:#ccc}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+ <div class="dentro">
+  <a href="../"><img src="../assets/img/logo-claro.svg" alt="Dext"></a>
+  <a class="voltar" href="../">Voltar ao site</a>
+ </div>
+</header>
+
+<main class="folha">
+
+ <h1>Termos de Uso · Dext Sistema de Gestão</h1>
+ <p class="data">Última atualização: 3 de novembro de 2026</p>
+ <p class="abertura">Este documento tem duas partes: os Termos de Uso e o <a href="#anexo">Anexo de Tratamento de Dados</a>, que faz parte integrante deles. A <a href="../privacidade">Política de Privacidade</a> está em página separada.</p>
+
+ <nav class="sumario">
+  <h2>Nos termos</h2>
+  <ol>
+   <li><a href="#c1">1. Quem somos</a></li>
+   <li><a href="#c2">2. O que é o serviço</a></li>
+   <li><a href="#c3">3. Conta e acesso</a></li>
+   <li><a href="#c4">4. Período de teste</a></li>
+   <li><a href="#c5">5. Pagamento</a></li>
+   <li><a href="#c6">6. Sem fidelidade e cancelamento</a></li>
+   <li><a href="#c6a">6-A. Desistência em 7 dias</a></li>
+   <li><a href="#c7">7. Preço e reajuste</a></li>
+   <li><a href="#c8">8. Os dados do Cliente</a></li>
+   <li><a href="#c8a">8-A. Saída e portabilidade</a></li>
+   <li><a href="#c9">9. Uso adequado</a></li>
+   <li><a href="#c10">10. Disponibilidade e suporte</a></li>
+   <li><a href="#c11">11. Responsabilidade</a></li>
+   <li><a href="#c12">12. Propriedade intelectual</a></li>
+   <li><a href="#c13">13. Mudanças nestes Termos</a></li>
+   <li><a href="#c14">14. Lei e foro</a></li>
+   <li><a href="#c15">15. Contato</a></li>
+   <li><a href="#anexo">Anexo de Tratamento de Dados</a></li>
+  </ol>
+ </nav>
+
+ <h2 class="cl" id="c1"><span class="n">1.</span>Quem somos</h2>
+ <p>Estes Termos regulam o uso do Dext Sistema de Gestão, oferecido pela <strong>Dext Estratégias Digitais LTDA</strong>, CNPJ 60.477.038/0001-81, com sede na Rua Bom Pastor, 529, sala 03, Ipiranga, São Paulo/SP, CEP 04203-050 ("Dext").</p>
+ <p>Ao assinar o sistema, você declara que leu e aceita estes Termos e a nossa <a href="../privacidade">Política de Privacidade</a>, em nome próprio e da empresa que representa ("Cliente"), e que tem poderes para isso.</p>
+
+ <h2 class="cl" id="c2"><span class="n">2.</span>O que é o serviço</h2>
+ <p>O Dext Sistema de Gestão é um sistema online de gestão para restaurantes, com a identidade visual do próprio restaurante. É vendido por assinatura mensal, por módulo (Clientes, Pessoas, Financeiro e Operacional) ou completo.</p>
+ <p>O serviço é destinado a empresas (relação entre empresas, B2B). Não é necessário instalar nada: o acesso é feito pelo navegador.</p>
+ <p>Consultoria, identidade visual, site e assessoria não fazem parte da assinatura do sistema. São contratados à parte, nos planos da Dext.</p>
+
+ <h2 class="cl" id="c3"><span class="n">3.</span>Conta e acesso</h2>
+ <ul>
+  <li>Depois da assinatura, a Dext cria o acesso do Cliente em até 1 dia útil e envia as instruções por e-mail.</li>
+  <li>O Cliente é responsável pelos usuários que cadastra, pelas senhas e por tudo o que é feito com elas.</li>
+  <li>O Cliente deve manter os seus dados de cadastro corretos e atualizados.</li>
+ </ul>
+
+ <h2 class="cl" id="c4"><span class="n">4.</span>Período de teste</h2>
+ <ul>
+  <li>A primeira assinatura de cada restaurante inclui 30 dias de teste sem custo.</li>
+  <li>O cartão é cadastrado no início, mas só é cobrado no fim do teste.</li>
+  <li>Sete dias antes do fim do teste, o Cliente recebe um e-mail de aviso, com o valor e a data da primeira cobrança.</li>
+  <li>Se cancelar durante o teste, nada é cobrado.</li>
+ </ul>
+
+ <h2 class="cl" id="c5"><span class="n">5.</span>Pagamento</h2>
+ <ul>
+  <li>A assinatura é mensal, cobrada no cartão cadastrado, e renova automaticamente até ser cancelada.</li>
+  <li>Os pagamentos são processados pela Stripe. A Dext não armazena os dados completos do cartão.</li>
+  <li>Se uma cobrança falhar, o Cliente é avisado por e-mail e a cobrança é tentada novamente. Se o pagamento não for regularizado em 7 dias, o acesso é suspenso até a regularização. Os dados continuam guardados.</li>
+  <li>A nota fiscal é emitida pela Dext a cada cobrança.</li>
+ </ul>
+
+ <h2 class="cl" id="c6"><span class="n">6.</span>Sem fidelidade e cancelamento</h2>
+ <ul>
+  <li>Não há fidelidade nem multa de cancelamento.</li>
+  <li>O Cliente cancela quando quiser, sozinho, pelo link de gestão da assinatura enviado por e-mail.</li>
+  <li>O cancelamento vale no fim do mês já pago. Até lá, o acesso continua normal.</li>
+  <li>Não há devolução proporcional de período já pago. Durante o período de teste, nada é cobrado.</li>
+ </ul>
+
+ <h2 class="cl" id="c6a"><span class="n">6-A.</span>Desistência em 7 dias</h2>
+ <p>Se o Cliente for considerado consumidor pela lei brasileira, pode desistir da assinatura em até 7 dias depois da contratação, pelo mesmo canal usado para assinar ou pelo e-mail <a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a>, com devolução integral de qualquer valor pago. Durante o período de teste nada é cobrado, então a desistência no teste é simplesmente o cancelamento.</p>
+
+ <h2 class="cl" id="c7"><span class="n">7.</span>Preço e reajuste</h2>
+ <ul>
+  <li>O preço é o que estava em vigor no dia da assinatura.</li>
+  <li>A Dext pode reajustar o preço, avisando o Cliente por e-mail com pelo menos 30 dias de antecedência. Quem não concordar pode cancelar antes de o novo valor entrar em vigor.</li>
+ </ul>
+
+ <h2 class="cl" id="c8"><span class="n">8.</span>Os dados do Cliente</h2>
+ <ul>
+  <li>Os dados que o Cliente registra no sistema (equipe, clientes, vendas, custos, estoque e outros) <strong>pertencem ao Cliente</strong>.</li>
+  <li>A Dext trata esses dados só para prestar o serviço, como operadora, conforme a LGPD e, quando aplicável, o RGPD europeu. Os detalhes estão na <a href="../privacidade">Política de Privacidade</a>.</li>
+  <li>O Cliente garante que tem base legal para registrar no sistema os dados pessoais da sua equipe e dos seus clientes, e que informa esses titulares.</li>
+  <li>As regras de tratamento desses dados estão no <a href="#anexo"><strong>Anexo de Tratamento de Dados</strong></a>, que faz parte integrante destes Termos. Em caso de conflito sobre o tratamento de dados pessoais, prevalece o Anexo.</li>
+ </ul>
+
+ <h2 class="cl" id="c8a"><span class="n">8-A.</span>Saída e portabilidade dos dados</h2>
+ <ul>
+  <li>O Cliente pode, a qualquer momento, exportar os dados que registrou no sistema, em formatos abertos e de uso comum (CSV ou XLSX): cadastro de clientes, reservas, equipe, registros de ponto e escalas, produtos, fichas técnicas, fornecedores, compras, estoque, lançamentos financeiros e relatórios.</li>
+  <li>Depois do cancelamento, o Cliente tem 30 dias para pedir a exportação. A Dext ajuda na transferência para outro fornecedor, se o Cliente pedir, sem cobrança pela saída.</li>
+  <li>Passado esse prazo, os dados são apagados em até 90 dias, exceto o que a lei obriga a guardar. Se o Cliente pedir, a Dext confirma a exclusão por escrito.</li>
+ </ul>
+
+ <h2 class="cl" id="c9"><span class="n">9.</span>Uso adequado</h2>
+ <p>O Cliente não pode:</p>
+ <ul>
+  <li>usar o sistema para atividade ilegal ou para enganar consumidores;</li>
+  <li>tentar acessar dados de outros clientes ou partes do sistema não liberadas;</li>
+  <li>copiar, revender ou fazer engenharia reversa do sistema;</li>
+  <li>sobrecarregar o sistema de propósito ou usar robôs não autorizados.</li>
+ </ul>
+ <p>Se isso acontecer, a Dext pode suspender o acesso e, se for o caso, encerrar a assinatura, preservando os dados do Cliente pelo prazo de exportação da cláusula <a href="#c8a">8-A</a>.</p>
+
+ <h2 class="cl" id="c10"><span class="n">10.</span>Disponibilidade e suporte</h2>
+ <ul>
+  <li>A Dext trabalha para manter o sistema disponível o tempo todo, mas podem ocorrer paradas para manutenção ou por falhas de terceiros (hospedagem, internet, provedores).</li>
+  <li>Manutenções programadas são feitas, sempre que possível, fora do horário de serviço dos restaurantes.</li>
+  <li>O suporte é feito por WhatsApp e e-mail, todos os dias, das 6h às 18h (horário de Brasília).</li>
+ </ul>
+
+ <h2 class="cl" id="c11"><span class="n">11.</span>Responsabilidade</h2>
+ <ul>
+  <li>O sistema organiza informação e mostra números. As decisões de gestão continuam sendo do Cliente.</li>
+  <li>Nos limites permitidos pela lei aplicável, a Dext não responde por lucros cessantes nem por danos indiretos, e a responsabilidade total da Dext fica limitada ao valor pago pelo Cliente nos 12 meses anteriores ao fato.</li>
+  <li>Estes limites não se aplicam aos casos de dolo ou culpa grave, nem às situações em que a lei não admitir a limitação, inclusive quando o Cliente for consumidor protegido pelo Código de Defesa do Consumidor.</li>
+ </ul>
+
+ <h2 class="cl" id="c12"><span class="n">12.</span>Propriedade intelectual</h2>
+ <p>O sistema, o código, o método e a marca Dext pertencem à Dext. A assinatura dá ao Cliente o direito de uso enquanto estiver ativa, sem transferir nenhuma propriedade. A identidade visual do restaurante continua sendo do Cliente.</p>
+
+ <h2 class="cl" id="c13"><span class="n">13.</span>Mudanças nestes Termos</h2>
+ <p>A Dext pode atualizar estes Termos. Mudanças relevantes são avisadas por e-mail com pelo menos 30 dias de antecedência. Se o Cliente não concordar com uma mudança relevante, pode cancelar antes de ela entrar em vigor, sem custo.</p>
+
+ <h2 class="cl" id="c14"><span class="n">14.</span>Lei e foro</h2>
+ <ul>
+  <li>Estes Termos seguem a lei brasileira. Fica eleito o foro da Comarca de São Paulo/SP para resolver qualquer questão deste contrato.</li>
+  <li>Para Clientes estabelecidos na União Europeia, continuam valendo as normas obrigatórias de proteção de dados do RGPD, qualquer que seja a lei e o foro escolhidos. O tratamento de dados segue o <a href="#anexo">Anexo de Tratamento de Dados</a> e a <a href="../privacidade">Política de Privacidade</a>.</li>
+ </ul>
+
+ <h2 class="cl" id="c15"><span class="n">15.</span>Contato</h2>
+ <p><a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a> · WhatsApp <a href="https://wa.me/5511940852805" target="_blank" rel="noopener">+55 11 94085-2805</a><br>
+ Privacidade e dados pessoais: <a href="mailto:privacidade@dextdigital.com.br">privacidade@dextdigital.com.br</a></p>
+
+ <!-- ===================== ANEXO ===================== -->
+ <section class="virada" id="anexo">
+  <span class="selo">Parte integrante dos Termos</span>
+  <h1>Anexo de Tratamento de Dados · Dext Sistema de Gestão</h1>
+  <p class="data">Última atualização: 3 de novembro de 2026</p>
+  <p class="abertura">Este Anexo faz parte dos Termos de Uso do Dext Sistema de Gestão. Ele regula como a <strong>Dext Estratégias Digitais LTDA</strong> (CNPJ 60.477.038/0001-81, "Dext") trata os dados pessoais que o restaurante assinante ("Cliente") registra no sistema. Segue a LGPD (art. 39) e, para Clientes na União Europeia, o RGPD (art. 28).</p>
+
+  <h2 class="cl" id="a1"><span class="n">1.</span>Papéis</h2>
+  <ul>
+   <li>O <strong>Cliente é o controlador</strong> dos dados que registra no sistema: decide o que registrar e para quê.</li>
+   <li>A <strong>Dext é a operadora</strong> (subcontratante, no RGPD): trata esses dados só para prestar o serviço, conforme as instruções do Cliente, que são estes Termos e o uso que o Cliente faz do sistema.</li>
+   <li><strong>Duração:</strong> o tratamento dura enquanto a assinatura estiver ativa, mais o prazo de exportação e exclusão do item <a href="#a3">3.7</a>.</li>
+  </ul>
+
+  <h2 class="cl" id="a2"><span class="n">2.</span>Que dados e de quem</h2>
+  <div class="tabela">
+   <table>
+    <thead><tr><th>Titulares</th><th>Dados</th><th>Para quê</th></tr></thead>
+    <tbody>
+     <tr>
+      <td data-rot="Titulares">Clientes do restaurante</td>
+      <td data-rot="Dados">nome, telefone, e-mail, data de aniversário, histórico de reservas e de visitas, pontos de fidelidade</td>
+      <td data-rot="Para quê">reservas, fidelização e comunicação do restaurante</td>
+     </tr>
+     <tr>
+      <td data-rot="Titulares">Equipe do restaurante</td>
+      <td data-rot="Dados">nome, contacto, função, registros de ponto, escalas, custo de pessoal</td>
+      <td data-rot="Para quê">gestão de pessoas e custo por turno</td>
+     </tr>
+     <tr>
+      <td data-rot="Titulares">Fornecedores (pessoas de contacto)</td>
+      <td data-rot="Dados">nome, telefone, e-mail</td>
+      <td data-rot="Para quê">compras e pagamentos</td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <p>O sistema não foi feito para guardar dados sensíveis (saúde, religião, biometria e outros). O Cliente não deve registrá-los.</p>
+
+  <h2 class="cl" id="a3"><span class="n">3.</span>O que a Dext se compromete a fazer</h2>
+  <ol class="num">
+   <li>Tratar os dados só para prestar o serviço, nunca para fins próprios, e nunca vendê-los.</li>
+   <li>Garantir que quem acessa os dados na Dext tem dever de sigilo.</li>
+   <li>Manter medidas de segurança adequadas: conexão segura (HTTPS), acesso por senha e por perfil, cópias de segurança e registro de acessos.</li>
+   <li>Usar outros fornecedores (suboperadores) só se estiverem listados abaixo, avisar o Cliente com 30 dias de antecedência antes de incluir um novo, e exigir deles as mesmas obrigações. O Cliente pode se opor e, se a oposição não for resolvida, cancelar sem custo.</li>
+   <li>Ajudar o Cliente a responder pedidos dos titulares (acesso, correção, exclusão, portabilidade).</li>
+   <li>Avisar o Cliente <strong>em até 48 horas</strong> depois de tomar conhecimento de um incidente de segurança que atinja esses dados, com as informações disponíveis, para que o Cliente cumpra os prazos legais (ANPD: 3 dias úteis; RGPD: 72 horas).</li>
+   <li>Ao fim do contrato, devolver os dados (exportação em CSV ou XLSX em até 30 dias) e apagá-los em até 90 dias, salvo guarda exigida por lei.</li>
+   <li>Disponibilizar ao Cliente as informações necessárias para demonstrar o cumprimento deste Anexo e permitir auditorias ou inspeções feitas pelo Cliente, ou por auditor indicado por ele, com aviso prévio razoável, em horário comercial e com dever de sigilo.</li>
+  </ol>
+
+  <h2 class="cl" id="a4"><span class="n">4.</span>Suboperadores atuais</h2>
+  <div class="tabela">
+   <table>
+    <thead><tr><th>Fornecedor</th><th>Para quê</th><th>Onde</th></tr></thead>
+    <tbody>
+     <tr>
+      <td data-rot="Fornecedor">Hostinger</td>
+      <td data-rot="Para quê">hospedagem do sistema e envio dos e-mails das campanhas</td>
+      <td data-rot="Onde">Reino Unido</td>
+     </tr>
+    </tbody>
+   </table>
+  </div>
+  <p>(A Stripe e o Google tratam dados da própria assinatura e do site da Dext, não os dados que o Cliente registra no sistema. Estão na <a href="../privacidade">Política de Privacidade</a>.)</p>
+  <p>Transferências para fora do Brasil e da União Europeia seguem as cláusulas-padrão contratuais da ANPD e da Comissão Europeia, ou outro mecanismo previsto em lei.</p>
+
+  <h2 class="cl" id="a5"><span class="n">5.</span>Responsabilidade do Cliente</h2>
+  <p>O Cliente garante que tem base legal para registrar os dados (por exemplo, a execução do contrato de trabalho, no caso da equipe, ou o consentimento ou interesse legítimo, no caso dos seus clientes) e que informa os titulares, por exemplo numa política de privacidade do próprio restaurante.</p>
+
+  <h2 class="cl" id="a6"><span class="n">6.</span>Contacto</h2>
+  <p><a href="mailto:privacidade@dextdigital.com.br">privacidade@dextdigital.com.br</a></p>
+ </section>
+
+ <footer class="rodape">
+  <p><strong>Dext Estratégias Digitais LTDA</strong> · CNPJ 60.477.038/0001-81</p>
+  <p>Rua Bom Pastor, 529, sala 03, Ipiranga, São Paulo/SP, CEP 04203-050</p>
+  <p><a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a> · <a href="https://wa.me/5511940852805" target="_blank" rel="noopener">+55 11 94085-2805</a></p>
+  <div class="links">
+   <a href="../privacidade">Política de Privacidade</a>
+   <a href="../">Voltar ao site</a>
+  </div>
+ </footer>
+
+</main>
+</body>
+</html>
