@@ -11,6 +11,10 @@
    - secret ............ Desenvolvedores > Chaves de API > chave secreta
    - webhook_secret .... Desenvolvedores > Webhooks > o seu endpoint > segredo
    - precos ............ Catálogo de produtos > o produto > o preço (price_...)
+   - portal_link ....... Configurações > Faturamento > Portal do cliente > Link
+                         do portal. Use o botão de copiar que fica ao lado: um
+                         caractere trocado à mão vira um link quebrado dentro
+                         do e-mail de boas-vindas.
 
    Atenção ao modo: em teste as chaves começam com sk_test_ e os Price IDs são
    outros. Ao virar para produção, troca tudo: chave, segredo do webhook e os
@@ -19,6 +23,14 @@
 return [
   'secret'         => 'sk_test_...',
   'webhook_secret' => 'whsec_...',
+
+  /* Para onde o cliente vai quando quiser trocar o cartão ou cancelar. Vai
+     dentro do e-mail de boas-vindas, e é o que a cláusula 6 dos Termos promete
+     ("o cancelamento é feito pelo próprio cliente, pelo link enviado por
+     e-mail"). Não é segredo: é uma página pública que pede o e-mail do cliente
+     e manda um código. No modo de teste o endereço tem "test_" no meio; na
+     virada para produção ele muda. */
+  'portal_link'    => 'https://billing.stripe.com/p/login/...',
 
   /* A chave da esquerda é o que o site manda; a Price ID da direita é o que
      vale. O site nunca escolhe preço, só escolhe um nome desta lista.

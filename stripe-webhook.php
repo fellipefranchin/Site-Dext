@@ -147,6 +147,16 @@ function buscaCliente(string $idCliente, string $chave): array {
   ];
 }
 
+/* O nome do plano chega em minúscula, do jeito que o botão do site mandou.
+   No e-mail do cliente ele aparece como nome próprio. */
+const PLANOS = [
+  'completo'    => 'Completo',
+  'clientes'    => 'Clientes',
+  'pessoas'     => 'Pessoas',
+  'financeiro'  => 'Financeiro',
+  'operacional' => 'Operacional',
+];
+
 /* O portal da Stripe pergunta o motivo ao cancelar, e a resposta vem em
    inglês, em código. Traduzido vale como pesquisa de perda. */
 const MOTIVOS = [
@@ -165,7 +175,8 @@ const MOTIVOS = [
    ========================================================================= */
 /* Cada evento devolve a mesma forma: o aviso é montado uma vez só, lá embaixo. */
 
-$aviso = null;
+$aviso = null;   // o que vai para o adm@
+$boas  = null;   // o que vai para o cliente, só na venda
 
 if ($tipo === 'checkout.session.completed') {
   $cli         = (array) ($obj['customer_details'] ?? []);
@@ -181,15 +192,40 @@ if ($tipo === 'checkout.session.completed') {
     }
   }
 
-  /* Grava o restaurante na assinatura. Sem isto, o aviso de cancelamento e o
-     de cartão recusado chegariam sabendo o nome da pessoa e não o da casa,
-     que é como o comercial reconhece o cliente. */
-  if ($assinatura !== '' && $restaurante !== '' && $chave !== '') {
-    [$st,, $falha] = stripeChama('POST', '/v1/subscriptions/' . rawurlencode($assinatura),
-      ['metadata[restaurante]' => $restaurante, 'metadata[plano]' => $plano], $chave);
+  /* Grava o restaurante na assinatura e traz a assinatura de volta. Sem a
+     gravação, o aviso de cancelamento e o de cartão recusado chegariam sabendo
+     o nome da pessoa e não o da casa, que é como o comercial reconhece o
+     cliente. O expand pede o cartão junto: a resposta deste POST já é tudo o
+     que o e-mail de boas-vindas precisa, e evita uma segunda ida à Stripe. */
+  $assin = [];
+  if ($assinatura !== '' && $chave !== '') {
+    $campos = ['expand[0]' => 'default_payment_method'];
+    if ($restaurante !== '') { $campos['metadata[restaurante]'] = $restaurante; }
+    if ($plano !== '')       { $campos['metadata[plano]']       = $plano; }
+
+    [$st, $cru, $falha] = stripeChama('POST', '/v1/subscriptions/' . rawurlencode($assinatura), $campos, $chave);
     if ($falha !== '' || $st !== 200) {
-      error_log('[dext] não gravei o restaurante em ' . $assinatura . ' (' . $st . ') ' . $falha);
+      error_log('[dext] não li a assinatura ' . $assinatura . ' (' . $st . ') ' . $falha);
+    } else {
+      $assin = (array) (json_decode($cru, true) ?: []);
     }
+  }
+
+  /* As datas e o valor que o cliente precisa ver só existem na assinatura: a
+     sessão do checkout não sabe quando o teste acaba nem quanto vai custar. */
+  $fimTeste = isset($assin['trial_end']) ? (int) $assin['trial_end'] : 0;
+  $preco    = (array) ($assin['items']['data'][0]['price'] ?? []);
+  $mensal   = isset($preco['unit_amount']) ? (int) $preco['unit_amount'] : null;
+  /* default_payment_method vem objeto com o expand e string sem ele. Ler
+     ['card'] de uma string acende um warning, e warning impresso antes da
+     resposta é o jeito conhecido de quebrar este projeto. */
+  $pm     = $assin['default_payment_method'] ?? null;
+  $cartao = is_array($pm) ? trim((string) ($pm['card']['last4'] ?? '')) : '';
+
+  if ($email !== '') {
+    $boas = ['nome' => $nome, 'restaurante' => $restaurante, 'email' => $email,
+             'plano' => PLANOS[$plano] ?? $plano, 'fim_teste' => $fimTeste,
+             'mensal' => $mensal, 'cartao' => $cartao];
   }
 
   $aviso = [
@@ -341,17 +377,139 @@ foreach ($aviso['linhas'] as $rotulo => $valor) {
 }
 $texto .= "\n" . $aviso['recado'] . "\n\n" . SITE;
 
+$cfgSmtp = smtpConfig(__DIR__ . '/contato-config.php');
+
 $erro = '';
-if (!smtpEnvia(smtpConfig(__DIR__ . '/contato-config.php'), REMETENTE, DESTINO,
-               $limpa((string) $aviso['assunto']), $html, $texto,
-               ($aviso['email'] ?? '') !== '' ? $limpa((string) $aviso['email']) : '', $erro)) {
-  /* O aviso falhou, mas o evento aconteceu. Responder erro faria a Stripe
-     repetir, e o comercial receberia o mesmo aviso várias vezes. Então a
-     resposta segue 200 e o motivo vai junto: no painel da Stripe, em
-     Entregas de eventos, dá para ler o que houve sem o log do servidor.
-     A senha nunca entra aqui: o smtpFala mascara o AUTH. */
-  error_log('[dext] aviso "' . $tipo . '" não saiu: ' . $erro);
-  encerra(200, 'evento ok, aviso NAO saiu: ' . mb_substr($erro, 0, 300));
+$saiuAviso = smtpEnvia($cfgSmtp, REMETENTE, DESTINO,
+  $limpa((string) $aviso['assunto']), $html, $texto,
+  ($aviso['email'] ?? '') !== '' ? $limpa((string) $aviso['email']) : '', $erro);
+
+/* O aviso falhou, mas o evento aconteceu. Responder erro faria a Stripe
+   repetir, e o comercial receberia o mesmo aviso várias vezes. Então a
+   resposta segue 200 e o motivo vai junto: no painel da Stripe, em
+   Entregas de eventos, dá para ler o que houve sem o log do servidor.
+   A senha nunca entra aqui: o smtpFala mascara o AUTH. */
+if (!$saiuAviso) { error_log('[dext] aviso "' . $tipo . '" não saiu: ' . $erro); }
+
+/* =========================================================================
+   5) e o cliente
+   =========================================================================
+   As regras da Visa e da Mastercard para teste grátis que vira assinatura
+   pedem confirmação por e-mail com os termos e um jeito de cancelar, e o
+   Decreto 7.962/2013 pede confirmação imediata com o contrato à mão. A
+   Stripe manda o recibo dela; este é o nosso, e é o que cumpre a cláusula 6
+   dos Termos, que promete o link de cancelamento por e-mail. */
+
+$saiuBoas  = null;    // null = não havia o que mandar
+$erroBoas  = '';
+
+if ($boas !== null) {
+  $portal = trim((string) ($cfg['portal_link'] ?? ''));
+  if ($portal === '') {
+    /* sem o link, o e-mail ainda vale a pena: ele confirma a venda e as datas.
+       Mas a promessa de cancelar sozinho fica sem endereço, e isso precisa
+       gritar em algum lugar. */
+    error_log('[dext] ATENCAO: falta portal_link em stripe-config.php, '
+      . 'o e-mail de boas-vindas saiu sem o link de cancelamento');
+  }
+
+  $dIni  = date('d/m/Y');
+  $dFim  = quando($boas['fim_teste'] > 0 ? $boas['fim_teste'] : null);
+  $vMes  = reais($boas['mensal']);
+  $casa  = $boas['restaurante'] !== '' ? $boas['restaurante'] : 'o seu restaurante';
+  $prim  = $boas['nome'] !== '' ? explode(' ', $boas['nome'])[0] : '';
+
+  /* Cada frase só é dita quando o dado existe. Melhor uma linha a menos do que
+     uma linha com buraco no meio, que é o que mais parece golpe num e-mail de
+     cobrança. */
+  $qualCartao = $boas['cartao'] !== '' ? 'o cartão final ' . $boas['cartao'] : 'o cartão cadastrado';
+  $itens = [];
+  $itens[] = 'Os 30 dias de teste começam hoje, ' . $dIni
+           . ($dFim !== '' ? ', e vão até ' . $dFim : '') . '. Nesse período nada é cobrado.';
+  if ($dFim !== '' && $vMes !== '') {
+    $itens[] = 'No dia ' . $dFim . ', ' . $qualCartao . ' é cobrado em ' . $vMes
+             . ' por mês, e assim todo mês, até você cancelar.';
+  } elseif ($vMes !== '') {
+    $itens[] = 'Terminado o teste, ' . $qualCartao . ' é cobrado em ' . $vMes
+             . ' por mês, e assim todo mês, até você cancelar.';
+  } else {
+    $itens[] = 'Terminado o teste, ' . $qualCartao . ' passa a ser cobrado todo mês, até você cancelar.';
+  }
+  $itens[] = 'Sete dias antes do fim do teste, mandamos um lembrete.';
+  $itens[] = $portal !== ''
+    /* "link" e não "botão": na versão em texto puro, que é o que alguns
+       programas de e-mail mostram, botão nenhum aparece */
+    ? 'Sem fidelidade: você cancela quando quiser, sozinho, pelo link abaixo.'
+    : 'Sem fidelidade: você cancela quando quiser. É só responder este e-mail ou chamar no WhatsApp.';
+
+  $lista = '';
+  foreach ($itens as $i) {
+    $lista .= '<tr><td valign="top" style="padding:0 12px 12px 0;' . R_TEXTO . ';color:#e81840">&bull;</td>'
+            . '<td valign="top" style="padding:0 0 12px 0;' . R_TEXTO . '">' . $e($i) . '</td></tr>';
+  }
+
+  $mioloB = '<tr><td style="padding:36px 36px 0">'
+  . '<div style="font:700 11px/1.4 Helvetica,Arial,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#e81840;margin-bottom:12px">Assinatura confirmada</div>'
+  . '<div style="font:700 26px/1.2 Helvetica,Arial,sans-serif;color:#111111;letter-spacing:-.02em">'
+  . ($prim !== '' ? 'Oi, ' . $e($prim) . '.' : 'Boas-vindas à Dext.') . '</div>'
+  . '<div style="' . R_TEXTO . ';margin-top:14px">Que bom ter ' . $e($casa)
+  . ' com a gente. A sua assinatura do <strong>Dext Sistema de Gestão · ' . $e((string) $boas['plano'])
+  . '</strong> está confirmada.</div></td></tr>'
+
+  . '<tr><td style="padding:30px 36px 0">'
+  . '<div style="' . R_ROTULO . ';margin-bottom:16px">Como funciona daqui pra frente</div>'
+  . '<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">' . $lista . '</table></td></tr>'
+
+  . ($portal === '' ? '' : '<tr><td style="padding:14px 36px 0">'
+      . '<a href="' . $e($portal) . '" style="display:inline-block;background:#ffffff;border:1px solid #262626;color:#111111;font:600 14px/1 Helvetica,Arial,sans-serif;padding:14px 22px;border-radius:4px;text-decoration:none">Gerenciar ou cancelar a assinatura</a></td></tr>')
+
+  . '<tr><td style="padding:30px 36px 0">'
+  . '<div style="border-left:3px solid #e81840;padding:4px 0 4px 18px;' . R_TEXTO . '">'
+  . '<strong>Próximo passo:</strong> em até 1 dia útil, você recebe aqui o acesso ao sistema, já com a cara do seu restaurante.</div></td></tr>'
+
+  . '<tr><td style="padding:30px 36px 36px">'
+  . '<div style="font:400 14px/1.6 Helvetica,Arial,sans-serif;color:#9a9a9a">'
+  . 'Os <a href="' . SITE . '/termos" style="color:#e81840;text-decoration:none">Termos de Uso</a>, o '
+  . '<a href="' . SITE . '/termos#anexo" style="color:#e81840;text-decoration:none">Anexo de Tratamento de Dados</a> e a '
+  . '<a href="' . SITE . '/privacidade" style="color:#e81840;text-decoration:none">Política de Privacidade</a> que você aceitou estão no nosso site.'
+  . '<br><br>Qualquer dúvida, é só responder este e-mail ou chamar no WhatsApp '
+  . '<a href="https://wa.me/5511940852805" style="color:#e81840;text-decoration:none">+55 11 94085-2805</a>.'
+  . '<br><br>Abraço,<br>Equipe Dext</div></td></tr>';
+
+  $htmlB = smtpMolde('Bem-vindo à Dext', $mioloB,
+    'Dext Estratégias Digitais LTDA · CNPJ 60.477.038/0001-81'
+    . '<br>Rua Bom Pastor, 529, sala 03, Ipiranga, São Paulo/SP, CEP 04203-050', SITE);
+
+  $textoB = ($prim !== '' ? 'Oi, ' . $prim . ',' : 'Boas-vindas à Dext,') . "\n\n"
+    . 'Que bom ter ' . $casa . ' com a gente. A sua assinatura do Dext Sistema de Gestão · '
+    . $boas['plano'] . " está confirmada.\n\n"
+    . "COMO FUNCIONA DAQUI PRA FRENTE\n";
+  foreach ($itens as $i) { $textoB .= '- ' . $i . "\n"; }
+  if ($portal !== '') { $textoB .= "\nGerenciar ou cancelar: " . $portal . "\n"; }
+  $textoB .= "\nPróximo passo: em até 1 dia útil, você recebe aqui o acesso ao sistema, "
+    . "já com a cara do seu restaurante.\n\n"
+    . 'Os Termos de Uso, o Anexo de Tratamento de Dados e a Política de Privacidade que você '
+    . 'aceitou estão em ' . SITE . '/termos e ' . SITE . "/privacidade.\n\n"
+    . "Qualquer dúvida, é só responder este e-mail ou chamar no WhatsApp +55 11 94085-2805.\n\n"
+    . "Abraço,\nEquipe Dext\n"
+    . "Dext Estratégias Digitais LTDA · CNPJ 60.477.038/0001-81";
+
+  $saiuBoas = smtpEnvia($cfgSmtp, REMETENTE, $limpa((string) $boas['email']),
+    'Bem-vindo à Dext · seus 30 dias grátis começaram', $htmlB, $textoB, '', $erroBoas);
+
+  if (!$saiuBoas) { error_log('[dext] boas-vindas não saiu para ' . $boas['email'] . ': ' . $erroBoas); }
 }
 
-encerra(200, 'ok, aviso de ' . $tipo . ' enviado para ' . DESTINO);
+/* =========================================================================
+   6) o que dizer à Stripe
+   =========================================================================
+   Sempre 200: o evento foi recebido e processado, e pedir reenvio por causa
+   de e-mail faria o aviso chegar repetido. O texto conta o que saiu e o que
+   não saiu, e é ele que aparece em Entregas de eventos. */
+$placar = 'aviso ' . ($saiuAviso ? 'ok' : 'FALHOU');
+if ($saiuBoas !== null) { $placar .= ', boas-vindas ' . ($saiuBoas ? 'ok' : 'FALHOU'); }
+
+if ($saiuAviso && ($saiuBoas === null || $saiuBoas)) {
+  encerra(200, 'ok, ' . $tipo . ': ' . $placar . ' (' . DESTINO . ')');
+}
+encerra(200, 'evento ok, mas ' . $placar . ': ' . mb_substr($erro !== '' ? $erro : $erroBoas, 0, 280));
