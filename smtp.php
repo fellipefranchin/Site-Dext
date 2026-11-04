@@ -3,12 +3,12 @@
    O mail() deste servidor devolve sucesso sem entregar. Falando SMTP na mão o
    servidor confirma com 250, e aí dá para saber se foi de verdade.
 
-   Nota de manutenção: este código nasceu dentro do contato.php e foi extraído
-   para cá quando o webhook da Stripe passou a precisar da mesma coisa. O
-   contato.php ainda tem a cópia dele, porque ele está no ar e funcionando e
-   mexer nele é assunto de uma alteração separada, com um envio de teste pelo
-   formulário depois. Ao corrigir algo aqui, corrigir lá também, até que o
-   contato.php passe a usar este arquivo. */
+   Este código nasceu dentro do contato.php e foi extraído para cá quando o
+   webhook da Stripe passou a precisar da mesma coisa. Durante algumas semanas
+   houve duas cópias, e a nota aqui pedia para corrigir as duas. Em 04/11/2026
+   elas foram comparadas linha a linha, se provaram idênticas, e o contato.php
+   passou a usar este arquivo. Agora é uma só: quem usa é o contato.php e o
+   stripe-webhook.php, e qualquer correção aqui vale para os dois. */
 
 declare(strict_types=1);
 
