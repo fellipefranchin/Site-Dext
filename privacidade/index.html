@@ -1,0 +1,243 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Política de Privacidade · Dext</title>
+<meta name="description" content="Que dados a Dext recolhe, para quê, com quem compartilha e quais são os seus direitos.">
+<link rel="canonical" href="https://dextdigital.com.br/privacidade">
+<link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
+<!-- o Analytics não carrega aqui: quem decide é o cookies.js, depois da escolha do visitante -->
+<script src="../assets/js/cookies.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* Mesma folha da página de termos, repetida de propósito: o projeto inteiro
+   é feito de páginas que se bastam, sem build e sem CSS compartilhado. Se um
+   dia virar três páginas jurídicas, aí compensa extrair. */
+@font-face{font-family:'Satoshi';src:url('../assets/fonts/Satoshi-Variable.woff2') format('woff2');font-weight:300 900;font-display:swap}
+:root{--preto:#111111;--card:#1b1b1b;--borda:#262626;--cinza:#dddddd;--cinza-mid:#9a9a9a;--cinza-dark:#555;--vermelho:#e81840}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Montserrat',sans-serif;background:var(--preto);color:var(--cinza);line-height:1.7;font-size:16px;font-weight:300}
+img{max-width:100%;display:block}
+a{color:var(--vermelho)}
+
+.topo{position:sticky;top:0;z-index:10;background:rgba(17,17,17,.92);backdrop-filter:blur(8px);
+      border-bottom:1px solid var(--borda)}
+.topo .dentro{max-width:860px;margin:0 auto;padding:16px 24px;display:flex;align-items:center;
+              justify-content:space-between;gap:16px}
+.topo img{height:26px}
+.voltar{font-size:12px;font-weight:600;letter-spacing:.09em;text-transform:uppercase;color:var(--cinza-mid);
+        text-decoration:none;transition:.25s;white-space:nowrap}
+.voltar:hover{color:#fff}
+
+.folha{max-width:860px;margin:0 auto;padding:56px 24px 100px}
+
+h1{font-family:'Satoshi',sans-serif;font-weight:700;letter-spacing:-.02em;line-height:1.12;
+   font-size:clamp(30px,5.4vw,42px);color:#fff}
+.data{margin-top:14px;font-size:14px;color:var(--cinza-mid)}
+.abertura{margin-top:28px;font-size:16.5px;color:var(--cinza-mid);padding-bottom:34px;border-bottom:1px solid var(--borda)}
+
+.sumario{margin-top:34px;background:var(--card);border:1px solid var(--borda);border-radius:10px;padding:24px 26px}
+.sumario h2{font-family:'Montserrat',sans-serif;font-size:11px;font-weight:600;letter-spacing:.14em;
+            text-transform:uppercase;color:var(--cinza-mid);margin-bottom:16px}
+.sumario ol{list-style:none;columns:2;column-gap:34px;font-size:14.5px}
+.sumario li{break-inside:avoid;padding:3px 0}
+.sumario a{color:var(--cinza);text-decoration:none;transition:.2s}
+.sumario a:hover{color:var(--vermelho)}
+@media(max-width:620px){.sumario ol{columns:1}}
+
+h2.cl{font-family:'Satoshi',sans-serif;font-weight:700;letter-spacing:-.015em;line-height:1.2;
+      font-size:21px;color:#fff;margin:48px 0 16px;scroll-margin-top:84px}
+h2.cl .n{color:var(--vermelho);margin-right:9px}
+h3{font-family:'Montserrat',sans-serif;font-size:12px;font-weight:600;letter-spacing:.12em;text-transform:uppercase;
+   color:var(--cinza-mid);margin:28px 0 10px}
+p{margin:14px 0}
+ul{margin:14px 0 14px 4px;list-style:none}
+ul li{position:relative;padding:5px 0 5px 20px}
+ul li::before{content:"";position:absolute;left:0;top:16px;width:6px;height:1px;background:var(--vermelho)}
+strong{font-weight:600;color:#fff}
+
+.tabela{margin:20px 0;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th{text-align:left;font-weight:600;color:var(--cinza-mid);font-size:11px;letter-spacing:.1em;
+   text-transform:uppercase;padding:0 16px 12px 0;border-bottom:1px solid var(--borda)}
+td{padding:14px 16px 14px 0;border-bottom:1px solid var(--borda);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td:first-child{color:#fff;font-weight:400}
+@media(max-width:640px){
+ table,tbody,tr,td{display:block;width:100%}
+ thead{display:none}
+ tr{border-bottom:1px solid var(--borda);padding:14px 0}
+ tr:last-child{border-bottom:0}
+ td{border-bottom:0;padding:3px 0}
+ td::before{content:attr(data-rot);display:block;font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;
+            color:var(--cinza-dark);margin-bottom:3px}
+ td:first-child{font-weight:600;margin-bottom:6px}
+}
+
+/* a caixa de direitos é o que o visitante veio buscar: vale separá-la do resto */
+.destaque{margin:22px 0;background:var(--card);border:1px solid var(--borda);border-left:2px solid var(--vermelho);
+          border-radius:8px;padding:22px 26px}
+.destaque p:first-child{margin-top:0}
+.destaque p:last-child{margin-bottom:0}
+
+.rodape{margin-top:80px;padding-top:34px;border-top:1px solid var(--borda);font-size:14px;color:var(--cinza-mid)}
+.rodape p{margin:8px 0}
+.rodape .links{margin-top:22px;display:flex;gap:22px;flex-wrap:wrap;font-size:13px}
+
+@media print{
+ .topo,.sumario{display:none}
+ body{background:#fff;color:#111;font-size:11pt}
+ h1,h2.cl,td:first-child,strong{color:#000}
+ h2.cl .n{color:#000}
+ a{color:#000;text-decoration:underline}
+ .folha{max-width:none;padding:0}
+ .abertura,.data,.rodape,h3{color:#333}
+ h2.cl{margin-top:22pt;page-break-after:avoid}
+ .destaque{border:1px solid #ccc;background:none;page-break-inside:avoid}
+ table,ul,.tabela{page-break-inside:avoid}
+ th,td{border-color:#ccc}
+}
+</style>
+</head>
+<body>
+
+<header class="topo">
+ <div class="dentro">
+  <a href="../"><img src="../assets/img/logo-claro.svg" alt="Dext"></a>
+  <a class="voltar" href="../">Voltar ao site</a>
+ </div>
+</header>
+
+<main class="folha">
+
+ <h1>Política de Privacidade · Dext</h1>
+ <p class="data">Última atualização: 4 de novembro de 2026</p>
+ <p class="abertura">Esta Política explica que dados a Dext recolhe, para quê, com quem compartilha e quais são os seus direitos. Segue a LGPD (Lei 13.709/2018) e, para quem está na União Europeia, o RGPD. As regras da assinatura estão nos <a href="../termos">Termos de Uso</a>.</p>
+
+ <nav class="sumario">
+  <h2>Nesta política</h2>
+  <ol>
+   <li><a href="#c1">1. Quem é responsável</a></li>
+   <li><a href="#c2">2. Que dados recolhemos</a></li>
+   <li><a href="#c3">3. Para quê</a></li>
+   <li><a href="#c4">4. Com quem compartilhamos</a></li>
+   <li><a href="#c5">5. Por quanto tempo</a></li>
+   <li><a href="#c6">6. Cookies</a></li>
+   <li><a href="#c7">7. Os seus direitos</a></li>
+   <li><a href="#c8">8. Segurança</a></li>
+   <li><a href="#c9">9. Mudanças</a></li>
+  </ol>
+ </nav>
+
+ <h2 class="cl" id="c1"><span class="n">1.</span>Quem é responsável</h2>
+ <p><strong>Dext Estratégias Digitais LTDA</strong>, CNPJ 60.477.038/0001-81, Rua Bom Pastor, 529, sala 03, Ipiranga, São Paulo/SP, CEP 04203-050.</p>
+ <p>Encarregado pelo tratamento de dados: Fellipe Franchin · <a href="mailto:privacidade@dextdigital.com.br">privacidade@dextdigital.com.br</a></p>
+
+ <h2 class="cl" id="c2"><span class="n">2.</span>Que dados recolhemos</h2>
+
+ <h3>No site</h3>
+ <ul>
+  <li>Formulário de contato: nome, e-mail, telefone, restaurante, cidade e mensagem.</li>
+  <li>Navegação: páginas visitadas, dispositivo, navegador e localização aproximada, pelo Google Analytics.</li>
+ </ul>
+
+ <h3>Na assinatura</h3>
+ <ul>
+  <li>Nome, e-mail, telefone, nome do restaurante, CNPJ e plano escolhido.</li>
+  <li>Os dados do cartão são recolhidos e guardados pela Stripe. A Dext não vê nem guarda o número completo do cartão.</li>
+ </ul>
+
+ <h3>No atendimento</h3>
+ <ul>
+  <li>Mensagens trocadas por WhatsApp e e-mail.</li>
+ </ul>
+
+ <h3>Dentro do sistema</h3>
+ <ul>
+  <li>Os dados que o restaurante registra sobre a sua equipe, clientes e operação. Nesses dados, o restaurante é o controlador e a Dext é a operadora: trata-os só para prestar o serviço, conforme as instruções do restaurante.</li>
+ </ul>
+
+ <h2 class="cl" id="c3"><span class="n">3.</span>Para quê</h2>
+ <div class="tabela">
+  <table>
+   <thead><tr><th>Finalidade</th><th>Base legal</th></tr></thead>
+   <tbody>
+    <tr><td data-rot="Finalidade">Responder a contatos e pedidos de demonstração</td><td data-rot="Base legal">Procedimentos preliminares a contrato e legítimo interesse</td></tr>
+    <tr><td data-rot="Finalidade">Criar a conta, prestar o serviço e dar suporte</td><td data-rot="Base legal">Execução de contrato</td></tr>
+    <tr><td data-rot="Finalidade">Cobrar a assinatura e emitir nota fiscal</td><td data-rot="Base legal">Execução de contrato e obrigação legal</td></tr>
+    <tr><td data-rot="Finalidade">Avisar sobre o teste, cobranças e mudanças no serviço</td><td data-rot="Base legal">Execução de contrato</td></tr>
+    <tr><td data-rot="Finalidade">Medir o uso do site para melhorá-lo</td><td data-rot="Base legal">Consentimento, dado no aviso de cookies</td></tr>
+    <tr><td data-rot="Finalidade">Cumprir obrigações legais e fiscais</td><td data-rot="Base legal">Obrigação legal</td></tr>
+   </tbody>
+  </table>
+ </div>
+ <p>A Dext não vende dados pessoais e não usa os dados que o restaurante registra no sistema para nenhuma outra finalidade.</p>
+
+ <h2 class="cl" id="c4"><span class="n">4.</span>Com quem compartilhamos</h2>
+ <p>Só com os fornecedores necessários para o serviço funcionar:</p>
+ <ul>
+  <li><strong>Stripe</strong> · pagamentos (Estados Unidos e Irlanda)</li>
+  <li><strong>Google</strong> · Analytics e e-mail (Estados Unidos)</li>
+  <li><strong>Hostinger</strong> · hospedagem do site e do sistema, e e-mail (Reino Unido)</li>
+  <li><strong>Meta</strong> · WhatsApp Business, quando o contato é por lá</li>
+  <li>Contabilidade, para emissão de notas e obrigações fiscais</li>
+  <li>Autoridades, quando a lei obrigar</li>
+ </ul>
+ <p>Alguns fornecedores ficam fora do Brasil e da União Europeia. Nesses casos, a transferência segue as garantias previstas na LGPD e no RGPD, como as cláusulas-padrão contratuais aprovadas pela ANPD (Resolução CD/ANPD nº 19/2024) e pela Comissão Europeia. Você pode pedir mais informações sobre essas transferências pelo e-mail de privacidade.</p>
+
+ <h2 class="cl" id="c5"><span class="n">5.</span>Por quanto tempo</h2>
+ <ul>
+  <li>Contatos que não viraram clientes: até 24 meses depois do último contato.</li>
+  <li>Dados de clientes: enquanto a assinatura estiver ativa e, depois, pelo prazo que a lei fiscal exigir (5 anos para registros de cobrança).</li>
+  <li>Dados registrados no sistema: apagados em até 90 dias depois do cancelamento, com 30 dias para o restaurante pedir a exportação.</li>
+ </ul>
+
+ <h3>Registros de acesso</h3>
+ <ul>
+  <li>Como aplicação de internet, a Dext guarda os registros de acesso ao site e ao sistema (data, hora e endereço IP) por 6 meses, em ambiente controlado e sigiloso, como exige o Marco Civil da Internet (Lei 12.965/2014, art. 15).</li>
+ </ul>
+
+ <h2 class="cl" id="c6"><span class="n">6.</span>Cookies</h2>
+ <p>O site usa cookies do Google Analytics para medir visitas. Visitantes da União Europeia veem um aviso e o Analytics só é ativado se aceitarem. Você pode mudar a sua escolha a qualquer momento.</p>
+
+ <h2 class="cl" id="c7"><span class="n">7.</span>Os seus direitos</h2>
+ <p>Você pode pedir, a qualquer momento:</p>
+ <ul>
+  <li>confirmação de que tratamos os seus dados e acesso a eles;</li>
+  <li>correção de dados incompletos ou errados;</li>
+  <li>anonimização, bloqueio ou eliminação de dados desnecessários;</li>
+  <li>portabilidade;</li>
+  <li>informação sobre com quem compartilhamos;</li>
+  <li>revogação do consentimento, quando ele for a base legal;</li>
+  <li>oposição a um tratamento.</li>
+ </ul>
+ <div class="destaque">
+  <p>Para isso, escreva para <a href="mailto:privacidade@dextdigital.com.br">privacidade@dextdigital.com.br</a>. Respondemos em até 15 dias.</p>
+ </div>
+ <p>Se o pedido for sobre dados que um restaurante registrou no sistema (por exemplo, você é cliente ou funcionário de um restaurante que usa a Dext), o responsável por esses dados é o restaurante. Encaminhamos o pedido a ele e ajudamos a responder. Se não ficar satisfeito, pode reclamar à ANPD, no Brasil, ou à autoridade de proteção de dados do seu país, na União Europeia.</p>
+
+ <h2 class="cl" id="c8"><span class="n">8.</span>Segurança</h2>
+ <p>Usamos conexão segura (HTTPS), acesso restrito por senha e fornecedores com padrões reconhecidos de segurança. Se houver um incidente que possa trazer risco ou dano relevante aos titulares, avisamos os afetados e a ANPD nos prazos da Resolução CD/ANPD nº 15/2024 e, quando se aplicar, a autoridade europeia. Quando o incidente atingir dados que o restaurante registrou no sistema, avisamos primeiro o restaurante, que é o controlador desses dados.</p>
+
+ <h2 class="cl" id="c9"><span class="n">9.</span>Mudanças</h2>
+ <p>Quando esta Política mudar, atualizamos a data acima. Mudanças relevantes são avisadas por e-mail aos clientes.</p>
+
+ <footer class="rodape">
+  <p><strong>Dext Estratégias Digitais LTDA</strong> · CNPJ 60.477.038/0001-81</p>
+  <p>Rua Bom Pastor, 529, sala 03, Ipiranga, São Paulo/SP, CEP 04203-050</p>
+  <p><a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a> · <a href="https://wa.me/5511940852805" target="_blank" rel="noopener">+55 11 94085-2805</a></p>
+  <div class="links">
+   <a href="../termos">Termos de Uso</a>
+   <a href="../termos#anexo">Anexo de Tratamento de Dados</a>
+   <a href="#c6" data-cookies>Cookies</a>
+   <a href="../">Voltar ao site</a>
+  </div>
+ </footer>
+
+</main>
+</body>
+</html>
