@@ -31,6 +31,17 @@ const SITE       = 'https://dextdigital.com.br';
 const PAINEL     = 'https://dashboard.stripe.com/subscriptions/';
 const TOLERANCIA = 300;  // segundos de diferença aceitos no carimbo da Stripe
 
+/* ---- o painel do Dext Sistema de Gestão ----
+   Quem abre a conta do cliente, suspende por falta de pagamento e fecha no
+   cancelamento é o painel. Até esta chamada existir, tudo isso era um e-mail
+   para alguém fazer à mão.
+
+   O segredo mora FORA do public_html, no mesmo servidor, e nunca passou por
+   e-mail nem por este repositório: o Fellipe gerou nos dois lados. O arquivo
+   só faz `return '...';`. */
+const PAINEL_URL = 'https://app.dextdigital.com.br/dext/assinaturas';
+const SEGREDO_ARQ = __DIR__ . '/../dext-assinaturas-segredo.php';
+
 /* A Stripe repete a chamada até receber 200. Mesmo quando não há nada a fazer
    a resposta é 200, senão ela fica reenviando um evento que a gente ignora
    de propósito. O texto da resposta aparece em Entregas de eventos, no
@@ -100,16 +111,22 @@ $id   = (string) ($evento['id'] ?? '');
 $obj  = (array) ($evento['data']['object'] ?? []);
 
 if (!in_array($tipo, [
-  'checkout.session.completed', 'invoice.payment_failed',
-  'customer.subscription.deleted', 'customer.subscription.trial_will_end',
+  'checkout.session.completed', 'invoice.payment_failed', 'invoice.paid',
+  'customer.subscription.deleted', 'customer.subscription.updated',
+  'customer.subscription.trial_will_end',
 ], true)) {
   encerra(200, 'ignorado: ' . $tipo);
 }
 
-/* A Stripe reenvia o mesmo evento quando a resposta demora. Sem esta marca
-   o mesmo aviso chegaria três vezes. */
-$marca = sys_get_temp_dir() . '/dext-stripe-' . preg_replace('/[^a-zA-Z0-9_]/', '', $id);
-if ($id !== '' && is_file($marca) && filemtime($marca) > time() - 86400) { encerra(200, 'repetido'); }
+/* A Stripe reenvia o mesmo evento quando a resposta demora ou dá erro. A marca
+   impede que o mesmo aviso chegue três vezes ao adm@.
+
+   Ela NÃO corta o resto: se o painel estiver fora do ar, esta resposta vai ser
+   500 de propósito, para a Stripe tentar de novo, e na volta a chamada ao
+   painel precisa acontecer outra vez. O painel ignora id_evento repetido, então
+   repetir lá é seguro; repetir o e-mail é que não é. */
+$marca    = sys_get_temp_dir() . '/dext-stripe-' . preg_replace('/[^a-zA-Z0-9_]/', '', $id);
+$repetido = $id !== '' && is_file($marca) && filemtime($marca) > time() - 86400;
 @touch($marca);
 
 /* =========================================================================
@@ -175,8 +192,18 @@ const MOTIVOS = [
    ========================================================================= */
 /* Cada evento devolve a mesma forma: o aviso é montado uma vez só, lá embaixo. */
 
-$aviso = null;   // o que vai para o adm@
-$boas  = null;   // o que vai para o cliente, só na venda
+$aviso  = null;   // o que vai para o adm@
+$boas   = null;   // o que vai para o cliente, só na venda
+$painel = null;   // o que vai para o Dext Sistema de Gestão, em todos
+
+/* A data que o painel chama de fim_periodo. Nas versões novas da API ela
+   mudou de lugar: saiu da assinatura e foi para cada item dela. Lemos os dois
+   para a conta não quebrar no dia em que a Stripe virar a versão da conta. */
+function fimDoPeriodo(array $assinatura): string {
+  $ts = (int) ($assinatura['current_period_end']
+            ?? $assinatura['items']['data'][0]['current_period_end'] ?? 0);
+  return $ts > 0 ? date('Y-m-d', $ts) : '';
+}
 
 if ($tipo === 'checkout.session.completed') {
   $cli         = (array) ($obj['customer_details'] ?? []);
@@ -228,6 +255,21 @@ if ($tipo === 'checkout.session.completed') {
              'mensal' => $mensal, 'cartao' => $cartao];
   }
 
+  /* O país decide idioma, fuso e documento fiscal do sistema do cliente. Vem
+     do endereço que a Stripe coletou; sem ele o painel assume Brasil, que é
+     onde está quase toda a base. */
+  $painel = [
+    'customer'     => trim((string) ($obj['customer'] ?? '')),
+    'subscription' => $assinatura,
+    'plano'        => $plano,
+    'restaurante'  => $restaurante,
+    'nome'         => $nome,
+    'email'        => $email,
+    'telefone'     => $telefone,
+    'pais'         => strtoupper(trim((string) ($cli['address']['country'] ?? ''))),
+    'fim_periodo'  => fimDoPeriodo($assin),
+  ];
+
   $aviso = [
     'kicker'  => 'Nova assinatura',
     'titulo'  => $restaurante !== '' ? $restaurante : $nome,
@@ -254,10 +296,23 @@ elseif ($tipo === 'invoice.payment_failed') {
 
   /* o restaurante foi gravado na assinatura na hora da venda */
   $restaurante = '';
+  $a = [];
   if ($assinatura !== '' && $chave !== '') {
     $a = stripeBusca('/v1/subscriptions/' . rawurlencode($assinatura), $chave);
     $restaurante = trim((string) ($a['metadata']['restaurante'] ?? ''));
   }
+
+  $painel = [
+    'customer'     => trim((string) ($obj['customer'] ?? '')),
+    'subscription' => $assinatura,
+    'plano'        => trim((string) ($a['metadata']['plano'] ?? '')),
+    'restaurante'  => $restaurante,
+    'nome'         => $nome,
+    'email'        => $email,
+    'telefone'     => $telefone,
+    'pais'         => strtoupper(trim((string) ($obj['customer_address']['country'] ?? ''))),
+    'fim_periodo'  => fimDoPeriodo($a),
+  ];
 
   $aviso = [
     'kicker'  => 'Cartão recusado',
@@ -267,12 +322,34 @@ elseif ($tipo === 'invoice.payment_failed') {
                   'WhatsApp' => $telefone, 'Valor' => $valor,
                   'Tentativa' => $tentativa > 0 ? (string) $tentativa : '',
                   'Próxima tentativa' => $proxima, 'Assinatura' => $assinatura],
-    'recado'  => 'A Stripe tenta de novo sozinha. Se todas falharem, a assinatura é cancelada '
-               . 'e o acesso ao sistema precisa ser fechado à mão. Vale ligar antes disso.',
+    'recado'  => 'A Stripe tenta de novo sozinha. No 7.º dia sem pagar, o painel suspende o '
+               . 'sistema do cliente, com os dados guardados. Vale ligar antes disso.',
     'assunto' => 'Cartão recusado · ' . ($restaurante !== '' ? $restaurante : $nome),
     'email'   => $email,
     'telefone'=> $telefone,
     'link'    => $assinatura !== '' ? PAINEL . $assinatura : '',
+  ];
+}
+
+/* Os dois eventos abaixo só interessam ao painel: um reabre o acesso de quem
+   pagou depois de uma falha, o outro troca as partes do sistema quando o
+   cliente muda de plano. Nenhum dos dois vira e-mail, porque acontecem no
+   funcionamento normal e encheriam a caixa do adm@ até ninguém mais ler. */
+elseif ($tipo === 'invoice.paid' || $tipo === 'customer.subscription.updated') {
+  $ehFatura   = $tipo === 'invoice.paid';
+  $assinatura = trim((string) ($ehFatura ? ($obj['subscription'] ?? '') : ($obj['id'] ?? '')));
+
+  $a = $ehFatura && $assinatura !== '' && $chave !== ''
+     ? stripeBusca('/v1/subscriptions/' . rawurlencode($assinatura), $chave)
+     : $obj;
+
+  $painel = [
+    'customer'     => trim((string) ($obj['customer'] ?? '')),
+    'subscription' => $assinatura,
+    'plano'        => trim((string) ($a['metadata']['plano'] ?? '')),
+    'restaurante'  => trim((string) ($a['metadata']['restaurante'] ?? '')),
+    'nome'         => '', 'email' => '', 'telefone' => '', 'pais' => '',
+    'fim_periodo'  => fimDoPeriodo($a),
   ];
 }
 
@@ -282,6 +359,18 @@ elseif ($tipo === 'customer.subscription.deleted') {
   $restaurante = trim((string) ($obj['metadata']['restaurante'] ?? ''));
   $assinatura  = trim((string) ($obj['id'] ?? ''));
   $det         = (array) ($obj['cancellation_details'] ?? []);
+
+  $painel = [
+    'customer'     => trim((string) ($obj['customer'] ?? '')),
+    'subscription' => $assinatura,
+    'plano'        => $plano,
+    'restaurante'  => $restaurante,
+    'nome'         => $cli['nome'] ?? '',
+    'email'        => $cli['email'] ?? '',
+    'telefone'     => $cli['telefone'] ?? '',
+    'pais'         => '',
+    'fim_periodo'  => fimDoPeriodo($obj),
+  ];
   $motivo      = MOTIVOS[(string) ($det['feedback'] ?? '')] ?? '';
   $comentario  = trim((string) ($det['comment'] ?? ''));
 
@@ -293,7 +382,8 @@ elseif ($tipo === 'customer.subscription.deleted') {
                   'E-mail' => $cli['email'] ?? '', 'WhatsApp' => $cli['telefone'] ?? '',
                   'Plano' => $plano, 'Motivo' => $motivo, 'Comentário' => $comentario,
                   'Assinatura' => $assinatura],
-    'recado'  => 'O acesso ao sistema continua aberto até alguém fechar à mão.',
+    'recado'  => 'O painel já fechou o acesso. Começaram a contar 30 dias para o cliente '
+               . 'pedir a exportação dos dados e 90 para a exclusão.',
     'assunto' => 'Cancelamento · ' . ($restaurante !== '' ? $restaurante : ($cli['nome'] ?? 'cliente')),
     'email'   => $cli['email'] ?? '',
     'telefone'=> $cli['telefone'] ?? '',
@@ -307,6 +397,18 @@ elseif ($tipo === 'customer.subscription.trial_will_end') {
   $restaurante = trim((string) ($obj['metadata']['restaurante'] ?? ''));
   $assinatura  = trim((string) ($obj['id'] ?? ''));
   $fim         = quando(isset($obj['trial_end']) ? (int) $obj['trial_end'] : null);
+
+  $painel = [
+    'customer'     => trim((string) ($obj['customer'] ?? '')),
+    'subscription' => $assinatura,
+    'plano'        => $plano,
+    'restaurante'  => $restaurante,
+    'nome'         => $cli['nome'] ?? '',
+    'email'        => $cli['email'] ?? '',
+    'telefone'     => $cli['telefone'] ?? '',
+    'pais'         => '',
+    'fim_periodo'  => fimDoPeriodo($obj),
+  ];
 
   $aviso = [
     'kicker'  => 'O teste está acabando',
@@ -325,7 +427,86 @@ elseif ($tipo === 'customer.subscription.trial_will_end') {
 }
 
 /* =========================================================================
-   4) o aviso
+   4) o painel do sistema
+   =========================================================================
+   Vai primeiro, antes dos e-mails: é ele que abre, suspende e fecha a conta
+   do cliente. Se falhar, esta resposta é 500 e a Stripe traz o evento de
+   volta mais tarde. O e-mail não repete nessa volta, porque a marca lá em
+   cima já foi posta; a chamada aqui repete, e o painel ignora id_evento
+   repetido justamente para isso. */
+function chamaPainel(array $dados, string $tipo, string $id, int $criado): array {
+  if (!is_file(SEGREDO_ARQ)) { return [0, 'sem o arquivo do segredo (' . SEGREDO_ARQ . ')']; }
+  $segredo = trim((string) require SEGREDO_ARQ);
+  if (strlen($segredo) < 32) { return [0, 'segredo com menos de 32 caracteres']; }
+
+  $corpo = json_encode(
+    ['evento' => $tipo, 'id_evento' => $id, 'criado' => (string) $criado] + $dados,
+    JSON_UNESCAPED_UNICODE);
+
+  $ts    = (string) time();
+  $nonce = bin2hex(random_bytes(16));   // 32 caracteres, letras e números
+
+  $ch = curl_init(PAINEL_URL);
+  curl_setopt_array($ch, [
+    CURLOPT_POST           => true,
+    CURLOPT_POSTFIELDS     => $corpo,
+    CURLOPT_RETURNTRANSFER => true,
+    CURLOPT_TIMEOUT        => 8,
+    CURLOPT_SSL_VERIFYPEER => true,
+    CURLOPT_SSL_VERIFYHOST => 2,
+    CURLOPT_HTTPHEADER     => [
+      'Content-Type: application/json',
+      'X-Dext-Ts: ' . $ts,
+      'X-Dext-Nonce: ' . $nonce,
+      'X-Dext-Assinatura: ' . hash_hmac('sha256', $ts . "\n" . $nonce . "\n" . $corpo, $segredo),
+    ],
+  ]);
+  $resp = curl_exec($ch);
+  $erro = curl_error($ch);
+  $st   = (int) curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  /* sem curl_close() de propósito, pelo mesmo motivo do stripe.php */
+
+  if ($resp === false) { return [0, 'cURL: ' . ($erro ?: 'falhou')]; }
+  return [$st, mb_substr((string) $resp, 0, 200)];
+}
+
+/* A chamada ao painel é a ÚLTIMA coisa que acontece, depois dos e-mails, e
+   esta função é quem encerra a resposta nos dois caminhos.
+
+   A ordem importa e eu errei nela antes de testar: com o painel na frente,
+   enquanto o segredo não existisse a resposta seria 500 e nenhum e-mail
+   sairia. Ou seja, no dia da primeira venda de verdade, ninguém ficaria
+   sabendo dela. Agora o aviso humano sai sempre, e a Stripe traz o evento de
+   volta até o painel aceitar. */
+function fechaComPainel(?array $painel, string $tipo, string $id, int $criado, string $resto): never {
+  if ($painel === null) { encerra(200, $resto); }
+
+  [$st, $diz] = chamaPainel($painel, $tipo, $id, $criado);
+
+  if ($st === 200) { encerra(200, 'painel ok, ' . $resto); }
+
+  if ($st === 400) {
+    /* 400 é dado mal montado deste lado: insistir não conserta e só faria a
+       Stripe repetir por três dias. Responde 200, mas grita no log, porque
+       quer dizer que uma venda não virou conta e alguém precisa olhar. */
+    error_log('[dext] PAINEL RECUSOU 400 em ' . $tipo . ' (' . $id . '): ' . $diz);
+    encerra(200, 'painel 400, dado errado deste lado (' . $diz . '), ' . $resto);
+  }
+
+  error_log('[dext] painel falhou (' . $st . ') em ' . $tipo . ' (' . $id . '): ' . $diz);
+  encerra(500, 'painel falhou (' . $st . '): ' . $diz . ' | ' . $resto . ' | tente de novo');
+}
+
+$criado = (int) ($evento['created'] ?? time());
+
+/* Eventos que só interessam ao painel acabam aqui, e o repetido também: o
+   e-mail dele já saiu na primeira passagem. */
+if ($aviso === null || $repetido) {
+  fechaComPainel($painel, $tipo, $id, $criado, ($repetido ? 'repetido' : $tipo));
+}
+
+/* =========================================================================
+   5) o aviso para o adm@
    ========================================================================= */
 const R_ROTULO = 'font:600 11px/1.4 Helvetica,Arial,sans-serif;letter-spacing:.12em;text-transform:uppercase;color:#9a9a9a';
 const R_TEXTO  = 'font:400 16px/1.6 Helvetica,Arial,sans-serif;color:#111111';
@@ -508,8 +689,8 @@ if ($boas !== null) {
    não saiu, e é ele que aparece em Entregas de eventos. */
 $placar = 'aviso ' . ($saiuAviso ? 'ok' : 'FALHOU');
 if ($saiuBoas !== null) { $placar .= ', boas-vindas ' . ($saiuBoas ? 'ok' : 'FALHOU'); }
-
-if ($saiuAviso && ($saiuBoas === null || $saiuBoas)) {
-  encerra(200, 'ok, ' . $tipo . ': ' . $placar . ' (' . DESTINO . ')');
+if (!$saiuAviso || $saiuBoas === false) {
+  $placar .= ' (' . mb_substr($erro !== '' ? $erro : $erroBoas, 0, 160) . ')';
 }
-encerra(200, 'evento ok, mas ' . $placar . ': ' . mb_substr($erro !== '' ? $erro : $erroBoas, 0, 280));
+
+fechaComPainel($painel, $tipo, $id, $criado, $tipo . ': ' . $placar);
