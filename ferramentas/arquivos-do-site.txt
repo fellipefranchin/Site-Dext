@@ -1,0 +1,55 @@
+# ===== O que é o site, e só o site =====
+#
+# Lista única, lida pelo deploy.sh e pelo zip-de-deploy.py, para os dois não
+# divergirem. Caminho relativo à raiz do repositório, um por linha.
+#
+# O servidor é compartilhado: dentro do mesmo public_html moram o Dext Sistema
+# de Gestão (dext/, painel/, demo/), as credenciais e o .private/. Por isso a
+# lista é escrita à mão e o deploy nunca apaga nada: o que não está aqui não é
+# tocado.
+#
+# NÃO entram, e cada um tem o seu motivo:
+#   *-config.php          credenciais que vivem no servidor. Se entrassem, um
+#                         deploy apagaria a senha de produção
+#   mockup-*.jpg          peças de marca, vivem no git e não no site
+#   raio-x/, o proxy      não está no ar e não pode ir antes de a Política de
+#                         Privacidade dizer que o Raio-X existe, o que guarda
+#                         e por quanto tempo
+#   ferramentas/          ferramenta de quem edita
+#   briefing *.md         documento interno
+
+index.html
+.htaccess
+og-image.jpg
+robots.txt
+sitemap.xml
+
+contato.php
+smtp.php
+stripe.php
+stripe-checkout.php
+stripe-webhook.php
+
+obrigado/index.html
+privacidade/index.html
+termos/index.html
+
+assets/js/cookies.js
+assets/fonts/Satoshi-Variable.woff2
+
+assets/img/apple-touch-icon.png
+assets/img/favicon-32.png
+assets/img/favicon-192.png
+assets/img/favicon-512.png
+assets/img/logo-claro.svg
+assets/img/logo-escuro.svg
+assets/img/logo-email.png
+assets/img/simbolo-branco.svg
+assets/img/simbolo-vermelho.svg
+assets/img/hist-fellipe.jpg
+assets/img/fellipe-operacao.jpg
+assets/img/fellipe-retrato.jpg
+assets/img/app-reservas.jpg
+assets/img/app-email.jpg
+assets/img/app-login-desktop.png
+assets/img/app-login-mobile.png
