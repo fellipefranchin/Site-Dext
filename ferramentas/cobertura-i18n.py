@@ -125,7 +125,11 @@ def main():
             vistos.add(t)
             ordem.append(t)
 
-    tem_letra = lambda t: re.search(r'[A-Za-zÀ-ÿ]{2}', t) is not None
+    # Uma letra basta para entrar na conta. A regra antiga pedia duas letras
+    # seguidas e por isso deixou passar "2022 a 2023", que ficou em português
+    # na linha do tempo do site em inglês até 12/11/2026: o "a" é uma letra só.
+    # O preço de afrouxar são quatro linhas de "R$ 690", que não se traduzem.
+    tem_letra = lambda t: re.search(r'[A-Za-zÀ-ÿ]', t) is not None
     faltando = [t for t in ordem if tem_letra(t) and t not in dic]
     orfas = [k for k in dic if k not in vistos]
 
