@@ -110,6 +110,13 @@ $tipo = (string) ($evento['type'] ?? '');
 $id   = (string) ($evento['id'] ?? '');
 $obj  = (array) ($evento['data']['object'] ?? []);
 
+/* O modo de teste manda evento pela mesma porta e o e-mail chega na mesma
+   caixa do de verdade. Em 06 e 10/11 um "Cartão recusado" de uma fatura de
+   teste foi lido como cliente real. O assunto passa a avisar, e enquanto a
+   conta não virar para produção isso vale para todo e-mail que sair daqui. */
+$ehTeste = array_key_exists('livemode', $evento) && $evento['livemode'] === false;
+$assuntoDe = static fn(string $a): string => $ehTeste ? '[TESTE] ' . $a : $a;
+
 if (!in_array($tipo, [
   'checkout.session.completed', 'invoice.payment_failed', 'invoice.paid',
   'customer.subscription.deleted', 'customer.subscription.updated',
@@ -294,6 +301,16 @@ elseif ($tipo === 'invoice.payment_failed') {
   $proxima    = quando(isset($obj['next_payment_attempt']) ? (int) $obj['next_payment_attempt'] : null);
   $valor      = reais(isset($obj['amount_due']) ? (int) $obj['amount_due'] : null);
 
+  /* A fatura traz o nome só quando ele foi preenchido na venda. Sem ele o
+     aviso saía como "Cliente", que não diz a quem ligar. O cadastro na
+     Stripe sabe: uma ida a mais vale mais do que um aviso cego. */
+  if ($nome === '' || $email === '' || $telefone === '') {
+    $c        = buscaCliente((string) ($obj['customer'] ?? ''), $chave);
+    $nome     = $nome     !== '' ? $nome     : trim((string) ($c['nome']     ?? ''));
+    $email    = $email    !== '' ? $email    : trim((string) ($c['email']    ?? ''));
+    $telefone = $telefone !== '' ? $telefone : trim((string) ($c['telefone'] ?? ''));
+  }
+
   /* o restaurante foi gravado na assinatura na hora da venda */
   $restaurante = '';
   $a = [];
@@ -314,17 +331,29 @@ elseif ($tipo === 'invoice.payment_failed') {
     'fim_periodo'  => fimDoPeriodo($a),
   ];
 
+  $plano    = trim((string) ($a['metadata']['plano'] ?? ''));
+  $cliente  = trim((string) ($obj['customer'] ?? ''));
+  /* Sem nome, sem restaurante e sem e-mail, o aviso ainda precisa dizer de
+     quem se trata: o ID do cliente é o que resta, e é o que abre o cadastro
+     na Stripe. "Cliente" sozinho não leva a lugar nenhum. */
+  $quem = $restaurante !== '' ? $restaurante
+        : ($nome !== '' ? $nome
+        : ($email !== '' ? $email
+        : ($cliente !== '' ? $cliente : 'Cliente')));
+
   $aviso = [
     'kicker'  => 'Cartão recusado',
-    'titulo'  => $restaurante !== '' ? $restaurante : ($nome !== '' ? $nome : 'Cliente'),
+    'titulo'  => $quem,
     'sub'     => trim($valor . ' · tentativa ' . $tentativa, ' ·'),
     'linhas'  => ['Nome' => $nome, 'Restaurante' => $restaurante, 'E-mail' => $email,
-                  'WhatsApp' => $telefone, 'Valor' => $valor,
+                  'WhatsApp' => $telefone, 'Plano' => PLANOS[$plano] ?? $plano,
+                  'Valor' => $valor,
                   'Tentativa' => $tentativa > 0 ? (string) $tentativa : '',
-                  'Próxima tentativa' => $proxima, 'Assinatura' => $assinatura],
+                  'Próxima tentativa' => $proxima, 'Assinatura' => $assinatura,
+                  'Cliente' => $cliente],
     'recado'  => 'A Stripe tenta de novo sozinha. No 7.º dia sem pagar, o painel suspende o '
                . 'sistema do cliente, com os dados guardados. Vale ligar antes disso.',
-    'assunto' => 'Cartão recusado · ' . ($restaurante !== '' ? $restaurante : $nome),
+    'assunto' => 'Cartão recusado · ' . $quem,
     'email'   => $email,
     'telefone'=> $telefone,
     'link'    => $assinatura !== '' ? PAINEL . $assinatura : '',
@@ -520,7 +549,7 @@ foreach ($aviso['linhas'] as $rotulo => $valor) {
   $mostra = $e($valor);
   if ($rotulo === 'E-mail')   { $mostra = '<a href="mailto:' . $e($valor) . '" style="color:#e81840;text-decoration:none">' . $mostra . '</a>'; }
   if ($rotulo === 'WhatsApp' && $wa !== '') { $mostra = '<a href="' . $e($wa) . '" style="color:#e81840;text-decoration:none">' . $mostra . '</a>'; }
-  if ($rotulo === 'Assinatura') { $mostra = '<span style="font-family:ui-monospace,Menlo,monospace;font-size:13px;color:#9a9a9a">' . $mostra . '</span>'; }
+  if ($rotulo === 'Assinatura' || $rotulo === 'Cliente') { $mostra = '<span style="font-family:ui-monospace,Menlo,monospace;font-size:13px;color:#9a9a9a">' . $mostra . '</span>'; }
   $linhas .= '<tr>'
     . '<td valign="top" style="padding:14px 0;border-bottom:1px solid #ececeb;' . R_ROTULO . ';white-space:nowrap">' . $e((string) $rotulo) . '</td>'
     . '<td valign="top" style="padding:14px 0 14px 24px;border-bottom:1px solid #ececeb;' . R_TEXTO . '">' . $mostra . '</td>'
@@ -562,7 +591,7 @@ $cfgSmtp = smtpConfig(__DIR__ . '/contato-config.php');
 
 $erro = '';
 $saiuAviso = smtpEnvia($cfgSmtp, REMETENTE, DESTINO,
-  $limpa((string) $aviso['assunto']), $html, $texto,
+  $assuntoDe($limpa((string) $aviso['assunto'])), $html, $texto,
   ($aviso['email'] ?? '') !== '' ? $limpa((string) $aviso['email']) : '', $erro);
 
 /* O aviso falhou, mas o evento aconteceu. Responder erro faria a Stripe
@@ -676,7 +705,7 @@ if ($boas !== null) {
     . "Dext Estratégias Digitais LTDA · CNPJ 60.477.038/0001-81";
 
   $saiuBoas = smtpEnvia($cfgSmtp, REMETENTE, $limpa((string) $boas['email']),
-    'Bem-vindo à Dext · seus 30 dias grátis começaram', $htmlB, $textoB, '', $erroBoas);
+    $assuntoDe('Bem-vindo à Dext · seus 30 dias grátis começaram'), $htmlB, $textoB, '', $erroBoas);
 
   if (!$saiuBoas) { error_log('[dext] boas-vindas não saiu para ' . $boas['email'] . ': ' . $erroBoas); }
 }
