@@ -1,13 +1,21 @@
 /* ===== Dext · aviso de cookies e porteiro do Analytics =====
 
-   A Política de Privacidade promete que o visitante europeu vê um aviso e
-   que o Analytics só liga se ele aceitar. Então o Analytics não pode mais
-   carregar sozinho no <head>: quem decide se ele carrega é este arquivo.
+   A Política de Privacidade promete que o visitante vê um aviso e que o
+   Analytics só liga se ele aceitar. Então o Analytics não pode carregar
+   sozinho no <head>: quem decide se ele carrega é este arquivo.
 
    Por que um arquivo só, fora da página, num projeto em que tudo é inline:
    a escolha do visitante vale para o site inteiro. Se cada página tivesse a
    sua cópia, bastaria uma ficar para trás numa edição para o site aceitar
    numa página o que recusou na outra, e o erro seria invisível.
+
+   O aviso aparece para todo mundo, não só para quem está na Europa. O fuso
+   horário era um palpite: errava com VPN e com relógio trocado, e a frase
+   publicada na Política continua verdadeira perguntando a mais gente.
+
+   Consent Mode v2: os quatro sinais entram negados antes de qualquer tag
+   existir. Quando o Pixel da Meta e o Google Ads entrarem, obedecem ao
+   mesmo aviso sem precisar de código novo aqui.
 
    window.gtag existe sempre, mesmo sem consentimento, porque o resto do
    site chama gtag() direto. Sem consentimento ele engole a chamada em vez
@@ -17,26 +25,48 @@
   'use strict';
 
   var MEDIDA = 'G-BF7BPXKE4Z';
-  var CHAVE  = 'dext_cookies';     // 'sim' | 'nao'
+  var CHAVE  = 'dext_cookies';              // 'sim|<quando>' ou 'nao|<quando>'
+  var SEIS_MESES = 183 * 24 * 60 * 60 * 1000;
 
-  function le()      { try { return localStorage.getItem(CHAVE); } catch (e) { return null; } }
-  function guarda(v) { try { localStorage.setItem(CHAVE, v); } catch (e) {} }
+  function guarda(v) {
+    try { localStorage.setItem(CHAVE, v + '|' + Date.now()); } catch (e) {}
+  }
 
-  /* O fuso horário é um palpite, não um documento: erra com VPN e com relógio
-     trocado. Erra para o lado seguro, mostrando o aviso a mais gente do que o
-     necessário, nunca a menos. Inclui Reino Unido, Suíça e Noruega de
-     propósito: têm lei própria de proteção de dados e nada se perde em
-     perguntar. */
-  function naEuropa() {
-    var tz = '';
-    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) {}
-    if (tz.indexOf('Europe/') === 0) return true;
-    return ['Atlantic/Canary', 'Atlantic/Madeira', 'Atlantic/Azores', 'Atlantic/Reykjavik',
-            'Atlantic/Faroe', 'Asia/Nicosia', 'Asia/Famagusta'].indexOf(tz) >= 0;
+  /* A escolha vale 6 meses. Depois disso o aviso volta, porque consentimento
+     guardado para sempre deixa de ser escolha e vira cadastro. */
+  function le() {
+    var bruto = null;
+    try { bruto = localStorage.getItem(CHAVE); } catch (e) { return null; }
+    if (!bruto) return null;
+
+    var parte = bruto.split('|');
+    var valor = parte[0];
+    var quando = Number(parte[1] || 0);
+    if (valor !== 'sim' && valor !== 'nao') return null;
+
+    /* escolha feita antes de existir data guardada: vale, e os 6 meses
+       passam a contar de hoje */
+    if (!quando) { guarda(valor); return valor; }
+
+    if (Date.now() - quando > SEIS_MESES) return null;
+    return valor;
   }
 
   /* ---- Analytics ---- */
   window.dataLayer = window.dataLayer || [];
+
+  /* sinal() entra na fila sempre, com ou sem consentimento: é por ele que o
+     Consent Mode fala. gtag() é o que o resto do site usa, e esse fica mudo
+     até o visitante aceitar. */
+  function sinal() { window.dataLayer.push(arguments); }
+
+  sinal('consent', 'default', {
+    ad_storage: 'denied',
+    ad_user_data: 'denied',
+    ad_personalization: 'denied',
+    analytics_storage: 'denied'
+  });
+
   window.gtag = window.gtag || function () {
     if (window.__dextGA) { window.dataLayer.push(arguments); }
   };
@@ -44,6 +74,7 @@
   function ligaAnalytics() {
     if (window.__dextGA) return;
     window.__dextGA = true;
+    sinal('consent', 'update', { analytics_storage: 'granted' });
     var s = document.createElement('script');
     s.async = true;
     s.src = 'https://www.googletagmanager.com/gtag/js?id=' + MEDIDA;
@@ -55,12 +86,12 @@
   /* ---- o aviso ---- */
   var TEXTO = {
     pt: {
-      corpo: 'Este site usa cookies do Google Analytics para medir visitas. Sem eles, o site funciona igual.',
-      sim: 'Aceitar', nao: 'Recusar', pol: 'Política de Privacidade'
+      corpo: 'Usamos cookies do Google Analytics para entender como o site é usado. Eles só ligam se você aceitar.',
+      sim: 'Aceitar', nao: 'Recusar', mais: 'Saber mais'
     },
     en: {
-      corpo: 'This site uses Google Analytics cookies to measure visits. Without them, the site works the same.',
-      sim: 'Accept', nao: 'Decline', pol: 'Privacy Policy'
+      corpo: 'We use Google Analytics cookies to understand how the site is used. They only turn on if you accept.',
+      sim: 'Accept', nao: 'Decline', mais: 'Learn more'
     }
   };
 
@@ -108,7 +139,7 @@
     caixa = document.createElement('div');
     caixa.id = 'dext-cookies';
     caixa.setAttribute('role', 'dialog');
-    caixa.setAttribute('aria-label', t.pol);
+    caixa.setAttribute('aria-label', t.mais);
 
     var dentro = document.createElement('div');
     dentro.className = 'dentro';
@@ -116,8 +147,8 @@
     var p = document.createElement('p');
     p.appendChild(document.createTextNode(t.corpo + ' '));
     var a = document.createElement('a');
-    a.href = '/privacidade';
-    a.textContent = t.pol;
+    a.href = '/privacidade#c6';
+    a.textContent = t.mais;
     p.appendChild(a);
 
     var bts = document.createElement('div');
@@ -127,6 +158,7 @@
     var sim = document.createElement('button');
     sim.type = 'button'; sim.className = 'sim'; sim.textContent = t.sim;
 
+    /* nenhum dos dois vem marcado: a escolha só existe depois do clique */
     nao.addEventListener('click', function () { guarda('nao'); esconde(); });
     sim.addEventListener('click', function () { guarda('sim'); ligaAnalytics(); esconde(); });
 
@@ -151,11 +183,7 @@
        perguntar de novo a quem já respondeu não é perguntar, é insistir */
     if (navigator.globalPrivacyControl === true) { guarda('nao'); return; }
 
-    if (naEuropa()) { monta(); return; }
-
-    /* fora da Europa o Analytics segue como sempre foi. A troca para
-       perguntar a todo mundo é uma linha: apagar este if e deixar monta(). */
-    ligaAnalytics();
+    monta();
   }
 
   /* o rodapé de cada página tem um [data-cookies] para reabrir a escolha,
