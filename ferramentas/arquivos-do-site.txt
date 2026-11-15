@@ -49,6 +49,7 @@ assets/img/simbolo-vermelho.svg
 assets/img/hist-fellipe.jpg
 assets/img/fellipe-operacao.jpg
 assets/img/fellipe-retrato.jpg
+assets/img/fellipe-fundador.jpg
 assets/img/app-reservas.jpg
 assets/img/app-email.jpg
 assets/img/app-login-desktop.png
