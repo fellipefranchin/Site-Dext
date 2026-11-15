@@ -265,7 +265,17 @@ if ($tipo === 'checkout.session.completed') {
   $pm     = $assin['default_payment_method'] ?? null;
   $cartao = is_array($pm) ? trim((string) ($pm['card']['last4'] ?? '')) : '';
 
-  if ($email !== '') {
+  /* Quem abriu o checkout decide quem fala com o cliente.
+     Venda que nasceu na tela /teste do Gestor traz client_reference_id: o
+     Gestor manda UM e-mail só, com o acesso ao sistema, as datas, o valor e o
+     link de cancelamento. Decisão dele, 15/11/2026: «Um só, com tudo». O
+     e-mail tem de sair de lá porque o endereço do sistema do cliente só
+     existe minutos depois do pagamento, e aqui não dá para saber qual é.
+     Venda pelo checkout do próprio site não tem ref, e aí o e-mail continua
+     saindo daqui: é ele que cumpre a cláusula 6 dos Termos e a exigência das
+     bandeiras de mandar o link de cancelamento em teste grátis. */
+  $refPedido = trim((string) ($obj['client_reference_id'] ?? ''));
+  if ($email !== '' && $refPedido === '') {
     $boas = ['nome' => $nome, 'restaurante' => $restaurante, 'email' => $email,
              'plano' => PLANOS[$plano] ?? $plano, 'fim_teste' => $fimTeste,
              'mensal' => $mensal, 'cartao' => $cartao];
@@ -280,7 +290,7 @@ if ($tipo === 'checkout.session.completed') {
     /* A referência do pedido, quando a sessão nasceu na tela /teste do Gestor.
        Com ela o painel acha o pedido direto; sem ela, acha pelo e-mail, que
        erra se a pessoa pagar com um e-mail diferente do que digitou. */
-    'ref'          => trim((string) ($obj['client_reference_id'] ?? '')),
+    'ref'          => $refPedido,
     'plano'        => $plano,
     'restaurante'  => $restaurante,
     'nome'         => $nome,
