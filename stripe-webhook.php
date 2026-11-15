@@ -219,11 +219,20 @@ if ($tipo === 'checkout.session.completed') {
   $telefone    = trim((string) ($cli['phone'] ?? ''));
   $plano       = trim((string) ($obj['metadata']['plano'] ?? ''));
   $assinatura  = trim((string) ($obj['subscription'] ?? ''));
+  /* O nome da casa chega por dois caminhos, conforme quem abriu a sessão.
+     O checkout do site pergunta num campo próprio da Stripe; o Gestor, que
+     desde a 0.601.0 abre o checkout da tela /teste, já perguntou na tela dele
+     e manda em metadata[restaurante]. Ler só o campo da Stripe deixaria o
+     aviso da venda sem o nome da casa justamente nas vendas novas, e sem dar
+     erro nenhum: o assunto sairia com o nome da pessoa e a linha some. */
   $restaurante = '';
   foreach ((array) ($obj['custom_fields'] ?? []) as $campo) {
     if (($campo['key'] ?? '') === 'restaurante') {
       $restaurante = trim((string) ($campo['text']['value'] ?? ''));
     }
+  }
+  if ($restaurante === '') {
+    $restaurante = trim((string) ($obj['metadata']['restaurante'] ?? ''));
   }
 
   /* Grava o restaurante na assinatura e traz a assinatura de volta. Sem a
@@ -268,6 +277,10 @@ if ($tipo === 'checkout.session.completed') {
   $painel = [
     'customer'     => trim((string) ($obj['customer'] ?? '')),
     'subscription' => $assinatura,
+    /* A referência do pedido, quando a sessão nasceu na tela /teste do Gestor.
+       Com ela o painel acha o pedido direto; sem ela, acha pelo e-mail, que
+       erra se a pessoa pagar com um e-mail diferente do que digitou. */
+    'ref'          => trim((string) ($obj['client_reference_id'] ?? '')),
     'plano'        => $plano,
     'restaurante'  => $restaurante,
     'nome'         => $nome,
