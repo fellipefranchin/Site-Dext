@@ -47,14 +47,29 @@ h1{font-size:clamp(28px,5vw,38px);font-weight:700;color:#fff;letter-spacing:-.02
  <h1>Pronto. O seu teste de 30 dias começou.</h1>
  <p class="sub">Você não paga nada hoje. A primeira mensalidade só é cobrada depois dos 30 dias, e dá para cancelar antes disso, sozinho, pelo link que vai no e-mail.</p>
 
- <div class="passos">
+ <!-- Dois caminhos chegam aqui. O de cima é a venda montada pela Dext, pelo
+      checkout do próprio site; o de baixo é a que nasceu na tela /teste do
+      sistema, em que a conta se cria sozinha. O JS mostra um e esconde o
+      outro. Sem JS fica o de cima, que é o fluxo mais antigo e o mais lento:
+      prometer menos do que se entrega erra para o lado seguro. -->
+ <div class="passos" id="passos-dext">
   <h2>O que acontece agora</h2>
   <div class="passo"><b>1</b><span>A Stripe já mandou o <strong>comprovante</strong> para o seu e-mail, com o link para cancelar ou trocar o cartão quando quiser.</span></div>
   <div class="passo"><b>2</b><span>A gente <strong>monta a sua conta no sistema</strong> e manda o acesso em até <strong>1 dia útil</strong>.</span></div>
   <div class="passo"><b>3</b><span>Com o acesso na mão, a gente <strong>liga para ajudar na configuração</strong> dos primeiros dias, se você quiser.</span></div>
  </div>
 
+ <div class="passos" id="passos-sistema" hidden>
+  <h2>O que acontece agora</h2>
+  <div class="passo"><b>1</b><span>O seu sistema <strong>está sendo criado agora</strong>, e fica pronto em poucos minutos.</span></div>
+  <div class="passo"><b>2</b><span>Você recebe por e-mail o <strong>endereço do seu sistema</strong>, a data e o valor da primeira cobrança e o link para cancelar.</span></div>
+  <div class="passo"><b>3</b><span>Na primeira entrada, a <strong>configuração guiada</strong> leva você pelo logo, pelas cores, pela equipe e pelo resto.</span></div>
+ </div>
+
  <div class="botoes">
+  <!-- aparece só na venda que vem do sistema, e antes do salto: se o salto
+       falhar, o cliente ainda tem como chegar lá com um clique -->
+  <a class="btn btn-red" id="ir-sistema" hidden>Abrir o meu sistema</a>
   <a class="btn btn-red" href="https://wa.me/5511940852805?text=Ol%C3%A1!%20Acabei%20de%20assinar%20o%20Dext%20Sistema%20de%20Gest%C3%A3o." target="_blank" rel="noopener">Falar no WhatsApp</a>
   <a class="btn btn-ghost" href="../">Voltar ao site</a>
  </div>
@@ -63,22 +78,84 @@ h1{font-size:clamp(28px,5vw,38px);font-weight:700;color:#fff;letter-spacing:-.02
 </div>
 
 <script>
-/* Venda para o Analytics. O plano e o valor vêm na URL porque esta página é
-   estática e não fala com a Stripe: quem monta esse endereço é o
-   stripe-checkout.php, logo depois de criar a sessão.
+/* Venda para o Analytics, e a passagem para o sistema.
+
+   O plano e o valor vêm na URL porque esta página é estática e não fala com a
+   Stripe: quem monta esse endereço é quem abriu o checkout, o
+   stripe-checkout.php daqui ou a tela /teste do sistema.
+
+   Por que a venda é contada AQUI e não lá: é neste domínio que o visitante
+   deu ou negou o consentimento de cookies, e é aqui que o GA4 já está. Medir
+   no outro domínio pediria medição entre domínios para o mesmo número.
+
    A marca no sessionStorage existe porque recarregar a página contaria a
    mesma venda de novo e inflaria o relatório. */
-(function(){
+/* 🚨 Espera o cookies.js decidir, e esta espera é a correção de um defeito
+   que existia desde que a página nasceu: este script fica no fim do <body> e
+   rodava ANTES do DOMContentLoaded, que é quando o cookies.js resolve o
+   consentimento e liga o Analytics. Até o consentimento existir, o gtag()
+   engole a chamada de propósito, para nada ficar guardado. Resultado: a
+   venda nunca chegava ao GA4, sem erro nenhum no console.
+
+   O cookies.js registra o listener dele enquanto o <head> é lido, antes
+   deste, e listeners do mesmo evento correm na ordem em que foram
+   registrados. Por isso o dele decide primeiro e o nosso conta depois. */
+function contaVenda(){
  var q=new URLSearchParams(location.search);
- var id=q.get('s')||'', plano=q.get('p')||'', valor=Number(q.get('v')||0);
+ var id=q.get('s')||'', plano=q.get('p')||'', bruto=q.get('v');
+ var moeda=(q.get('m')||'BRL').toUpperCase();
+
+ /* O destino é fixo no código e NUNCA lido da URL: página que salta para onde
+    o endereço mandar é redirecionamento aberto, e vira isca de phishing com o
+    nosso domínio na frente.
+
+    E não basta o id começar com cs_ para saltar. O checkout do próprio site
+    também devolve cs_, e esse cliente não tem pedido no sistema: o salto o
+    deixaria numa página de espera que nunca fica pronta. Quem manda saltar é
+    quem montou o endereço, com ir=sistema. */
+ var SISTEMA='https://app.dextdigital.com.br/teste/pronto?s=';
+ var salta=q.get('ir')==='sistema' && /^cs_[A-Za-z0-9_]{6,200}$/.test(id);
+
+ if(salta){
+  var a=document.getElementById('ir-sistema');
+  a.href=SISTEMA+encodeURIComponent(id);
+  a.hidden=false;
+  document.getElementById('passos-dext').hidden=true;
+  document.getElementById('passos-sistema').hidden=false;
+ }
+
  if(!id) return;
- var marca='dext-venda-'+id;
- try{ if(sessionStorage.getItem(marca)) return; sessionStorage.setItem(marca,'1'); }catch(e){}
- gtag('event','purchase',{
-  transaction_id:id, currency:'BRL', value:valor,
-  items:[{item_id:plano,item_name:plano,price:valor,quantity:1}]
- });
-})();
+
+ var marca='dext-venda-'+id, jaContou=false;
+ try{ jaContou=!!sessionStorage.getItem(marca); if(!jaContou) sessionStorage.setItem(marca,'1'); }catch(e){}
+
+ /* O salto espera o Analytics responder, mas com relógio por cima: quem
+    recusou cookies não gera retorno nenhum, porque o gtag engole a chamada, e
+    sem o relógio essa pessoa ficaria parada aqui para sempre. Vale o que
+    chegar primeiro, e só uma vez. */
+ var vai=null;
+ if(salta){
+  var saltou=false;
+  vai=function(){ if(saltou) return; saltou=true; location.replace(SISTEMA+encodeURIComponent(id)); };
+  setTimeout(vai,1500);
+ }
+
+ if(jaContou){ if(vai) vai(); return; }
+
+ var ev={transaction_id:id, currency:moeda, transport_type:'beacon',
+         items:[{item_id:plano, item_name:plano, quantity:1}]};
+ /* valor ausente não vira zero: zero é uma venda de R$ 0,00 no relatório, que
+    mente sem fazer barulho. Melhor a venda sem receita, que aparece como
+    buraco e alguém pergunta. */
+ if(bruto!==null && bruto!=='' && isFinite(Number(bruto))){
+  ev.value=Number(bruto); ev.items[0].price=Number(bruto);
+ }
+ if(vai) ev.event_callback=vai;
+ gtag('event','purchase',ev);
+}
+
+if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',contaVenda); }
+else { contaVenda(); }
 </script>
 </body>
 </html>
