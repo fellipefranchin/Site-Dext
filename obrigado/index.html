@@ -36,6 +36,12 @@ h1{font-size:clamp(28px,5vw,38px);font-weight:700;color:#fff;letter-spacing:-.02
 .btn-red:hover{background:#c91234;transform:translateY(-2px)}
 .btn-ghost{border-color:#555;color:var(--cinza)}
 .btn-ghost:hover{border-color:var(--cinza);transform:translateY(-2px)}
+/* 🚨 Sem esta linha o hidden do botão não vale nada: o display:inline-block
+   logo acima é regra de autor, e vence o [hidden]{display:none} que o
+   navegador traz de fábrica. Resultado visto no ar: quem comprou pelo
+   checkout do site via um botão "Abrir o meu sistema" sem destino. O .passos
+   escapou por não declarar display nenhum. */
+.btn[hidden]{display:none}
 .rodape{margin-top:34px;font-size:13px;color:#777}
 .rodape a{color:#777}
 </style>
