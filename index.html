@@ -529,6 +529,13 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
    começar depois do texto) e ainda aproxima do modelo do handover, que
    previa 25% para fora. */
 .hero.selo-d::after{right:-15%}
+/* O empurrão acima só resolve enquanto o título cabe nos 940 px de
+   max-width dele. Abaixo de ~1100 o título passa a ocupar a linha
+   inteira, e aí não existe empurrão que o desvie: medido a 692, a
+   parte cheia do degradê voltava a cair 48 px por baixo do texto.
+   Nessa faixa o hero passa a se comportar como no celular, com o selo
+   mais fraco, que é o estado que já estava no ar e funciona. */
+@media(max-width:1100px){.hero.selo-d::after{right:-6%;opacity:.18}}
 /* no claro o mesmo vermelho pesa o dobro e vira mancha */
 .selo-d.light::after{opacity:.14}
 /* o conteúdo sobe uma camada, senão o selo passa por cima do texto */
@@ -542,11 +549,6 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
 @media(max-width:640px){
  .selo-d::after{width:110%;opacity:.18}
  .selo-d.light::after{opacity:.14}
- /* O empurrão extra do hero existe para desviar de um título que só é
-    comprido no desktop. No celular o título quebra em quatro linhas e
-    o selo já ocupa a largura toda: empurrar mais só o jogaria para
-    cima do texto. Aqui ele volta a se comportar como os outros. */
- .hero.selo-d::after{right:-6%}
 }
 
 /* A chave da venda direta mostra um dos dois textos e esconde o outro. Sem a
