@@ -526,7 +526,16 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
 .selo-d.light::after{opacity:.14}
 /* o conteúdo sobe uma camada, senão o selo passa por cima do texto */
 .selo-d>*{position:relative;z-index:1}
-@media(max-width:640px){.selo-d::after{width:110%;opacity:.18}}
+/* No celular o selo cresce e escurece um pouco, como manda o handover.
+   O fundo claro fica de fora do 0.18 de propósito: no claro o mesmo
+   vermelho pesa o dobro. Hoje isso já acontece sozinho, porque
+   .selo-d.light::after tem mais peso que a regra de dentro da media
+   query, mas peso de seletor é coisa que se quebra sem avisar: está
+   escrito aqui para continuar valendo quando alguém mexer. */
+@media(max-width:640px){
+ .selo-d::after{width:110%;opacity:.18}
+ .selo-d.light::after{opacity:.14}
+}
 
 /* A chave da venda direta mostra um dos dois textos e esconde o outro. Sem a
    classe no <html> vale o estado de hoje, o do WhatsApp: se o JavaScript não
@@ -1156,7 +1165,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
  </div>
 </section>
 
-<section class="light" id="sobre-bio">
+<section class="light selo-d" id="sobre-bio">
  <div class="wrap">
   <div class="sec-head rv" style="max-width:820px;margin-bottom:30px">
    <div class="kicker">Fundador da Dext · Brasil, Portugal e Irlanda</div>
@@ -1230,7 +1239,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
 
 <!-- ================= PÁGINA: CONTATO ================= -->
 <div class="page" id="page-contato">
- <section class="light page-top">
+ <section class="light page-top selo-d">
   <div class="wrap">
    <div class="sec-head rv">
     <div class="eyebrow">Contato</div>
