@@ -498,6 +498,36 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
  .hero-proof{gap:14px}
  .valor-row .vname{font-size:14px}
 }
+/* ===== Símbolo Dext em degradê, marca d'água =====
+   Handover do CMO de 18/11/2026, aprovado por ele. O degradê já vem dentro do
+   SVG, via linearGradient: não se recria por CSS, não se gira, não se inverte
+   e não se troca a cor.
+
+   Três regras não cabem no CSS e valem na hora de pôr a classe num bloco:
+   nunca sobre foto com rosto, nunca atrás de tela do sistema nem de número,
+   e no máximo UM POR TELA, que não é o mesmo que um por página: duas seções
+   vizinhas com o selo mostram os dois de uma vez em monitor alto. */
+.selo-d{position:relative;overflow:hidden}
+/* A medida do handover (75% da largura, 25% para fora da direita) nasceu para
+   o Instagram, onde a tela é mais alta do que larga. Numa seção de site, 75%
+   da largura dá um símbolo MAIS ALTO do que a seção, e o que sobra na janela
+   é só a aba de cima do D. Pior: o degradê vai de transparente na esquerda a
+   cheio na direita, então jogar 25% para fora corta justamente a parte que se
+   enxerga, e o resto quase desaparece. Medido na home: o selo saía com 960 de
+   largura por 994 de altura numa seção de 595.
+   Daí 52% e só 6% para fora, com o símbolo centrado na altura da seção: o D
+   fica inteiro, reconhecível, e ainda sangra pela direita como manda o modelo. */
+.selo-d::after{content:"";position:absolute;pointer-events:none;
+  width:52%;aspect-ratio:494.2/511.5;
+  top:50%;right:-6%;transform:translateY(-50%);
+  background:url("assets/img/simbolo-degrade-vermelho.svg") no-repeat center/contain;
+  opacity:.26}
+/* no claro o mesmo vermelho pesa o dobro e vira mancha */
+.selo-d.light::after{opacity:.14}
+/* o conteúdo sobe uma camada, senão o selo passa por cima do texto */
+.selo-d>*{position:relative;z-index:1}
+@media(max-width:640px){.selo-d::after{width:110%;opacity:.18}}
+
 /* A chave da venda direta mostra um dos dois textos e esconde o outro. Sem a
    classe no <html> vale o estado de hoje, o do WhatsApp: se o JavaScript não
    rodar, o visitante vê o caminho que funciona de verdade.
@@ -709,7 +739,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
 </section>
 
 <!-- ================= CTA FINAL ================= -->
-<section class="cta-final" id="home-cta">
+<section class="cta-final selo-d" id="home-cta">
  <div class="wrap">
   <div class="eyebrow rv">Comece agora</div>
   <h2 class="rv d1">Excelência não se improvisa. <span>Se organiza.</span></h2>
@@ -860,7 +890,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
 <div class="page" id="page-servicos">
 
 <!-- ================= TOPO DOS SERVIÇOS ================= -->
-<section class="page-top" style="padding-bottom:0">
+<section class="page-top selo-d" style="padding-bottom:0">
  <div class="wrap">
   <div class="sec-head rv" style="max-width:860px">
    <div class="kicker">Além do sistema</div>

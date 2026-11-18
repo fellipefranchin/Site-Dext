@@ -46,6 +46,7 @@ assets/img/logo-escuro.svg
 assets/img/logo-email.png
 assets/img/simbolo-branco.svg
 assets/img/simbolo-vermelho.svg
+assets/img/simbolo-degrade-vermelho.svg
 assets/img/hist-fellipe.jpg
 assets/img/fellipe-operacao.jpg
 assets/img/fellipe-retrato.jpg
