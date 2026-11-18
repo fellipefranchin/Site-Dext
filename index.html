@@ -522,6 +522,13 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
   top:50%;right:-6%;transform:translateY(-50%);
   background:url("assets/img/simbolo-degrade-vermelho.svg") no-repeat center/contain;
   opacity:.26}
+/* O hero é o único bloco com um título longo e vermelho atravessando a
+   tela: medido a 1280, o texto ia até 1110 e a metade cheia do degradê
+   começava em 1024, ou seja, por baixo das últimas palavras. Empurrar
+   mais 9% para fora da direita tira o encontro (a parte cheia passa a
+   começar depois do texto) e ainda aproxima do modelo do handover, que
+   previa 25% para fora. */
+.hero.selo-d::after{right:-15%}
 /* no claro o mesmo vermelho pesa o dobro e vira mancha */
 .selo-d.light::after{opacity:.14}
 /* o conteúdo sobe uma camada, senão o selo passa por cima do texto */
@@ -535,6 +542,11 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
 @media(max-width:640px){
  .selo-d::after{width:110%;opacity:.18}
  .selo-d.light::after{opacity:.14}
+ /* O empurrão extra do hero existe para desviar de um título que só é
+    comprido no desktop. No celular o título quebra em quatro linhas e
+    o selo já ocupa a largura toda: empurrar mais só o jogaria para
+    cima do texto. Aqui ele volta a se comportar como os outros. */
+ .hero.selo-d::after{right:-6%}
 }
 
 /* A chave da venda direta mostra um dos dois textos e esconde o outro. Sem a
@@ -600,7 +612,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
 <div class="page active" id="page-home">
 
 <!-- ================= HERO ================= -->
-<section class="hero" id="topo">
+<section class="hero selo-d" id="topo">
  <div class="wrap">
   <div class="eyebrow rv">Tecnologia e Gestão para restaurantes</div>
   <h1 class="rv d1">O sistema que mostra <em>o que o seu restaurante não está vendo</em>.</h1>
@@ -899,7 +911,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
 <div class="page" id="page-servicos">
 
 <!-- ================= TOPO DOS SERVIÇOS ================= -->
-<section class="page-top selo-d" style="padding-bottom:0">
+<section class="page-top" style="padding-bottom:0">
  <div class="wrap">
   <div class="sec-head rv" style="max-width:860px">
    <div class="kicker">Além do sistema</div>
