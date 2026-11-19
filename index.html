@@ -542,6 +542,11 @@ footer{background:#0c0c0c;border-top:1px solid var(--borda);padding:56px 0 34px}
    Inventar um SVG cinza seria trocar a cor da marca, que a regra
    proíbe; usar o branco aprovado não é. */
 .selo-d.selo-cinza::after{background-image:url("assets/img/simbolo-degrade-branco.svg")}
+/* No fundo claro o branco sumiria. Ali o cinza vem do arquivo VERMELHO
+   dessaturado pelo navegador: #E81840 sem cor vira rgb(71,71,71), que a
+   0.14 sobre o #F5F5F4 rende rgb(221,221,221). Continua sem cor nova e
+   sem arquivo novo, só o mesmo símbolo da marca sem a saturação. */
+.selo-d.selo-cinza.light::after{background-image:url("assets/img/simbolo-degrade-vermelho.svg");filter:grayscale(1)}
 /* no claro o mesmo vermelho pesa o dobro e vira mancha */
 .selo-d.light::after{opacity:.14}
 /* o conteúdo sobe uma camada, senão o selo passa por cima do texto */
@@ -1185,7 +1190,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
  </div>
 </section>
 
-<section class="light selo-d" id="sobre-bio">
+<section class="light selo-d selo-cinza" id="sobre-bio">
  <div class="wrap">
   <div class="sec-head rv" style="max-width:820px;margin-bottom:30px">
    <div class="kicker">Fundador da Dext · Brasil, Portugal e Irlanda</div>
@@ -1259,7 +1264,7 @@ const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
 
 <!-- ================= PÁGINA: CONTATO ================= -->
 <div class="page" id="page-contato">
- <section class="light page-top selo-d">
+ <section class="light page-top selo-d selo-cinza">
   <div class="wrap">
    <div class="sec-head rv">
     <div class="eyebrow">Contato</div>
