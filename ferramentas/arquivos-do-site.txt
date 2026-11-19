@@ -20,7 +20,7 @@
 
 index.html
 .htaccess
-og-image.jpg
+og-image-2026-11.jpg
 robots.txt
 sitemap.xml
 

@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600&display=swap" rel="stylesheet">
+<style>
+/* Arte do cartão de link (Open Graph). 1200x630 é a medida que o WhatsApp,
+   o LinkedIn, o Facebook e o Slack pedem: 1.91:1. Fora dela, o cartão corta
+   onde ninguém escolheu. */
+@font-face{font-family:'Satoshi';
+  src:url('file:///Users/fellipefranchin/dev/sites/dext/assets/fonts/Satoshi-Variable.woff2') format('woff2');
+  font-weight:300 900;font-display:block}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:1200px;height:630px;overflow:hidden}
+body{position:relative;background:#0d0d0d;font-family:'Montserrat',system-ui,sans-serif}
+/* o brilho vermelho atrás do símbolo, como na arte que ele mandou */
+.brilho{position:absolute;inset:0;
+  background:radial-gradient(620px 560px at 88% 50%, rgba(232,24,64,.14), transparent 66%)}
+/* o símbolo da marca, grande, sangrando pela direita */
+/* o símbolo entra inteiro, como na arte aprovada: começa a 62% da largura,
+   o texto termina antes disso e os dois não se encostam */
+.selo{position:absolute;top:50%;right:-12%;transform:translateY(-50%);
+  width:50%;aspect-ratio:494.2/511.5;
+  background:url('file:///Users/fellipefranchin/dev/sites/dext/assets/img/simbolo-degrade-vermelho.svg') no-repeat center/contain;
+  opacity:.92}
+.texto{position:absolute;left:92px;top:50%;transform:translateY(-50%);max-width:650px;z-index:1}
+.kicker{font-size:15px;font-weight:600;letter-spacing:.22em;text-transform:uppercase;color:#e81840}
+.risco{width:46px;height:3px;background:#e81840;margin:16px 0 28px}
+h1{font-family:'Satoshi',sans-serif;font-weight:700;font-size:46px;line-height:1.18;
+   letter-spacing:-.02em;color:#fff}
+h1 em{font-style:normal;color:#e81840;display:block}
+.url{margin-top:30px;font-size:17px;font-weight:600;color:#8a8a8a;letter-spacing:.01em}
+</style>
+</head>
+<body>
+<div class="brilho"></div>
+<div class="selo"></div>
+<div class="texto">
+ <div class="kicker">Tecnologia e Gestão para restaurantes</div>
+ <div class="risco"></div>
+ <h1>Seu restaurante em ordem,<em>mesmo quando falta tempo.</em></h1>
+ <div class="url">dextdigital.com.br</div>
+</div>
+</body>
+</html>
