@@ -1852,9 +1852,22 @@ document.addEventListener('click',e=>{const a=e.target.closest('a[href*="wa.me"]
 // não pode viver aqui, porque tudo que está nesta página o visitante lê. O
 // botão manda só o nome do plano, e o preço é resolvido do outro lado.
 const aerr=document.getElementById('assinaErr');
-document.querySelectorAll('[data-assinar]').forEach(b=>b.addEventListener('click',async()=>{
- const plano=b.dataset.assinar,lbl=b.textContent;
- b.disabled=true;b.textContent=t('Abrindo...');if(aerr)aerr.textContent='';
+/* 🚨 Delegação, e não um ouvinte por botão. Os botões que abrem o checkout
+   só ganham o data-assinar QUANDO a chave da venda direta liga, e isso
+   acontece depois do carregamento. Um forEach no load não pegaria nenhum
+   deles: era exatamente o estado em que este código estava, preso a um
+   atributo que nenhum elemento tinha. */
+document.addEventListener('click', e => {
+ const b = e.target.closest('[data-assinar]');
+ if (!b) return;
+ e.preventDefault();
+ abrirCheckout(b);
+});
+
+async function abrirCheckout(b){
+ if (b.dataset.ocupado) return;            // dois cliques não abrem duas sessões
+ const plano=b.dataset.assinar, lbl=b.textContent, volta=b.getAttribute('href');
+ b.dataset.ocupado='1'; b.textContent=t('Abrindo...'); if(aerr)aerr.textContent='';
  if(window.gtag)gtag('event','begin_checkout',{currency:'BRL',value:Number(b.dataset.valor||0),items:[{item_id:plano,item_name:plano,price:Number(b.dataset.valor||0),quantity:1}]});
  try{
   const r=await fetch('stripe-checkout.php',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({plano})});
@@ -1862,10 +1875,18 @@ document.querySelectorAll('[data-assinar]').forEach(b=>b.addEventListener('click
   if(!r.ok||!j||!j.ok||!j.url){console.warn('Checkout não abriu:',(j&&j.erro)||r.status);throw 0;}
   location.href=j.url; // sai da página: não devolve o botão
  }catch(_){
+  /* O botão guarda o link do WhatsApp no href, que é o caminho que funciona
+     sem JavaScript. Se o checkout não abrir, é para lá que o cliente vai, em
+     vez de ficar olhando uma mensagem de erro numa página que talvez nem
+     seja a dele. */
+  delete b.dataset.ocupado; b.textContent=lbl;
+  /* um dos botões cai no formulário de contato, que é âncora da própria
+     página: âncora não se abre em aba nova */
+  if(volta && /^https?:/i.test(volta)){ window.open(volta,'_blank','noopener'); return; }
+  if(volta){ location.href=volta; return; }
   if(aerr)aerr.innerHTML=t('Não consegui abrir o pagamento agora. Fale com a gente pelo <a href="https://wa.me/5511940852805" target="_blank" rel="noopener">WhatsApp</a>.');
-  b.disabled=false;b.textContent=lbl;
  }
-}));
+}
 </script>
 
 <script>
@@ -1904,10 +1925,12 @@ function nosDeTexto(){
 function destinosDeCompra(){
  if(!document.documentElement.classList.contains('venda-direta')) return;
  document.querySelectorAll('[data-plano]').forEach(a=>{
-   a.href = SISTEMA_TESTE+'?plano='+encodeURIComponent(a.dataset.plano)+'&lang='+IDIOMA;
-   /* o pagamento abre na mesma aba: aba nova durante uma compra é lugar onde
-      o cliente se perde, e o cliente não volta para terminar */
-   a.removeAttribute('target'); a.removeAttribute('rel');
+   /* Decisão do Fellipe, 20/11: o checkout nasce no SITE, não na tela /teste
+      do sistema. O botão só ganha a marca; o href fica como está, com o
+      WhatsApp, e vira o caminho de quem não tem JavaScript ou de quem o
+      checkout recusou. Prometer menos do que se entrega erra para o lado
+      seguro, de novo. */
+   a.dataset.assinar = a.dataset.plano;
  });
 }
 
