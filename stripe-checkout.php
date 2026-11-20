@@ -75,6 +75,13 @@ $dados = json_decode($bruto, true);
 if (!is_array($dados)) { $dados = $_POST; }
 
 $plano = is_string($dados['plano'] ?? null) ? trim($dados['plano']) : '';
+/* O idioma em que a pessoa comprou. Vai e volta pela metadata porque é o
+   idioma da casa e do e-mail de acesso que o sistema manda, e a Stripe não
+   tem como adivinhá-lo: o site é bilíngue e o país do cartão não diz a
+   língua. Lista fechada de propósito: metadata é texto livre, e texto livre
+   que entra num e-mail é por onde se injeta coisa. */
+$idioma = is_string($dados['idioma'] ?? null) ? trim($dados['idioma']) : '';
+if (!in_array($idioma, ['pt-BR','pt-PT','en','es'], true)) { $idioma = 'pt-BR'; }
 
 /* O plano vem do navegador, então vale o que a lista diz, não o que ele manda:
    sem isto daria para inventar um preço que não é nosso. */
@@ -135,7 +142,9 @@ $campos = [
   /* volta no webhook: diz qual plano foi vendido sem depender de adivinhar
      pelo Price ID na hora de escrever o e-mail */
   'metadata[plano]'                       => $plano,
+  'metadata[idioma]'                      => $idioma,
   'subscription_data[metadata][plano]'    => $plano,
+  'subscription_data[metadata][idioma]'   => $idioma,
 ];
 
 if (ACEITE_OBRIGATORIO) {

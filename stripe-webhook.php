@@ -39,6 +39,19 @@ const TOLERANCIA = 300;  // segundos de diferença aceitos no carimbo da Stripe
    O segredo mora FORA do public_html, no mesmo servidor, e nunca passou por
    e-mail nem por este repositório: o Fellipe gerou nos dois lados. O arquivo
    só faz `return '...';`. */
+/* Quem manda o e-mail de acesso ao cliente.
+
+   Até 20/11 era sempre o site, porque a conta no sistema nascia à mão e o
+   site era o único que tinha algo a dizer. Com a criação automática, quem
+   manda passa a ser o SISTEMA: é ele que sabe o endereço do subdomínio que
+   acabou de criar, e o site não tem como saber.
+
+   Fica TRUE até a sessão do Sistema avisar que a criação automática está no
+   ar. Enquanto as duas pontas não viram ao mesmo tempo, dois e-mails
+   incomodam o cliente; nenhum e-mail perde o cliente. Erra-se para o lado
+   que não deixa ninguém sem acesso. */
+const EMAIL_DE_ACESSO_SAI_DAQUI = true;
+
 const PAINEL_URL = 'https://app.dextdigital.com.br/dext/assinaturas';
 const SEGREDO_ARQ = __DIR__ . '/../dext-assinaturas-segredo.php';
 
@@ -275,7 +288,7 @@ if ($tipo === 'checkout.session.completed') {
      saindo daqui: é ele que cumpre a cláusula 6 dos Termos e a exigência das
      bandeiras de mandar o link de cancelamento em teste grátis. */
   $refPedido = trim((string) ($obj['client_reference_id'] ?? ''));
-  if ($email !== '' && $refPedido === '') {
+  if (EMAIL_DE_ACESSO_SAI_DAQUI && $email !== '' && $refPedido === '') {
     $boas = ['nome' => $nome, 'restaurante' => $restaurante, 'email' => $email,
              'plano' => PLANOS[$plano] ?? $plano, 'fim_teste' => $fimTeste,
              'mensal' => $mensal, 'cartao' => $cartao];
@@ -298,6 +311,45 @@ if ($tipo === 'checkout.session.completed') {
     'telefone'     => $telefone,
     'pais'         => strtoupper(trim((string) ($cli['address']['country'] ?? ''))),
     'fim_periodo'  => fimDoPeriodo($assin),
+
+    /* ---- o que a casa precisa para nascer sozinha (contrato de 20/11) ----
+       Todos opcionais: o que faltar, o sistema completa. O painel continua
+       sendo a única porta e o segredo continua sendo um só. */
+
+    /* A lookup key manda mais do que o plano, e por um motivo: o nome do
+       plano é texto que o comercial muda quando quiser, a lookup key é o que
+       está preso ao preço que a pessoa pagou. Se vier vazia, o sistema cai no
+       plano; se vier desconhecida, ele prefere avisar a equipe a abrir a casa
+       errada. */
+    'lookup_key'   => trim((string) ($preco['lookup_key'] ?? '')),
+
+    /* CPF ou CNPJ e endereço completo: sem os dois não sai NFS-e, e os Termos
+       prometem nota a cada cobrança. Agora o checkout os coleta. */
+    'doc_fiscal'   => trim((string) ($cli['tax_ids'][0]['value'] ?? '')),
+    'endereco'     => (static function (array $e): array {
+        return [
+          'linha1'        => trim((string) ($e['line1']       ?? '')),
+          'linha2'        => trim((string) ($e['line2']       ?? '')),
+          'cidade'        => trim((string) ($e['city']        ?? '')),
+          'codigo_postal' => trim((string) ($e['postal_code'] ?? '')),
+          'estado'        => trim((string) ($e['state']       ?? '')),
+          'pais'          => strtoupper(trim((string) ($e['country'] ?? ''))),
+        ];
+      })((array) ($cli['address'] ?? [])),
+
+    /* Data, não carimbo de tempo: o sistema escreve isto num e-mail para uma
+       pessoa ler, e 1766188800 não é data para ninguém. */
+    'fim_teste'    => $fimTeste > 0 ? gmdate('Y-m-d', $fimTeste) : '',
+
+    /* O link do portal vive na config do site, não no evento. Vai junto para
+       o e-mail de acesso poder dizer "cancele quando quiser", que é o que a
+       cláusula 6 promete e o que as bandeiras exigem em teste grátis. */
+    'portal'       => trim((string) ($cfg['portal_link'] ?? '')),
+
+    /* O idioma em que a pessoa comprou, não o do país do cartão. */
+    'idioma'       => (static function (string $i): string {
+        return in_array($i, ['pt-BR','pt-PT','en','es'], true) ? $i : '';
+      })(trim((string) ($obj['metadata']['idioma'] ?? ''))),
   ];
 
   $aviso = [

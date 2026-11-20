@@ -1870,7 +1870,7 @@ async function abrirCheckout(b){
  b.dataset.ocupado='1'; b.textContent=t('Abrindo...'); if(aerr)aerr.textContent='';
  if(window.gtag)gtag('event','begin_checkout',{currency:'BRL',value:Number(b.dataset.valor||0),items:[{item_id:plano,item_name:plano,price:Number(b.dataset.valor||0),quantity:1}]});
  try{
-  const r=await fetch('stripe-checkout.php',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({plano})});
+  const r=await fetch('stripe-checkout.php',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({plano, idioma: IDIOMA==='en' ? 'en' : 'pt-BR'})});
   let j=null;try{j=await r.json();}catch(_){}
   if(!r.ok||!j||!j.ok||!j.url){console.warn('Checkout não abriu:',(j&&j.erro)||r.status);throw 0;}
   location.href=j.url; // sai da página: não devolve o botão
