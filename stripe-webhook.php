@@ -277,6 +277,15 @@ if ($tipo === 'checkout.session.completed') {
      resposta é o jeito conhecido de quebrar este projeto. */
   $pm     = $assin['default_payment_method'] ?? null;
   $cartao = is_array($pm) ? trim((string) ($pm['card']['last4'] ?? '')) : '';
+  /* A impressão do cartão, pedida pelo sistema em 20/11. Não é o número nem
+     os quatro dígitos: é um identificador estável que a Stripe dá para o
+     MESMO cartão, sem permitir voltar ao número. É com ela que o sistema
+     cumpre "um teste grátis por cartão". Sem ela, o mesmo cartão abria uma
+     casa nova a cada compra, e trinta dias grátis viram infinitos.
+     Filtrada contra o formato que o sistema aceita: o que não casar vai
+     vazio, porque campo sujo lá dentro é pior do que campo ausente. */
+  $impressao = is_array($pm) ? trim((string) ($pm['card']['fingerprint'] ?? '')) : '';
+  if (!preg_match('/^[A-Za-z0-9]{8,40}$/', $impressao)) { $impressao = ''; }
 
   /* Quem abriu o checkout decide quem fala com o cliente.
      Venda que nasceu na tela /teste do Gestor traz client_reference_id: o
@@ -337,9 +346,17 @@ if ($tipo === 'checkout.session.completed') {
         ];
       })((array) ($cli['address'] ?? [])),
 
-    /* Data, não carimbo de tempo: o sistema escreve isto num e-mail para uma
-       pessoa ler, e 1766188800 não é data para ninguém. */
-    'fim_teste'    => $fimTeste > 0 ? gmdate('Y-m-d', $fimTeste) : '',
+    /* 🚨 Vai CRU, e isto é uma correção, não uma preferência. Eu mandava a
+       data já formada em UTC, achando que poupava trabalho do outro lado. O
+       sistema mediu: compra feita no Brasil entre as 21h e a meia-noite caía
+       no dia seguinte em UTC, e o e-mail dizia ao cliente uma data a mais.
+       Quem sabe o fuso da casa é o sistema, então quem forma a data é ele. */
+    'fim_teste'    => $fimTeste > 0 ? $fimTeste : '',
+
+    /* A impressão do cartão, para o sistema poder limitar um teste grátis por
+       cartão. Nome do campo pedido por ele; não confundir com o 'cartao' do
+       e-mail de boas-vindas, que são os quatro últimos dígitos. */
+    'cartao'       => $impressao,
 
     /* O link do portal vive na config do site, não no evento. Vai junto para
        o e-mail de acesso poder dizer "cancele quando quiser", que é o que a
