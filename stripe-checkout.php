@@ -112,6 +112,14 @@ $campos = [
   'line_items[0][quantity]'               => '1',
   'subscription_data[trial_period_days]'  => (string) TESTE,
   'phone_number_collection[enabled]'      => 'true',
+  /* Cartão na entrada: sem isto a Stripe pode abrir um teste grátis sem meio
+     de pagamento, e no fim dos 30 dias não há o que cobrar. */
+  'payment_method_collection'             => 'always',
+  /* CPF/CNPJ e endereço completo. Não são capricho: a NFS-e brasileira não
+     sai sem os dois, e os Termos prometem nota a cada cobrança. Pedir depois,
+     por e-mail, é pedir a quem já pagou. */
+  'tax_id_collection[enabled]'            => 'true',
+  'billing_address_collection'            => 'required',
   'custom_fields[0][key]'                 => 'restaurante',
   'custom_fields[0][label][type]'         => 'custom',
   'custom_fields[0][label][custom]'       => 'Nome do restaurante',
