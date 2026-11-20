@@ -297,6 +297,16 @@ if ($tipo === 'checkout.session.completed') {
      saindo daqui: é ele que cumpre a cláusula 6 dos Termos e a exigência das
      bandeiras de mandar o link de cancelamento em teste grátis. */
   $refPedido = trim((string) ($obj['client_reference_id'] ?? ''));
+
+  /* Peneira de formato, por causa de quem pode criar o ref amanhã. Hoje
+     nenhum checkout deste site nasce com ref, e o único que nasce com ele é
+     o do painel, que o monta sozinho. Mas a conta da Stripe é superfície
+     compartilhada: um Payment Link criado lá aceita ?client_reference_id=
+     de quem abrir o link, e sem esta linha a string de um estranho chegaria
+     ao painel como referência boa de pedido. Limpo em vez de recusar, para
+     a venda não se perder: sem ref, a venda é tratada como nascida aqui, que
+     é o que ela é. */
+  if (!preg_match('/^[A-Za-z0-9_-]{1,64}$/', $refPedido)) { $refPedido = ''; }
   if (EMAIL_DE_ACESSO_SAI_DAQUI && $email !== '' && $refPedido === '') {
     $boas = ['nome' => $nome, 'restaurante' => $restaurante, 'email' => $email,
              'plano' => PLANOS[$plano] ?? $plano, 'fim_teste' => $fimTeste,
