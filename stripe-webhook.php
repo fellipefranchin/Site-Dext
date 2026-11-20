@@ -305,8 +305,19 @@ if ($tipo === 'checkout.session.completed') {
      de quem abrir o link, e sem esta linha a string de um estranho chegaria
      ao painel como referência boa de pedido. Limpo em vez de recusar, para
      a venda não se perder: sem ref, a venda é tratada como nascida aqui, que
-     é o que ela é. */
-  if (!preg_match('/^[A-Za-z0-9_-]{1,64}$/', $refPedido)) { $refPedido = ''; }
+     é o que ela é, e o painel acha o pedido pelo e-mail.
+
+     O formato é o do painel, confirmado pelo dev do sistema em 20/11/2026:
+     pedido_ seguido de dígitos, e ele recusa o resto do lado dele também. É
+     um contrato entre os dois lados, então ATENÇÃO: se o painel passar a
+     mandar outro formato de referência, esta linha tem de mudar junto, senão
+     ela apaga a referência nova em silêncio. A venda não quebra quando isso
+     acontece, só volta a ser tratada como nascida aqui.
+
+     A peneira não prova posse e não tenta: pedido_7 de outra casa é um
+     formato válido. Quem prova é o painel, conferindo se o e-mail do
+     checkout é o mesmo do pedido. */
+  if (!preg_match('/^pedido_\d{1,32}$/', $refPedido)) { $refPedido = ''; }
   if (EMAIL_DE_ACESSO_SAI_DAQUI && $email !== '' && $refPedido === '') {
     $boas = ['nome' => $nome, 'restaurante' => $restaurante, 'email' => $email,
              'plano' => PLANOS[$plano] ?? $plano, 'fim_teste' => $fimTeste,
