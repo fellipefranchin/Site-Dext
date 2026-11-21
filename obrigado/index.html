@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Assinatura confirmada · Dext</title>
-<!-- página de retorno do pagamento: não deve aparecer em busca -->
+<title>Pedido recebido · Dext</title>
+<!-- página de retorno do pedido e do pagamento: não deve aparecer em busca -->
 <meta name="robots" content="noindex,nofollow">
 <link rel="icon" href="../assets/img/favicon-32.png" sizes="32x32">
 <link rel="apple-touch-icon" href="../assets/img/apple-touch-icon.png">
@@ -49,53 +49,81 @@ h1{font-size:clamp(28px,5vw,38px);font-weight:700;color:#fff;letter-spacing:-.02
 <body>
 <div class="cartao">
  <img class="marca" src="../assets/img/logo-escuro.svg" alt="Dext">
- <div class="selo">Assinatura confirmada</div>
- <h1>Pronto. O seu teste de 30 dias começou.</h1>
- <p class="sub">Você não paga nada hoje. A primeira mensalidade só é cobrada depois dos 30 dias, e dá para cancelar antes disso, sozinho, pelo link que vai no e-mail.</p>
 
- <!-- Dois caminhos chegam aqui. O de cima é a venda montada pela Dext, pelo
-      checkout do próprio site; o de baixo é a que nasceu na tela /teste do
-      sistema, em que a conta se cria sozinha. O JS mostra um e esconde o
-      outro. Sem JS fica o de cima, que é o fluxo mais antigo e o mais lento:
-      prometer menos do que se entrega erra para o lado seguro. -->
- <div class="passos" id="passos-dext">
-  <h2>O que acontece agora</h2>
-  <div class="passo"><b>1</b><span>A Stripe já mandou o <strong>comprovante</strong> para o seu e-mail, com o link para cancelar ou trocar o cartão quando quiser.</span></div>
-  <div class="passo"><b>2</b><span>A gente <strong>monta a sua conta no sistema</strong> e manda o acesso em até <strong>1 dia útil</strong>.</span></div>
-  <div class="passo"><b>3</b><span>Com o acesso na mão, a gente <strong>liga para ajudar na configuração</strong> dos primeiros dias, se você quiser.</span></div>
+ <!-- 🚨 O QUE ESTÁ ESCRITO AQUI É O ESTADO SEM JAVASCRIPT, e por isso é o
+      pedido, não a assinatura. Antes era o contrário: a página nascia dizendo
+      "Assinatura confirmada" e o JS corrigia. Com o teste sem cartão isso
+      virou mentira, porque quem só fez um pedido não assinou nada e não
+      existe comprovante nenhum. Entre subestimar quem pagou e afirmar uma
+      cobrança que não houve, o erro seguro é o primeiro: a página promete o
+      mínimo e o JS promove quem a URL provar que pagou. -->
+ <div class="selo" id="selo">Pedido recebido</div>
+ <h1 id="titulo">Recebemos o seu pedido.</h1>
+ <p class="sub" id="sub">A equipe confere e você recebe o acesso por e-mail. Nada é cobrado agora, e a gente não pede cartão.</p>
+
+ <div class="passos" id="passos-pedido">
+  <h2 id="passos-pedido-t">O que acontece agora</h2>
+  <div class="passo"><b>1</b><span id="pp1">A gente <strong>confere o seu pedido</strong> e libera o acesso.</span></div>
+  <div class="passo"><b>2</b><span id="pp2">Você recebe por e-mail o <strong>endereço do seu sistema</strong> e o link para criar a senha.</span></div>
+  <div class="passo"><b>3</b><span id="pp3">Os seus <strong>30 dias começam no dia da liberação</strong>, não hoje.</span></div>
  </div>
 
- <div class="passos" id="passos-sistema" hidden>
-  <h2>O que acontece agora</h2>
-  <div class="passo"><b>1</b><span>O seu sistema <strong>está sendo criado agora</strong>, e fica pronto em poucos minutos.</span></div>
-  <div class="passo"><b>2</b><span>Você recebe por e-mail o <strong>endereço do seu sistema</strong>, a data e o valor da primeira cobrança e o link para cancelar.</span></div>
-  <div class="passo"><b>3</b><span>Na primeira entrada, a <strong>configuração guiada</strong> leva você pelo logo, pelas cores, pela equipe e pelo resto.</span></div>
+ <div class="passos" id="passos-assinou" hidden>
+  <h2 id="passos-assinou-t">O que acontece agora</h2>
+  <div class="passo"><b>1</b><span id="pa1">A Stripe manda o <strong>comprovante</strong> para o seu e-mail, com o link para trocar o cartão ou cancelar quando quiser.</span></div>
+  <div class="passo"><b>2</b><span id="pa2">O seu acesso <strong>continua como está</strong>, agora sem data de fim.</span></div>
+  <div class="passo"><b>3</b><span id="pa3">Qualquer coisa, a gente <strong>responde no WhatsApp</strong> no mesmo dia.</span></div>
  </div>
 
  <div class="botoes">
-  <!-- aparece só na venda que vem do sistema, e antes do salto: se o salto
-       falhar, o cliente ainda tem como chegar lá com um clique -->
+  <!-- 🚨 Os dois destinos abaixo são montados no código, com o domínio fixo, e
+       NUNCA lidos da URL. Página que salta para onde o endereço mandar é
+       redirecionamento aberto, e vira isca de phishing com o nosso domínio na
+       frente. O subdomínio que chega em casa= é conferido contra uma expressão
+       antes de entrar, e fora do formato não aparece botão nenhum, em vez de
+       aparecer um botão quebrado. -->
+  <a class="btn btn-red" id="ir-casa" hidden>Entrar no sistema</a>
   <a class="btn btn-red" id="ir-sistema" hidden>Abrir o meu sistema</a>
-  <a class="btn btn-red" href="https://wa.me/5511940852805?text=Ol%C3%A1!%20Acabei%20de%20assinar%20o%20Dext%20Sistema%20de%20Gest%C3%A3o." target="_blank" rel="noopener">Falar no WhatsApp</a>
-  <a class="btn btn-ghost" href="../">Voltar ao site</a>
+  <a class="btn btn-red" id="zap" href="https://wa.me/5511940852805" target="_blank" rel="noopener">Falar no WhatsApp</a>
+  <a class="btn btn-ghost" id="voltar" href="../">Voltar ao site</a>
  </div>
 
- <p class="rodape">Qualquer dúvida: <a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a> · (11) 94085-2805</p>
+ <p class="rodape" id="rodape">Qualquer dúvida: <a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a> · (11) 94085-2805</p>
 </div>
 
 <script>
-/* Venda para o Analytics, e a passagem para o sistema.
+/* O que esta página faz, em uma frase: conta para o Analytics o que aconteceu
+   e diz à pessoa o que vem depois, em português ou em inglês.
+
+   TRÊS CAMINHOS CHEGAM AQUI, e cada um prova a si mesmo pela URL:
+
+   1. ?pedido=pedido_<n>   a pessoa pediu, sem cartão. Vale generate_lead, SEM
+                           valor: não houve dinheiro, e o pedido ainda pode ser
+                           recusado. Contar isto como venda poria receita que
+                           não existe no relatório e, pior, faria o Google Ads
+                           comprar tráfego que gera pedidos recusados.
+   2. ?s=cs_…&casa=<sub>   a pessoa assinou e pagou, no fim do teste, vindo da
+                           casa dela. Vale purchase, e um botão para voltar.
+   3. ?s=cs_…              a venda do checkout deste site. Vale purchase.
 
    O plano e o valor vêm na URL porque esta página é estática e não fala com a
-   Stripe: quem monta esse endereço é quem abriu o checkout, o
-   stripe-checkout.php daqui ou a tela /teste do sistema.
+   Stripe: quem monta o endereço é quem abriu o checkout.
 
-   Por que a venda é contada AQUI e não lá: é neste domínio que o visitante
-   deu ou negou o consentimento de cookies, e é aqui que o GA4 já está. Medir
-   no outro domínio pediria medição entre domínios para o mesmo número.
+   POR QUE A CONTA É FEITA AQUI e não no sistema: é neste domínio que o
+   visitante deu ou negou o consentimento de cookies, e é aqui que o GA4 já
+   está. Medir no outro domínio pediria medição entre domínios para o mesmo
+   número.
 
-   A marca no sessionStorage existe porque recarregar a página contaria a
-   mesma venda de novo e inflaria o relatório. */
+   🚨 Limite conhecido, escrito para ninguém se assustar com o relatório: o
+   purchase sai quando a assinatura é criada, e quem assina antes do fim do
+   teste só é cobrado no trial_end. Então o GA4 conta VENDA FECHADA, não
+   dinheiro recebido. Se a assinatura morrer antes da primeira fatura, a
+   receita fica superestimada, porque ninguém está no navegador nesse momento
+   para desfazer. O conserto, quando houver volume, é o webhook mandar um
+   evento de reembolso com o mesmo transaction_id, e isso pede medição pelo
+   servidor. Até lá, no_fim=1 fica guardado no evento para a diferença entre o
+   cobrado e o prometido aparecer no relatório em vez de ficar escondida. */
+
 /* 🚨 Espera o cookies.js decidir, e esta espera é a correção de um defeito
    que existia desde que a página nasceu: este script fica no fim do <body> e
    rodava ANTES do DOMContentLoaded, que é quando o cookies.js resolve o
@@ -106,62 +134,155 @@ h1{font-size:clamp(28px,5vw,38px);font-weight:700;color:#fff;letter-spacing:-.02
    O cookies.js registra o listener dele enquanto o <head> é lido, antes
    deste, e listeners do mesmo evento correm na ordem em que foram
    registrados. Por isso o dele decide primeiro e o nosso conta depois. */
-function contaVenda(){
- var q=new URLSearchParams(location.search);
- var id=q.get('s')||'', plano=q.get('p')||'', bruto=q.get('v');
- var moeda=(q.get('m')||'BRL').toUpperCase();
 
- /* O destino é fixo no código e NUNCA lido da URL: página que salta para onde
-    o endereço mandar é redirecionamento aberto, e vira isca de phishing com o
-    nosso domínio na frente.
+var EN = {
+ 'titulo-pedido': 'We have your request.',
+ 'selo-pedido':   'Request received',
+ 'sub-pedido':    'Our team reviews it and you get your access by email. Nothing is charged now, and we do not ask for a card.',
+ 'titulo-assinou':'Done. Your subscription is active.',
+ 'selo-assinou':  'Subscription confirmed',
+ 'sub-assinou':   'Your access carries on, now with no end date.',
+ 'sub-assinou-fim':'The charge happens at the end of your trial, and Stripe emails you the receipt.',
+ 'passos-t':      'What happens now',
+ 'pp1':           'We <strong>review your request</strong> and release your access.',
+ 'pp2':           'You get an email with <strong>your system address</strong> and the link to create your password.',
+ 'pp3':           'Your <strong>30 days start on the day we release it</strong>, not today.',
+ 'pa1':           'Stripe emails you the <strong>receipt</strong>, with the link to change your card or cancel whenever you want.',
+ 'pa2':           'Your access <strong>carries on as it is</strong>, now with no end date.',
+ 'pa3':           'Anything at all, we <strong>answer on WhatsApp</strong> the same day.',
+ 'ir-casa':       'Enter the system',
+ 'ir-sistema':    'Open my system',
+ 'zap':           'Message us on WhatsApp',
+ 'voltar':        'Back to the site',
+ 'rodape':        'Any questions: <a href="mailto:comercial@dextdigital.com.br">comercial@dextdigital.com.br</a> · +55 11 94085-2805',
+ 'titulo-aba-pedido':  'Request received · Dext',
+ 'titulo-aba-assinou': 'Subscription confirmed · Dext'
+};
 
-    E não basta o id começar com cs_ para saltar. O checkout do próprio site
-    também devolve cs_, e esse cliente não tem pedido no sistema: o salto o
-    deixaria numa página de espera que nunca fica pronta. Quem manda saltar é
-    quem montou o endereço, com ir=sistema. */
- var SISTEMA='https://app.dextdigital.com.br/teste/pronto?s=';
- var salta=q.get('ir')==='sistema' && /^cs_[A-Za-z0-9_]{6,200}$/.test(id);
+function daPagina(){
+ var q = new URLSearchParams(location.search);
 
- if(salta){
-  var a=document.getElementById('ir-sistema');
-  a.href=SISTEMA+encodeURIComponent(id);
-  a.hidden=false;
-  document.getElementById('passos-dext').hidden=true;
-  document.getElementById('passos-sistema').hidden=false;
+ /* Lista fechada: idioma que não seja um dos dois cai em português, porque
+    esta página só existe em dois, e texto vindo da URL não escolhe nada. */
+ var en = q.get('lang') === 'en';
+ var T  = function(k, pt){ return en && EN[k] !== undefined ? EN[k] : pt; };
+ var põe = function(id, html){ var e = document.getElementById(id); if (e) e.innerHTML = html; };
+
+ var pedido = q.get('pedido') || '';
+ var id     = q.get('s') || '';
+ var casa   = q.get('casa') || '';
+ var plano  = q.get('p') || '';
+ var bruto  = q.get('v');
+ var moeda  = (q.get('m') || 'BRL').toUpperCase();
+ var noFim  = q.get('no_fim') === '1';
+
+ /* Os mesmos formatos que o webhook e o painel usam. Fora deles, o parâmetro
+    não existe: nada de meio-caminho. */
+ var ehPedido = /^pedido_\d{1,32}$/.test(pedido);
+ var ehSessao = /^cs_[A-Za-z0-9_]{6,200}$/.test(id);
+ var ehCasa   = /^[a-z0-9][a-z0-9-]{1,28}[a-z0-9]$/.test(casa);
+
+ if (en) document.documentElement.lang = 'en';
+
+ /* ---------- o que a pessoa lê ---------- */
+ if (ehSessao) {
+  /* assinou e pagou */
+  document.title = T('titulo-aba-assinou', 'Assinatura confirmada · Dext');
+  põe('selo',   T('selo-assinou',   'Assinatura confirmada'));
+  põe('titulo', T('titulo-assinou', 'Pronto. A sua assinatura está ativa.'));
+  põe('sub',    noFim
+        ? T('sub-assinou-fim', 'A cobrança acontece no fim do seu teste, e a Stripe manda o comprovante por e-mail.')
+        : T('sub-assinou',     'O seu acesso continua, agora sem data de fim.'));
+  põe('passos-assinou-t', T('passos-t', 'O que acontece agora'));
+  põe('pa1', T('pa1', document.getElementById('pa1').innerHTML));
+  põe('pa2', T('pa2', document.getElementById('pa2').innerHTML));
+  põe('pa3', T('pa3', document.getElementById('pa3').innerHTML));
+  document.getElementById('passos-pedido').hidden  = true;
+  document.getElementById('passos-assinou').hidden = false;
+
+  if (ehCasa) {
+   var b = document.getElementById('ir-casa');
+   b.href   = 'https://' + casa + '.dextdigital.com.br/assinar?pago=1';
+   b.textContent = T('ir-casa', 'Entrar no sistema');
+   b.hidden = false;
+  }
+ } else {
+  /* pedido, e também o estado sem parâmetro nenhum: promete o mínimo */
+  document.title = T('titulo-aba-pedido', 'Pedido recebido · Dext');
+  põe('selo',   T('selo-pedido',   'Pedido recebido'));
+  põe('titulo', T('titulo-pedido', 'Recebemos o seu pedido.'));
+  põe('sub',    T('sub-pedido',    'A equipe confere e você recebe o acesso por e-mail. Nada é cobrado agora, e a gente não pede cartão.'));
+  põe('passos-pedido-t', T('passos-t', 'O que acontece agora'));
+  põe('pp1', T('pp1', document.getElementById('pp1').innerHTML));
+  põe('pp2', T('pp2', document.getElementById('pp2').innerHTML));
+  põe('pp3', T('pp3', document.getElementById('pp3').innerHTML));
  }
 
- if(!id) return;
+ if (en) {
+  document.getElementById('zap').textContent    = EN['zap'];
+  document.getElementById('voltar').textContent = EN['voltar'];
+  põe('rodape', EN['rodape']);
+ }
 
- var marca='dext-venda-'+id, jaContou=false;
- try{ jaContou=!!sessionStorage.getItem(marca); if(!jaContou) sessionStorage.setItem(marca,'1'); }catch(e){}
+ /* O salto para o sistema, do fluxo antigo em que a conta nascia sozinha. Não
+    basta o id começar com cs_: o checkout do próprio site também devolve cs_,
+    e esse cliente não tem conta a abrir. Quem manda saltar é quem montou o
+    endereço, com ir=sistema. */
+ var SISTEMA = 'https://app.dextdigital.com.br/teste/pronto?s=';
+ var salta   = q.get('ir') === 'sistema' && ehSessao;
+ if (salta) {
+  var a = document.getElementById('ir-sistema');
+  a.href = SISTEMA + encodeURIComponent(id);
+  a.textContent = T('ir-sistema', 'Abrir o meu sistema');
+  a.hidden = false;
+ }
+
+ /* ---------- o que o Analytics recebe ---------- */
+ var chave = ehSessao ? id : (ehPedido ? pedido : '');
+ if (!chave) return;
+
+ /* Recarregar a página contaria a mesma coisa de novo e inflaria o relatório. */
+ var marca = 'dext-conta-' + chave, jaContou = false;
+ try {
+  jaContou = !!sessionStorage.getItem(marca);
+  if (!jaContou) sessionStorage.setItem(marca, '1');
+ } catch (e) {}
 
  /* O salto espera o Analytics responder, mas com relógio por cima: quem
     recusou cookies não gera retorno nenhum, porque o gtag engole a chamada, e
     sem o relógio essa pessoa ficaria parada aqui para sempre. Vale o que
     chegar primeiro, e só uma vez. */
- var vai=null;
- if(salta){
-  var saltou=false;
-  vai=function(){ if(saltou) return; saltou=true; location.replace(SISTEMA+encodeURIComponent(id)); };
-  setTimeout(vai,1500);
+ var vai = null;
+ if (salta) {
+  var saltou = false;
+  vai = function(){ if (saltou) return; saltou = true; location.replace(SISTEMA + encodeURIComponent(id)); };
+  setTimeout(vai, 1500);
  }
 
- if(jaContou){ if(vai) vai(); return; }
+ if (jaContou) { if (vai) vai(); return; }
 
- var ev={transaction_id:id, currency:moeda, transport_type:'beacon',
-         items:[{item_id:plano, item_name:plano, quantity:1}]};
- /* valor ausente não vira zero: zero é uma venda de R$ 0,00 no relatório, que
-    mente sem fazer barulho. Melhor a venda sem receita, que aparece como
-    buraco e alguém pergunta. */
- if(bruto!==null && bruto!=='' && isFinite(Number(bruto))){
-  ev.value=Number(bruto); ev.items[0].price=Number(bruto);
+ var ev;
+ if (ehSessao) {
+  ev = { transaction_id: chave, currency: moeda, transport_type: 'beacon',
+         items: [{ item_id: plano, item_name: plano, quantity: 1 }] };
+  /* valor ausente não vira zero: zero é uma venda de R$ 0,00 no relatório, que
+     mente sem fazer barulho. Melhor a venda sem receita, que aparece como
+     buraco e alguém pergunta. */
+  if (bruto !== null && bruto !== '' && isFinite(Number(bruto))) {
+   ev.value = Number(bruto); ev.items[0].price = Number(bruto);
+  }
+  if (noFim) ev.cobranca_no_fim = true;
+  if (vai) ev.event_callback = vai;
+  gtag('event', 'purchase', ev);
+ } else {
+  /* pedido: contato, sem valor e sem moeda. Nada foi pago. */
+  ev = { transaction_id: chave, method: 'pedido', transport_type: 'beacon' };
+  gtag('event', 'generate_lead', ev);
  }
- if(vai) ev.event_callback=vai;
- gtag('event','purchase',ev);
 }
 
-if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded',contaVenda); }
-else { contaVenda(); }
+if (document.readyState === 'loading') { document.addEventListener('DOMContentLoaded', daPagina); }
+else { daPagina(); }
 </script>
 </body>
 </html>
