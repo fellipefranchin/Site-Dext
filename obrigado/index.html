@@ -65,12 +65,12 @@ h1{font-size:clamp(28px,5vw,38px);font-weight:700;color:#fff;letter-spacing:-.02
   <h2 id="passos-pedido-t">O que acontece agora</h2>
   <div class="passo"><b>1</b><span id="pp1">A gente <strong>confere o seu pedido</strong> e libera o acesso.</span></div>
   <div class="passo"><b>2</b><span id="pp2">Você recebe por e-mail o <strong>endereço do seu sistema</strong> e o link para criar a senha.</span></div>
-  <div class="passo"><b>3</b><span id="pp3">Os seus <strong>30 dias começam no dia da liberação</strong>, não hoje.</span></div>
+  <div class="passo"><b>3</b><span id="pp3">Os seus <strong>30 dias começam no seu primeiro acesso</strong>.</span></div>
  </div>
 
  <div class="passos" id="passos-assinou" hidden>
   <h2 id="passos-assinou-t">O que acontece agora</h2>
-  <div class="passo"><b>1</b><span id="pa1">A Stripe manda o <strong>comprovante</strong> para o seu e-mail, com o link para trocar o cartão ou cancelar quando quiser.</span></div>
+  <div class="passo"><b>1</b><span id="pa1">Você recebe o <strong>comprovante</strong> por e-mail, com o link para trocar o cartão ou cancelar quando quiser.</span></div>
   <div class="passo"><b>2</b><span id="pa2">O seu acesso <strong>continua como está</strong>, agora sem data de fim.</span></div>
   <div class="passo"><b>3</b><span id="pa3">Qualquer coisa, a gente <strong>responde no WhatsApp</strong> no mesmo dia.</span></div>
  </div>
@@ -142,12 +142,12 @@ var EN = {
  'titulo-assinou':'Done. Your subscription is active.',
  'selo-assinou':  'Subscription confirmed',
  'sub-assinou':   'Your access carries on, now with no end date.',
- 'sub-assinou-fim':'The charge happens at the end of your trial, and Stripe emails you the receipt.',
+ 'sub-assinou-fim':'The charge happens at the end of your trial, and you get the receipt by email.',
  'passos-t':      'What happens now',
  'pp1':           'We <strong>review your request</strong> and release your access.',
  'pp2':           'You get an email with <strong>your system address</strong> and the link to create your password.',
- 'pp3':           'Your <strong>30 days start on the day we release it</strong>, not today.',
- 'pa1':           'Stripe emails you the <strong>receipt</strong>, with the link to change your card or cancel whenever you want.',
+ 'pp3':           'Your <strong>30 days start on your first login</strong>.',
+ 'pa1':           'You get the <strong>receipt</strong> by email, with the link to change your card or cancel whenever you want.',
  'pa2':           'Your access <strong>carries on as it is</strong>, now with no end date.',
  'pa3':           'Anything at all, we <strong>answer on WhatsApp</strong> the same day.',
  'ir-casa':       'Enter the system',
@@ -191,7 +191,7 @@ function daPagina(){
   põe('selo',   T('selo-assinou',   'Assinatura confirmada'));
   põe('titulo', T('titulo-assinou', 'Pronto. A sua assinatura está ativa.'));
   põe('sub',    noFim
-        ? T('sub-assinou-fim', 'A cobrança acontece no fim do seu teste, e a Stripe manda o comprovante por e-mail.')
+        ? T('sub-assinou-fim', 'A cobrança acontece no fim do seu teste, e você recebe o comprovante por e-mail.')
         : T('sub-assinou',     'O seu acesso continua, agora sem data de fim.'));
   põe('passos-assinou-t', T('passos-t', 'O que acontece agora'));
   põe('pa1', T('pa1', document.getElementById('pa1').innerHTML));
