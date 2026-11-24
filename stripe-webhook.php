@@ -50,7 +50,7 @@ const TOLERANCIA = 300;  // segundos de diferença aceitos no carimbo da Stripe
    ar. Enquanto as duas pontas não viram ao mesmo tempo, dois e-mails
    incomodam o cliente; nenhum e-mail perde o cliente. Erra-se para o lado
    que não deixa ninguém sem acesso. */
-const EMAIL_DE_ACESSO_SAI_DAQUI = true;
+const EMAIL_DE_ACESSO_SAI_DAQUI = false;
 
 const PAINEL_URL = 'https://app.dextdigital.com.br/dext/assinaturas';
 const SEGREDO_ARQ = __DIR__ . '/../dext-assinaturas-segredo.php';

@@ -649,7 +649,7 @@ html.venda-direta .so-whatsapp{display:none}
    Para ver como fica sem mostrar a ninguém: dextdigital.com.br/?venda=direta
    Liga a venda direta só para quem digitou esse endereço. Quem souber dele
    também consegue comprar antes da hora, então não é segredo, é espelho. */
-const VENDA_DIRETA = false;
+const VENDA_DIRETA = true;
 
 const SISTEMA_TESTE = 'https://app.dextdigital.com.br/teste';
 
@@ -1864,45 +1864,14 @@ document.querySelectorAll('[data-count]').forEach(el=>co.observe(el));
 document.getElementById('ano').textContent=new Date().getFullYear();
 // evento de lead ao clicar no WhatsApp
 document.addEventListener('click',e=>{const a=e.target.closest('a[href*="wa.me"]');if(a&&window.gtag)gtag('event','generate_lead',{method:'whatsapp'});});
-// assinatura do sistema. Quem abre o checkout é o servidor: a chave da Stripe
-// não pode viver aqui, porque tudo que está nesta página o visitante lê. O
-// botão manda só o nome do plano, e o preço é resolvido do outro lado.
-const aerr=document.getElementById('assinaErr');
-/* 🚨 Delegação, e não um ouvinte por botão. Os botões que abrem o checkout
-   só ganham o data-assinar QUANDO a chave da venda direta liga, e isso
-   acontece depois do carregamento. Um forEach no load não pegaria nenhum
-   deles: era exatamente o estado em que este código estava, preso a um
-   atributo que nenhum elemento tinha. */
-document.addEventListener('click', e => {
- const b = e.target.closest('[data-assinar]');
- if (!b) return;
- e.preventDefault();
- abrirCheckout(b);
-});
+/* 🚨 Aqui vivia o checkout do próprio site: o botão chamava o
+   stripe-checkout.php, que abria uma sessão da Stripe e pedia o cartão na
+   entrada. Saiu na virada de 24/11, quando o sistema subiu com o teste sem
+   cartão. Agora o botão é um link comum para a tela de pedido do sistema, o
+   cartão só aparece no fim dos 30 dias, e quem monta o destino é o
+   destinosDeCompra() lá embaixo. O stripe-checkout.php continua no servidor,
+   mas recusando: está escrito lá por quê. */
 
-async function abrirCheckout(b){
- if (b.dataset.ocupado) return;            // dois cliques não abrem duas sessões
- const plano=b.dataset.assinar, lbl=b.textContent, volta=b.getAttribute('href');
- b.dataset.ocupado='1'; b.textContent=t('Abrindo...'); if(aerr)aerr.textContent='';
- if(window.gtag)gtag('event','begin_checkout',{currency:'BRL',value:Number(b.dataset.valor||0),items:[{item_id:plano,item_name:plano,price:Number(b.dataset.valor||0),quantity:1}]});
- try{
-  const r=await fetch('stripe-checkout.php',{method:'POST',headers:{'Content-Type':'application/json',Accept:'application/json'},body:JSON.stringify({plano, idioma: IDIOMA==='en' ? 'en' : 'pt-BR'})});
-  let j=null;try{j=await r.json();}catch(_){}
-  if(!r.ok||!j||!j.ok||!j.url){console.warn('Checkout não abriu:',(j&&j.erro)||r.status);throw 0;}
-  location.href=j.url; // sai da página: não devolve o botão
- }catch(_){
-  /* O botão guarda o link do WhatsApp no href, que é o caminho que funciona
-     sem JavaScript. Se o checkout não abrir, é para lá que o cliente vai, em
-     vez de ficar olhando uma mensagem de erro numa página que talvez nem
-     seja a dele. */
-  delete b.dataset.ocupado; b.textContent=lbl;
-  /* um dos botões cai no formulário de contato, que é âncora da própria
-     página: âncora não se abre em aba nova */
-  if(volta && /^https?:/i.test(volta)){ window.open(volta,'_blank','noopener'); return; }
-  if(volta){ location.href=volta; return; }
-  if(aerr)aerr.innerHTML=t('Não consegui abrir o pagamento agora. Fale com a gente pelo <a href="https://wa.me/5511940852805" target="_blank" rel="noopener">WhatsApp</a>.');
- }
-}
 </script>
 
 <script>
@@ -1939,14 +1908,25 @@ function nosDeTexto(){
    do sistema, levando o plano e o idioma.
    Refeito a cada troca de idioma, porque o idioma vai na URL. */
 function destinosDeCompra(){
+ /* Virada de 24/11: o pedido nasce no sistema, não aqui. Cada botão de plano
+    passa a ser um link comum para a tela de pedido, com o módulo e o idioma
+    na URL. Sem JavaScript o href continua sendo o WhatsApp escrito no HTML,
+    que é o caminho que sempre funcionou.
+
+    As cinco chaves (completo, clientes, pessoas, financeiro, operacional) são
+    as mesmas dos dois lados, conferido no ar em 24/11: o /teste devolve
+    value="<chave>" para cada uma, e chave desconhecida cai em completo.
+
+    Esta função roda de novo a cada troca de idioma, pelo aplicarIdioma(), e
+    por isso o lang do link nunca fica velho. */
  if(!document.documentElement.classList.contains('venda-direta')) return;
+ const lang = IDIOMA==='en' ? 'en' : 'pt-BR';
  document.querySelectorAll('[data-plano]').forEach(a=>{
-   /* Decisão do Fellipe, 20/11: o checkout nasce no SITE, não na tela /teste
-      do sistema. O botão só ganha a marca; o href fica como está, com o
-      WhatsApp, e vira o caminho de quem não tem JavaScript ou de quem o
-      checkout recusou. Prometer menos do que se entrega erra para o lado
-      seguro, de novo. */
-   a.dataset.assinar = a.dataset.plano;
+   a.href = SISTEMA_TESTE + '?plano=' + encodeURIComponent(a.dataset.plano) + '&lang=' + lang;
+   /* o pedido é a continuação da visita, não um site de terceiro: mesma aba,
+      e sem o rel/target que o link do WhatsApp precisava */
+   a.removeAttribute('target');
+   a.removeAttribute('rel');
  });
 }
 

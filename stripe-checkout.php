@@ -60,6 +60,28 @@ if (($_SERVER['REQUEST_METHOD'] ?? '') !== 'POST') {
   responde(false, ['erro' => 'Método não permitido.'], 405);
 }
 
+/* 🚨 DESLIGADO NA VIRADA DE 24/11/2026, e o motivo não é arrumação.
+
+   Desde que o sistema subiu com o teste sem cartão, o caminho do cliente é
+   pedir em app.dextdigital.com.br/teste, a equipe aprovar, e o cartão entrar
+   só no fim dos 30 dias, no /assinar do próprio sistema. O site deixou de
+   chamar este arquivo.
+
+   Deixá-lo respondendo seria um buraco: qualquer um que soubesse o endereço
+   podia mandar um POST, receber uma URL de checkout da Stripe em produção e
+   assinar SEM PASSAR PELA APROVAÇÃO. Nasceria uma assinatura paga sem pedido
+   do outro lado, e o cliente ficaria pagando sem casa para entrar, porque
+   quem cria a casa é a aprovação.
+
+   O deploy deste projeto nunca apaga arquivo no servidor, de propósito, então
+   não basta tirar da lista: o arquivo continuaria lá, servido e funcionando.
+   Por isso ele recusa aqui dentro, e some do servidor só quando alguém for
+   apagá-lo à mão, de propósito, olhando para ele.
+
+   Para religar, se um dia o site voltar a vender direto: apague este bloco. O
+   resto do arquivo continua inteiro e funcionando. */
+responde(false, ['erro' => 'O pedido agora começa em app.dextdigital.com.br/teste.'], 410);
+
 $cfg    = stripeConfig();
 $chave  = (string) ($cfg['secret'] ?? '');
 $precos = (array)  ($cfg['precos'] ?? []);
